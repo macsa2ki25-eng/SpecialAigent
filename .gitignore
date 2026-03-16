@@ -1,0 +1,19 @@
+# タスクキュー（動的に生成されるため）
+queue/tasks/*.yaml
+queue/results/*.yaml
+
+# 出力ファイル
+output/*.md
+
+# キャッシュ
+cache/*
+!cache/.gitkeep
+
+# ログ
+logs/*.log
+logs/*.txt
+!logs/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

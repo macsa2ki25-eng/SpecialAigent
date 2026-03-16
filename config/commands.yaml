@@ -1,0 +1,184 @@
+# ===================================================
+# SpecialAigent - コマンド定義
+# 将軍に「やれ」と言うだけで動くコマンド群
+# ===================================================
+
+# --- 英語教材系コマンド ---
+english:
+  create_test:
+    description: "英語テストを作成する"
+    usage: "英語のテストを作って（範囲：Lesson 3-4、難易度：標準）"
+    persona: "english_teacher"
+    parameters:
+      - name: "scope"
+        description: "テスト範囲"
+        required: true
+      - name: "difficulty"
+        description: "難易度（基礎/標準/発展）"
+        default: "標準"
+      - name: "question_count"
+        description: "問題数"
+        default: 20
+      - name: "include_answer"
+        description: "解答を含めるか"
+        default: true
+
+  create_worksheet:
+    description: "英語ワークシートを作成する"
+    usage: "関係代名詞のワークシートを作って"
+    persona: "english_teacher"
+    parameters:
+      - name: "topic"
+        description: "文法項目や単元"
+        required: true
+      - name: "level"
+        description: "レベル"
+        default: "標準"
+
+  create_lesson_plan:
+    description: "授業計画を作成する"
+    usage: "Lesson 5の指導案を作って"
+    persona: "english_teacher"
+    parameters:
+      - name: "unit"
+        description: "単元名"
+        required: true
+      - name: "duration"
+        description: "授業時間"
+        default: "50分"
+
+# --- 進路指導系コマンド ---
+career:
+  review_essay:
+    description: "志望理由書を添削する"
+    usage: "この志望理由書を添削して"
+    persona: "career_advisor"
+    parameters:
+      - name: "content"
+        description: "志望理由書の内容"
+        required: true
+      - name: "university"
+        description: "志望大学"
+        required: false
+
+  create_guidance:
+    description: "進路だよりを作成する"
+    usage: "11月号の進路だよりを作って"
+    persona: "career_advisor"
+    parameters:
+      - name: "month"
+        description: "発行月"
+        required: true
+      - name: "topics"
+        description: "取り上げるトピック"
+        required: false
+
+  research_university:
+    description: "大学情報を調査する"
+    usage: "○○大学の入試情報を調べて"
+    persona: "career_advisor"
+    parameters:
+      - name: "university"
+        description: "大学名"
+        required: true
+
+# --- 校務文書系コマンド ---
+documents:
+  create_notice:
+    description: "保護者向け通知を作成する"
+    usage: "保護者会の案内文を作って"
+    persona: "document_writer"
+    parameters:
+      - name: "type"
+        description: "文書の種類"
+        required: true
+      - name: "details"
+        description: "詳細内容"
+        required: true
+
+  create_report:
+    description: "報告書を作成する"
+    usage: "研修報告書を作って"
+    persona: "document_writer"
+    parameters:
+      - name: "type"
+        description: "報告書の種類"
+        required: true
+
+  create_minutes:
+    description: "議事録を作成する"
+    usage: "職員会議の議事録を作って"
+    persona: "document_writer"
+    parameters:
+      - name: "meeting_name"
+        description: "会議名"
+        required: true
+
+# --- ネットワーク管理系コマンド ---
+network:
+  troubleshoot:
+    description: "ネットワークトラブルを診断する"
+    usage: "3階のWi-Fiが繋がらない"
+    persona: "network_engineer"
+    parameters:
+      - name: "symptom"
+        description: "症状"
+        required: true
+
+  create_manual:
+    description: "マニュアルを作成する"
+    usage: "新任の先生向けにWi-Fi接続マニュアルを作って"
+    persona: "network_engineer"
+    parameters:
+      - name: "topic"
+        description: "マニュアルの内容"
+        required: true
+      - name: "audience"
+        description: "対象者"
+        default: "教職員"
+
+  generate_config:
+    description: "設定ファイルを生成する"
+    usage: "VLANの設定ファイルを作って"
+    persona: "network_engineer"
+    parameters:
+      - name: "device"
+        description: "対象機器"
+        required: true
+
+# --- 校内DX系コマンド ---
+dx:
+  propose_system:
+    description: "業務改善システムを提案する"
+    usage: "出欠管理をデジタル化する方法を提案して"
+    persona: "dx_specialist"
+    parameters:
+      - name: "target"
+        description: "改善対象の業務"
+        required: true
+
+  create_script:
+    description: "自動化スクリプトを作成する"
+    usage: "成績一覧のCSVを自動集計するスクリプトを作って"
+    persona: "dx_specialist"
+    parameters:
+      - name: "task"
+        description: "自動化したい作業"
+        required: true
+      - name: "language"
+        description: "プログラミング言語"
+        default: "python"
+
+# --- メタコマンド ---
+meta:
+  status:
+    description: "全エージェントの状態を表示する"
+    usage: "状況報告せよ"
+
+  skill_list:
+    description: "利用可能なSkillを一覧表示する"
+    usage: "Skillの一覧を見せよ"
+
+  help:
+    description: "使い方を表示する"
+    usage: "使い方を教えて"

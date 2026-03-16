@@ -1,0 +1,86 @@
+# ===================================================
+# SpecialAigent - システム設定
+# ===================================================
+
+system:
+  name: "SpecialAigent"
+  version: "1.0.0"
+  description: "戦国時代の軍制をモチーフにしたAIエージェントシステム（教員業務特化版）"
+
+# --- エージェント設定 ---
+agents:
+  shogun:
+    count: 1
+    model: "claude-sonnet-4-6"    # 将軍はSonnet（コスト節約）
+    max_tokens: 4096
+  karo:
+    count: 1
+    model: "claude-haiku-4-5-20251001"  # 家老はHaiku（タスク分解は軽い処理）
+    max_tokens: 2048
+  ashigaru:
+    count: 3                       # Proプラン対応：3体に制限
+    model: "claude-haiku-4-5-20251001"  # 足軽はHaiku（API消費最小化）
+    max_tokens: 4096
+    parallel: true
+
+# --- API節約設定（Proプラン対応）---
+api_saving:
+  enabled: true
+  strategies:
+    - name: "キャッシュ活用"
+      description: "同一タスクの結果をキャッシュして再利用"
+      cache_dir: "cache/"
+      cache_ttl_hours: 24
+    - name: "バッチ処理"
+      description: "類似タスクをまとめて処理"
+      batch_size: 3
+    - name: "段階的実行"
+      description: "まず1体で試行→成功したら残りを並列実行"
+      trial_first: true
+    - name: "Haiku優先"
+      description: "足軽にはHaikuモデルを使用してコスト削減"
+      prefer_haiku: true
+
+# --- タスクキュー設定 ---
+queue:
+  tasks_dir: "queue/tasks/"
+  results_dir: "queue/results/"
+  max_retries: 2
+  timeout_seconds: 300
+
+# --- ダッシュボード設定 ---
+dashboard:
+  file: "status/dashboard.md"
+  update_interval_seconds: 5
+  show_timestamps: true
+
+# --- tmux設定 ---
+tmux:
+  session_name: "multiagent"
+  windows:
+    - name: "shogun"
+      bg_color: "#1a1a2e"     # 将軍は紺色で威厳
+    - name: "karo"
+      bg_color: "#000000"     # 家老は黒背景
+    - name: "ashigaru"
+      bg_color: "#000000"     # 足軽は黒背景
+      panes: 3                # 3ペインに分割
+
+# --- Skill自動生成設定 ---
+skills:
+  auto_detect: true
+  min_occurrences: 3          # 3回以上繰り返されたらSkill化提案
+  skills_dir: "skills/"
+  categories:
+    - "english_teacher"
+    - "career_guidance"
+    - "school_docs"
+    - "network_admin"
+    - "school_dx"
+
+# --- ログ設定 ---
+logging:
+  dir: "logs/"
+  level: "INFO"
+  rotate_days: 7
+  format: "[{timestamp}] [{agent}] {message}"
