@@ -2,8 +2,8 @@
 queue/tasks/*.yaml
 queue/results/*.yaml
 
-# 出力ファイル
-output/*.md
+# 出力ファイル（サンプルは残す）
+# output/*.md
 
 # キャッシュ
 cache/*
