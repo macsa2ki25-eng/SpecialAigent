@@ -1,6 +1,6 @@
 """
 Speak in Circles - Speaking Activity PowerPoint Generator
-For high school English classes (CEFR A1-A2)
+For high school English classes (CEFR A2-B1, progressive difficulty)
 """
 
 from pptx import Presentation
@@ -185,15 +185,30 @@ def create_title_slide(prs):
 
     # Footer
     add_text_box(slide, Inches(2), Inches(6.5), Inches(9), Inches(0.5),
-                 "Speaking Activity  |  CEFR A1–A2  |  10 Sets",
+                 "Speaking Activity  |  CEFR A2–B1 (Progressive)  |  10 Sets",
                  font_size=14, color=TEAL, alignment=PP_ALIGN.CENTER)
 
 
-def create_photo_slide(prs, set_number, item_name, photo_description):
+def create_photo_slide(prs, set_number, item_name, photo_description, level="A2"):
     """Create the photo slide with description text (no actual photo)."""
     slide = prs.slides.add_slide(prs.slide_layouts[6])
     set_slide_bg(slide, BG_LIGHT)
     add_title_bar(slide, set_number)
+
+    # Level badge
+    level_color = TEAL if level == "A2" else PINK if level == "A2-B1" else RGBColor(0xFF, 0x45, 0x00)
+    level_box = add_rounded_rect(
+        slide, Inches(5.2), Inches(0.2), Inches(1.5), Inches(0.7),
+        level_color
+    )
+    tf = level_box.text_frame
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.CENTER
+    run = p.add_run()
+    run.text = level
+    run.font.size = Pt(18)
+    run.font.bold = True
+    run.font.color.rgb = WHITE
 
     # Phase indicator
     phase_box = add_rounded_rect(
@@ -413,14 +428,14 @@ def get_emoji_for_item(item_name):
     emoji_map = {
         "Bicycle": "🚲",
         "Umbrella": "☂️",
-        "Piano": "🎹",
+        "Violin": "🎻",
         "Sunglasses": "🕶️",
-        "Pizza": "🍕",
-        "Camera": "📷",
-        "Clock": "🕐",
-        "Backpack": "🎒",
-        "Ice Cream": "🍦",
-        "Airplane": "✈️",
+        "Pancake": "🥞",
+        "Microscope": "🔬",
+        "Thermometer": "🌡️",
+        "Sleeping Bag": "🛏️",
+        "Yogurt": "🥛",
+        "Submarine": "🚢",
     }
     return emoji_map.get(item_name, "❓")
 
@@ -430,107 +445,120 @@ def main():
     prs.slide_width = SLIDE_WIDTH
     prs.slide_height = SLIDE_HEIGHT
 
-    # ── Activity Data: 10 Sets ──
+    # ── Activity Data: 10 Sets (Progressive: A2 → A2-B1 → B1) ──
     sets = [
+        # ===== Sets 1-4: CEFR A2 (Basic, everyday objects, simple descriptions) =====
         {
             "number": 1,
+            "level": "A2",
             "item": "Bicycle",
             "photo_desc": "A woman riding a bicycle on a city street near a brick bridge",
-            "choices": ("Bicycle", "Car", "Scooter"),
+            "choices": ("Bicycle", "Motorcycle", "Scooter"),
             "correct": "A",
-            "vocab": ["wheel — 車輪", "faster than walking — 歩くより早い（比較）"],
-            "model": "It has two wheels. You move it with your legs and go faster than walking.",
+            "vocab": ["pedal — ペダル（足でこぐ部分）", "two wheels — 2つの車輪"],
+            "model": "It has two wheels. You push the pedals with your feet to move. It does not need gasoline.",
             "grammar": "Comparative: faster than ~",
         },
         {
             "number": 2,
+            "level": "A2",
             "item": "Umbrella",
-            "photo_desc": "A colorful umbrella on a rainy day in a city",
-            "choices": ("Umbrella", "Hat", "Raincoat"),
-            "correct": "A",
-            "vocab": ["rain — 雨", "keep ~ dry — ～を乾いた状態に保つ"],
-            "model": "You use it when it rains. You open it above your head to keep dry.",
+            "photo_desc": "A person holding a colorful umbrella on a rainy street",
+            "choices": ("Parasol", "Umbrella", "Raincoat"),
+            "correct": "B",
+            "vocab": ["fold — 折りたたむ", "above your head — 頭の上に"],
+            "model": "You hold it above your head when it rains. You can fold it and put it in your bag.",
             "grammar": "When + present tense",
         },
         {
             "number": 3,
-            "item": "Piano",
-            "photo_desc": "A grand piano in a concert hall with spotlight",
-            "choices": ("Guitar", "Piano", "Drums"),
+            "level": "A2",
+            "item": "Violin",
+            "photo_desc": "A musician playing the violin on stage",
+            "choices": ("Cello", "Violin", "Guitar"),
             "correct": "B",
-            "vocab": ["keys — 鍵盤", "black and white — 白と黒"],
-            "model": "It is a big musical instrument. It has black and white keys. You press them with your fingers.",
-            "grammar": "Subject + have/has",
+            "vocab": ["strings — 弦", "bow — 弓（弦楽器を弾く道具）"],
+            "model": "It has strings and you use a bow to play it. You hold it under your chin. It is smaller than a cello.",
+            "grammar": "Subject + have/has + noun",
         },
         {
             "number": 4,
+            "level": "A2",
             "item": "Sunglasses",
-            "photo_desc": "Stylish sunglasses on a sunny beach",
-            "choices": ("Watch", "Sunglasses", "Earphones"),
+            "photo_desc": "A person wearing sunglasses at the beach on a bright sunny day",
+            "choices": ("Goggles", "Sunglasses", "Reading Glasses"),
             "correct": "B",
-            "vocab": ["protect — 守る", "bright — まぶしい"],
-            "model": "You wear them on your face. They protect your eyes from bright light on sunny days.",
-            "grammar": "Plural: them/they",
+            "vocab": ["lenses — レンズ", "shade — 日よけ、色の濃い部分"],
+            "model": "You wear them on your face outdoors. They have dark lenses that protect your eyes from the sun.",
+            "grammar": "Relative pronoun: that",
         },
+        # ===== Sets 5-7: CEFR A2-B1 (Transitional, more abstract, longer descriptions) =====
         {
             "number": 5,
-            "item": "Pizza",
-            "photo_desc": "A delicious cheese pizza with toppings on a wooden board",
-            "choices": ("Sushi", "Hamburger", "Pizza"),
-            "correct": "C",
-            "vocab": ["round — 丸い", "slice — 一切れ"],
-            "model": "It is round and you cut it into slices. It comes from Italy and has cheese on top.",
-            "grammar": "Passive meaning: It comes from ~",
+            "level": "A2-B1",
+            "item": "Pancake",
+            "photo_desc": "A stack of fluffy pancakes with syrup and butter on a plate",
+            "choices": ("Crepe", "Pancake", "Waffle"),
+            "correct": "B",
+            "vocab": ["batter — 生地（液状の）", "fluffy — ふわふわの", "pour — 注ぐ"],
+            "model": "You make it by pouring batter on a hot pan. It is round and flat, but thicker and fluffier than a crepe. People often eat it for breakfast with syrup.",
+            "grammar": "Comparative: thicker / fluffier than ~",
         },
         {
             "number": 6,
-            "item": "Camera",
-            "photo_desc": "A person taking a photo with a digital camera at a tourist spot",
-            "choices": ("Camera", "Smartphone", "Telescope"),
-            "correct": "A",
-            "vocab": ["take a picture — 写真を撮る", "moment — 瞬間"],
-            "model": "You use it to take pictures. You press a button and it saves the moment.",
-            "grammar": "Infinitive: to + verb",
+            "level": "A2-B1",
+            "item": "Microscope",
+            "photo_desc": "A scientist looking through a microscope in a laboratory",
+            "choices": ("Telescope", "Microscope", "Binoculars"),
+            "correct": "B",
+            "vocab": ["magnify — 拡大する", "lens — レンズ", "tiny — とても小さい"],
+            "model": "It is used in science class to look at very tiny things. It magnifies objects that are too small for your eyes. Unlike a telescope, you look down into it.",
+            "grammar": "Passive: It is used to ~",
         },
         {
             "number": 7,
-            "item": "Clock",
-            "photo_desc": "A large clock on a wall showing the time",
-            "choices": ("Calendar", "Clock", "Thermometer"),
-            "correct": "B",
-            "vocab": ["hands — 針", "tell the time — 時間を教える"],
-            "model": "It is on the wall. It has numbers and hands. It tells you the time.",
-            "grammar": "Subject + tell + object",
+            "level": "A2-B1",
+            "item": "Thermometer",
+            "photo_desc": "A digital thermometer showing a person's body temperature",
+            "choices": ("Thermometer", "Barometer", "Stopwatch"),
+            "correct": "A",
+            "vocab": ["temperature — 温度", "measure — 測る", "fever — 熱"],
+            "model": "You use it to measure how hot or cold something is. When you are sick, your mother may put it in your mouth to check if you have a fever.",
+            "grammar": "Interrogative: how + adjective",
         },
+        # ===== Sets 8-10: CEFR B1 (More complex, abstract concepts, nuanced descriptions) =====
         {
             "number": 8,
-            "item": "Backpack",
-            "photo_desc": "A student carrying a backpack at school",
-            "choices": ("Suitcase", "Wallet", "Backpack"),
-            "correct": "C",
-            "vocab": ["carry — 運ぶ", "on your back — 背中に"],
-            "model": "Students carry it on their back. You can put books and lunch inside it.",
-            "grammar": "Can + verb (ability)",
+            "level": "B1",
+            "item": "Sleeping Bag",
+            "photo_desc": "A person inside a sleeping bag at a campsite in the mountains",
+            "choices": ("Blanket", "Sleeping Bag", "Tent"),
+            "correct": "B",
+            "vocab": ["zipper — ジッパー", "insulated — 断熱された", "portable — 持ち運びできる"],
+            "model": "It is a portable item you use when you camp outdoors. You get inside it to stay warm at night. It has a zipper and you can roll it up, unlike a blanket which has no zipper.",
+            "grammar": "Relative clause: which + verb",
         },
         {
             "number": 9,
-            "item": "Ice Cream",
-            "photo_desc": "A colorful ice cream cone with multiple scoops",
-            "choices": ("Cake", "Ice Cream", "Chocolate"),
+            "level": "B1",
+            "item": "Yogurt",
+            "photo_desc": "A cup of yogurt with fruit toppings on a table",
+            "choices": ("Pudding", "Yogurt", "Ice Cream"),
             "correct": "B",
-            "vocab": ["cold — 冷たい", "melt — 溶ける"],
-            "model": "It is very cold and sweet. It melts quickly in summer. You can choose many flavors.",
-            "grammar": "Adverb: quickly",
+            "vocab": ["fermented — 発酵した", "bacteria — 細菌、バクテリア", "sour — 酸っぱい"],
+            "model": "It is a dairy product made from fermented milk. It has a slightly sour taste and a creamy texture. Unlike ice cream, it is not frozen, and unlike pudding, it is made with bacteria that are good for your health.",
+            "grammar": "Contrast: unlike ~ / whereas ~",
         },
         {
             "number": 10,
-            "item": "Airplane",
-            "photo_desc": "An airplane flying high above the clouds in a blue sky",
-            "choices": ("Airplane", "Helicopter", "Rocket"),
-            "correct": "A",
-            "vocab": ["fly — 飛ぶ", "wings — 翼"],
-            "model": "It has wings and it can fly. It carries many people to different countries very fast.",
-            "grammar": "Can + verb (ability)",
+            "level": "B1",
+            "item": "Submarine",
+            "photo_desc": "A submarine diving deep under the ocean surface",
+            "choices": ("Ferry", "Submarine", "Cruise Ship"),
+            "correct": "B",
+            "vocab": ["dive — 潜る", "surface — 水面", "crew — 乗組員", "underwater — 水中の"],
+            "model": "It is a type of vessel that is designed to travel underwater. It can dive below the surface and stay there for a long time. The crew cannot open the windows because the water pressure outside is extremely high.",
+            "grammar": "Reason clause: because ~",
         },
     ]
 
@@ -540,7 +568,7 @@ def main():
     # ── Create 10 Sets (3 slides each) ──
     for s in sets:
         # Slide 1: Photo
-        create_photo_slide(prs, s["number"], s["item"], s["photo_desc"])
+        create_photo_slide(prs, s["number"], s["item"], s["photo_desc"], s.get("level", "A2"))
 
         # Slide 2: Choices
         create_choices_slide(
