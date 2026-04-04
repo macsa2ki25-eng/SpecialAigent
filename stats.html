@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>統計 - 東高３年 英単語やったんぞ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">英単語やったんぞ</div>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="study.html">学習</a>
+      <a href="stats.html" class="active">統計</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- 範囲選択 -->
+    <div class="card">
+      <div class="form-group">
+        <label for="range-select">表示範囲：</label>
+        <select id="range-select" class="form-control"></select>
+      </div>
+    </div>
+
+    <!-- 全体サマリー -->
+    <div class="summary-grid" id="summary-grid">
+      <div class="summary-item"><div class="num" id="s-total">0</div><div class="label">総単語数</div></div>
+      <div class="summary-item"><div class="num" id="s-studied">0</div><div class="label">学習済み</div></div>
+      <div class="summary-item"><div class="num" id="s-mastered">0</div><div class="label">完全記憶</div></div>
+      <div class="summary-item"><div class="num" id="s-due">0</div><div class="label">要復習</div></div>
+      <div class="summary-item"><div class="num" id="s-new">0</div><div class="label">未学習</div></div>
+      <div class="summary-item"><div class="num" id="s-today">0</div><div class="label">今日の予定</div></div>
+    </div>
+
+    <!-- 記憶状態分布 -->
+    <div class="card">
+      <div class="card-title">記憶状態分布</div>
+      <div class="stacked-bar" id="memory-bar"></div>
+      <div class="legend" id="memory-legend"></div>
+      <div class="text-sm text-muted mt-8" id="memory-detail"></div>
+    </div>
+
+    <!-- 復習予測カレンダー -->
+    <div class="card">
+      <div class="card-title">今後14日間の復習予測</div>
+      <div class="forecast-chart" id="forecast-chart"></div>
+      <div style="height:24px"></div>
+      <div class="text-sm" id="next-study-msg"></div>
+    </div>
+
+    <!-- 忘れそうな単語 TOP20 -->
+    <div class="card">
+      <div class="card-title">忘れそうな単語 TOP20</div>
+      <div class="table-wrap">
+        <table id="forget-table">
+          <thead><tr><th>No.</th><th>英語</th><th>日本語</th><th>記憶率</th><th>安定性</th><th>次回復習</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 難しい単語 TOP20 -->
+    <div class="card">
+      <div class="card-title">難しい単語 TOP20</div>
+      <div class="table-wrap">
+        <table id="difficult-table">
+          <thead><tr><th>No.</th><th>英語</th><th>日本語</th><th>難易度</th><th>間違い</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 学習履歴 -->
+    <div class="card">
+      <div class="card-title">学習履歴</div>
+      <div class="summary-grid">
+        <div class="summary-item"><div class="num" id="h-today">0</div><div class="label">今日</div></div>
+        <div class="summary-item"><div class="num" id="h-week">0</div><div class="label">今週</div></div>
+        <div class="summary-item"><div class="num" id="h-total">0</div><div class="label">累計</div></div>
+      </div>
+    </div>
+
+    <!-- 単語一覧 -->
+    <div class="card">
+      <div class="card-title">単語一覧</div>
+      <div class="table-wrap" style="max-height:500px;overflow-y:auto">
+        <table id="word-table">
+          <thead><tr>
+            <th data-sort="no">No.</th>
+            <th data-sort="en">英語</th>
+            <th data-sort="ja">日本語</th>
+            <th data-sort="state">状態</th>
+            <th data-sort="r">記憶率</th>
+            <th data-sort="s">安定性</th>
+            <th data-sort="d">難易度</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/words.js"></script>
+  <script src="js/fsrs.js"></script>
+  <script>
+  (function() {
+    'use strict';
+    const CARD_DATA_KEY = 'cardData';
+    const RANGES_KEY = 'savedRanges';
+    const REVIEW_HISTORY_KEY = 'reviewHistory';
+    const fsrs = window.FSRS;
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+
+    // Load data
+    const cardData = JSON.parse(localStorage.getItem(CARD_DATA_KEY) || '{}');
+    const ranges = JSON.parse(localStorage.getItem(RANGES_KEY) || '[]');
+    const reviewHistory = JSON.parse(localStorage.getItem(REVIEW_HISTORY_KEY) || '{}');
+
+    // Populate range selector
+    const rangeSelect = document.getElementById('range-select');
+    const allOption = document.createElement('option');
+    allOption.value = 'all';
+    allOption.textContent = '全体 (1-2233)';
+    rangeSelect.appendChild(allOption);
+    ranges.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = r.name + ' (' + r.start + '-' + r.end + ')';
+      rangeSelect.appendChild(opt);
+    });
+
+    function getWordsForRange(rangeId) {
+      if (rangeId === 'all') return window.WORDS;
+      const r = ranges.find(x => x.id === rangeId);
+      if (!r) return window.WORDS;
+      return window.WORDS.filter(w => w.no >= r.start && w.no <= r.end);
+    }
+
+    function getCardR(card) {
+      if (!card || card.state === 'new') return null;
+      return fsrs.getRecallProbability(card, now);
+    }
+
+    function formatDays(days) {
+      if (days === null || days === undefined) return '-';
+      if (days < 1) return Math.round(days * 24) + '時間';
+      if (days < 2) return '1日';
+      return Math.round(days) + '日';
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      const d = new Date(dateStr);
+      return (d.getMonth() + 1) + '/' + d.getDate();
+    }
+
+    function stateBadge(card) {
+      if (!card || card.state === 'new') return '<span class="badge badge-new">新規</span>';
+      const r = getCardR(card);
+      if (r >= 0.95) return '<span class="badge badge-mastered">完全記憶</span>';
+      if (card.state === 'learning') return '<span class="badge badge-learning">学習中</span>';
+      if (r <= 0.7) return '<span class="badge badge-warning">要注意</span>';
+      return '<span class="badge badge-review">復習</span>';
+    }
+
+    function render(rangeId) {
+      const words = getWordsForRange(rangeId);
+      const total = words.length;
+      let studied = 0, mastered = 0, due = 0, newCount = 0, dueToday = 0;
+      const segments = { perfect: 0, good: 0, warning: 0, danger: 0, forgot: 0, newSeg: 0 };
+      const forgetList = [];
+      const difficultList = [];
+      const wordRows = [];
+
+      // Forecast: count due per day for next 14 days
+      const forecast = new Array(14).fill(0);
+
+      words.forEach(w => {
+        const card = cardData[w.no];
+        if (!card || card.state === 'new') {
+          newCount++;
+          segments.newSeg++;
+          wordRows.push({ no: w.no, en: w.en, ja: w.ja, state: 'new', r: null, s: 0, d: 0, card: null });
+          return;
+        }
+
+        studied++;
+        const r = getCardR(card);
+        wordRows.push({ no: w.no, en: w.en, ja: w.ja, state: card.state, r: r, s: card.S, d: card.D, card: card });
+
+        if (r >= 0.95) { mastered++; segments.perfect++; }
+        else if (r >= 0.85) { segments.good++; }
+        else if (r >= 0.70) { segments.warning++; }
+        else if (r >= 0.50) { segments.danger++; }
+        else { segments.forgot++; }
+
+        // Due check
+        const targetR = 0.85;
+        if (r <= targetR || card.state === 'learning') {
+          due++;
+          dueToday++;
+        }
+
+        // Forget list (lowest R)
+        forgetList.push({ no: w.no, en: w.en, ja: w.ja, r: r, s: card.S, due: card.scheduledDate });
+
+        // Difficult list (highest D)
+        difficultList.push({ no: w.no, en: w.en, ja: w.ja, d: card.D, lapses: card.lapses || 0 });
+
+        // Forecast: when will this card be due?
+        if (card.scheduledDate) {
+          const scheduledDate = new Date(card.scheduledDate);
+          const daysUntilDue = Math.max(0, Math.floor((scheduledDate - now) / 86400000));
+          if (daysUntilDue < 14) {
+            forecast[daysUntilDue]++;
+          }
+        }
+      });
+
+      // Summary
+      document.getElementById('s-total').textContent = total;
+      document.getElementById('s-studied').textContent = studied;
+      document.getElementById('s-mastered').textContent = mastered;
+      document.getElementById('s-due').textContent = due;
+      document.getElementById('s-new').textContent = newCount;
+      document.getElementById('s-today').textContent = dueToday;
+
+      // Memory bar
+      const memBar = document.getElementById('memory-bar');
+      memBar.innerHTML = '';
+      const segData = [
+        { key: 'perfect', cls: 'seg-perfect', label: '完全記憶(≥95%)', color: '#1b5e20' },
+        { key: 'good', cls: 'seg-good', label: '良好(85-94%)', color: '#66bb6a' },
+        { key: 'warning', cls: 'seg-warning', label: '要注意(70-84%)', color: '#fdd835' },
+        { key: 'danger', cls: 'seg-danger', label: '危険(50-69%)', color: '#ff9800' },
+        { key: 'forgot', cls: 'seg-forgot', label: '忘却(<50%)', color: '#e53935' },
+        { key: 'newSeg', cls: 'seg-new', label: '未学習', color: '#bdbdbd' }
+      ];
+      segData.forEach(s => {
+        const count = segments[s.key];
+        if (count > 0) {
+          const div = document.createElement('div');
+          div.className = 'segment ' + s.cls;
+          div.style.width = (count / total * 100) + '%';
+          div.title = s.label + ': ' + count + '語';
+          memBar.appendChild(div);
+        }
+      });
+
+      const legend = document.getElementById('memory-legend');
+      legend.innerHTML = segData.map(s =>
+        '<div class="legend-item"><span class="legend-color" style="background:' + s.color + '"></span>' + s.label + ' ' + segments[s.key] + '</div>'
+      ).join('');
+
+      const studiedPct = total > 0 ? (studied / total * 100).toFixed(1) : 0;
+      const masteredPct = total > 0 ? (mastered / total * 100).toFixed(1) : 0;
+      document.getElementById('memory-detail').textContent =
+        '学習済み: ' + studiedPct + '% | 完全記憶: ' + masteredPct + '%';
+
+      // Forecast chart
+      const fcChart = document.getElementById('forecast-chart');
+      fcChart.innerHTML = '';
+      const maxFc = Math.max(...forecast, 1);
+      const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+      for (let i = 0; i < 14; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'forecast-bar' + (i === 0 ? ' today' : '');
+        bar.style.height = (forecast[i] / maxFc * 100) + '%';
+        const d = new Date(now);
+        d.setDate(d.getDate() + i);
+        const dayLabel = i === 0 ? '今日' : (d.getMonth() + 1) + '/' + d.getDate();
+        bar.innerHTML = '<span class="bar-count">' + forecast[i] + '</span><span class="bar-label">' + dayLabel + '</span>';
+        fcChart.appendChild(bar);
+      }
+
+      // Next recommended study
+      let nextStudyDay = -1;
+      for (let i = 0; i < 14; i++) {
+        if (forecast[i] > 0) { nextStudyDay = i; break; }
+      }
+      const nextMsg = document.getElementById('next-study-msg');
+      if (nextStudyDay === 0) nextMsg.textContent = '今日復習すべき単語があります！';
+      else if (nextStudyDay > 0) {
+        const nd = new Date(now); nd.setDate(nd.getDate() + nextStudyDay);
+        nextMsg.textContent = '次の復習推奨日: ' + (nd.getMonth() + 1) + '/' + nd.getDate() + '（' + nextStudyDay + '日後）';
+      } else {
+        nextMsg.textContent = studied > 0 ? '2週間以内に復習が必要な単語はありません。' : 'まだ学習を開始していません。';
+      }
+
+      // Forget TOP20
+      forgetList.sort((a, b) => a.r - b.r);
+      const ftBody = document.querySelector('#forget-table tbody');
+      ftBody.innerHTML = forgetList.slice(0, 20).map(w =>
+        '<tr><td>' + w.no + '</td><td>' + w.en + '</td><td>' + w.ja + '</td><td>' +
+        (w.r * 100).toFixed(0) + '%</td><td>' + w.s.toFixed(1) + '日</td><td>' + formatDate(w.due) + '</td></tr>'
+      ).join('') || '<tr><td colspan="6" class="text-center text-muted">データなし</td></tr>';
+
+      // Difficult TOP20
+      difficultList.sort((a, b) => b.d - a.d);
+      const dtBody = document.querySelector('#difficult-table tbody');
+      dtBody.innerHTML = difficultList.slice(0, 20).map(w =>
+        '<tr><td>' + w.no + '</td><td>' + w.en + '</td><td>' + w.ja + '</td><td>' +
+        w.d.toFixed(1) + '</td><td>' + w.lapses + '</td></tr>'
+      ).join('') || '<tr><td colspan="5" class="text-center text-muted">データなし</td></tr>';
+
+      // Study history
+      let hToday = reviewHistory[todayStr] || 0;
+      let hWeek = 0, hTotal = 0;
+      const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 7);
+      Object.keys(reviewHistory).forEach(d => {
+        hTotal += reviewHistory[d];
+        if (new Date(d) >= weekAgo) hWeek += reviewHistory[d];
+      });
+      document.getElementById('h-today').textContent = hToday;
+      document.getElementById('h-week').textContent = hWeek;
+      document.getElementById('h-total').textContent = hTotal;
+
+      // Word list table
+      renderWordTable(wordRows);
+    }
+
+    let currentSort = { key: 'no', asc: true };
+
+    function renderWordTable(rows) {
+      rows.sort((a, b) => {
+        let va = a[currentSort.key], vb = b[currentSort.key];
+        if (va === null) va = currentSort.asc ? Infinity : -Infinity;
+        if (vb === null) vb = currentSort.asc ? Infinity : -Infinity;
+        if (typeof va === 'string') return currentSort.asc ? va.localeCompare(vb) : vb.localeCompare(va);
+        return currentSort.asc ? va - vb : vb - va;
+      });
+
+      const tbody = document.querySelector('#word-table tbody');
+      tbody.innerHTML = rows.map(w =>
+        '<tr><td>' + w.no + '</td><td>' + w.en + '</td><td>' + w.ja + '</td><td>' +
+        stateBadge(w.card) + '</td><td>' + (w.r !== null ? (w.r * 100).toFixed(0) + '%' : '-') +
+        '</td><td>' + (w.s > 0 ? w.s.toFixed(1) : '-') + '</td><td>' + (w.d > 0 ? w.d.toFixed(1) : '-') + '</td></tr>'
+      ).join('');
+
+      // Store for re-sort
+      window._wordRows = rows;
+    }
+
+    // Sort headers
+    document.querySelectorAll('#word-table th[data-sort]').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort;
+        if (currentSort.key === key) currentSort.asc = !currentSort.asc;
+        else { currentSort.key = key; currentSort.asc = true; }
+        if (window._wordRows) renderWordTable(window._wordRows);
+      });
+    });
+
+    // Range selector change
+    rangeSelect.addEventListener('change', () => render(rangeSelect.value));
+
+    // Initial render
+    render('all');
+  })();
+  </script>
+</body>
+</html>
