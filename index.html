@@ -8,108 +8,178 @@
 </head>
 <body>
 
-  <!-- ヘッダー・ナビゲーション -->
   <header class="navbar">
     <div class="brand">東高３年 英単語やったんぞ</div>
     <nav>
       <a href="index.html" class="active">ホーム</a>
-      <a href="study.html">学習</a>
       <a href="stats.html">統計</a>
     </nav>
   </header>
 
   <main class="container">
 
-    <!-- ようこそセクション -->
+    <!-- ヒーローセクション -->
+    <div class="hero">
+      <h1>英単語やったんぞ！</h1>
+      <p>大学受験の英単語2233語を、科学的に最も効率よく覚えよう。<br>AIが「いつ復習すべきか」を自動で計算してくれるよ！</p>
+      <button class="btn btn-accent mt-8" onclick="document.getElementById('how-popup').classList.add('show')" style="font-size:0.9rem">このアプリの使い方を見る</button>
+    </div>
+
+    <!-- 使い方ポップアップ -->
+    <div class="popup-overlay" id="how-popup">
+      <div class="popup">
+        <h2>このアプリの使い方</h2>
+        <p>このアプリは<strong>「忘れかけたタイミングで復習する」</strong>という科学的な学習法（FSRS）を使っています。ただ何度もくり返すより、はるかに効率よく覚えられます！</p>
+        <ul>
+          <li><strong>STEP 1</strong>：まず覚えたい単語の範囲を登録する（例：1〜100番）</li>
+          <li><strong>STEP 2</strong>：クイズ形式で学習する。選択肢から正解を選ぼう</li>
+          <li><strong>STEP 3</strong>：答えた後、自分の手ごたえを4段階で評価する</li>
+          <li><strong>STEP 4</strong>：アプリが自動で「次いつ復習すべきか」を計算！</li>
+          <li><strong>STEP 5</strong>：翌日以降にまたアプリを開くと、忘れかけた単語だけが出題される</li>
+        </ul>
+        <p><strong>ポイント：</strong>毎日少しずつ続けるのがコツ！1日10〜20分でOK。同じ範囲を繰り返し学習すると、AIがあなたの記憶パターンを学習して、どんどん効率がよくなります。</p>
+        <p style="margin-top:12px"><strong>統計ページ</strong>を見れば、どの単語が覚えられていて、どの単語がヤバいか一目でわかるよ！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">わかった！</button>
+      </div>
+    </div>
+
+    <!-- ステップガイド -->
     <div class="card">
-      <div class="card-title">ようこそ！</div>
-      <p>大学受験に向けた英単語学習アプリです。FSRS（Free Spaced Repetition Scheduler）アルゴリズムで、2233語を効率的に記憶できます。</p>
+      <div class="card-title">学習の流れ <span class="help-icon" onclick="document.getElementById('how-popup').classList.add('show')">?</span></div>
+      <ol class="step-guide" id="step-guide">
+        <li class="step active" id="step-1">
+          <div class="step-title">覚えたい範囲を登録する</div>
+          <div class="step-desc">下のフォームで、単語番号の範囲（例：1〜100）に名前をつけて保存しよう。一度保存すれば次回からはすぐ使えるよ。</div>
+        </li>
+        <li class="step" id="step-2">
+          <div class="step-title">範囲を選んで設定を確認する</div>
+          <div class="step-desc">保存した範囲から学習したいものを選ぼう。出題モードや選択肢数も変えられるよ。</div>
+        </li>
+        <li class="step" id="step-3">
+          <div class="step-title">「学習開始」でクイズスタート！</div>
+          <div class="step-desc">忘れかけの単語と新しい単語が自動で出題されるよ。毎日続けると効果バツグン！</div>
+        </li>
+      </ol>
     </div>
 
     <!-- 学習範囲設定 -->
-    <div class="card">
-      <div class="card-title">学習範囲設定</div>
+    <div class="card" id="range-card">
+      <div class="card-title">STEP 1：学習範囲を登録する</div>
+      <div class="help-bubble">
+        覚えたい単語の番号の範囲を指定して保存します。例えば、教科書の第1章が1〜100番なら「第1章」という名前で1〜100を登録しておくと便利です。<strong>範囲は何個でも作れます。</strong>
+      </div>
 
-      <div id="range-form">
+      <div id="range-form" class="mt-8">
         <div class="form-group">
-          <label for="range-name">範囲名：</label>
-          <input type="text" id="range-name" placeholder="例：第1章 基礎単語">
+          <label for="range-name">範囲の名前：</label>
+          <input type="text" id="range-name" class="form-control" placeholder="例：第1章 基礎単語">
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="range-start">開始番号：</label>
-            <input type="number" id="range-start" min="1" max="2233" value="1">
+            <label for="range-start">開始番号（1〜2233）：</label>
+            <input type="number" id="range-start" class="form-control" min="1" max="2233" value="1">
           </div>
           <div class="form-group">
-            <label for="range-end">終了番号：</label>
-            <input type="number" id="range-end" min="1" max="2233" value="100">
+            <label for="range-end">終了番号（1〜2233）：</label>
+            <input type="number" id="range-end" class="form-control" min="1" max="2233" value="100">
           </div>
         </div>
-        <button id="save-range-btn" class="btn btn-primary btn-block mt-8" type="button">範囲を保存</button>
+        <button id="save-range-btn" class="btn btn-primary btn-block mt-8" type="button">この範囲を保存する</button>
       </div>
 
+      <!-- 保存済み範囲 -->
       <div id="range-list" class="mt-16">
-        <h3 class="mb-8">保存済み範囲</h3>
-        <ul id="ranges-ul">
+        <div class="flex-between mb-8">
+          <h3>保存済みの範囲一覧</h3>
+        </div>
+        <div id="ranges-container">
           <!-- 保存された範囲がここに表示される -->
-        </ul>
-        <p id="no-ranges-msg" class="text-muted text-sm">保存された範囲はありません。上のフォームから新しい範囲を作成してください。</p>
+        </div>
+        <div id="no-ranges-msg" class="help-bubble warning">
+          まだ範囲が登録されていません。上のフォームから、覚えたい単語番号の範囲を登録してみよう！
+        </div>
       </div>
     </div>
 
     <!-- 学習モード選択 -->
-    <div class="card">
-      <div class="card-title">学習モード選択</div>
+    <div class="card" id="mode-card">
+      <div class="card-title">STEP 2：学習モードを設定する</div>
 
-      <div class="form-group">
-        <label>出題方向：</label>
+      <div class="help-bubble">
+        <strong>日本語→英語</strong>：日本語の意味を見て、英単語を選ぶモード（英作文力UP）<br>
+        <strong>英語→日本語</strong>：英単語を見て、日本語の意味を選ぶモード（読解力UP）<br>
+        迷ったら両方やるのがおすすめ！選択肢が多いほど難しくなるよ。
+      </div>
+
+      <div class="form-group mt-8">
+        <label>出題モード：</label>
         <div class="radio-group">
-          <label>
-            <input type="radio" name="study-mode" value="jp2en" checked>
-            日本語→英語
-          </label>
-          <label>
-            <input type="radio" name="study-mode" value="en2jp">
-            英語→日本語
-          </label>
+          <label><input type="radio" name="study-mode" value="jp2en" checked><span>日本語→英語</span></label>
+          <label><input type="radio" name="study-mode" value="en2jp"><span>英語→日本語</span></label>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="choice-count">選択肢数：</label>
+        <label>選択肢の数：</label>
         <div class="radio-group">
-          <label><input type="radio" name="choice-count" value="4" checked>4択</label>
-          <label><input type="radio" name="choice-count" value="5">5択</label>
-          <label><input type="radio" name="choice-count" value="6">6択</label>
-          <label><input type="radio" name="choice-count" value="7">7択</label>
-          <label><input type="radio" name="choice-count" value="8">8択</label>
+          <label><input type="radio" name="choice-count" value="4" checked><span>4択</span></label>
+          <label><input type="radio" name="choice-count" value="5"><span>5択</span></label>
+          <label><input type="radio" name="choice-count" value="6"><span>6択</span></label>
+          <label><input type="radio" name="choice-count" value="7"><span>7択</span></label>
+          <label><input type="radio" name="choice-count" value="8"><span>8択</span></label>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="retention-slider">目標定着率：<span id="retention-value">85%</span></label>
+        <label for="retention-slider">
+          目標定着率：<strong id="retention-value">85%</strong>
+          <span class="help-icon" onclick="document.getElementById('retention-popup').classList.add('show')">?</span>
+        </label>
         <input type="range" id="retention-slider" min="70" max="97" value="85" step="1">
+        <div class="text-xs text-muted mt-4">低い(70%)＝復習少なめ・忘れやすい ← → 高い(97%)＝復習多め・しっかり記憶</div>
       </div>
-
-      <button id="start-study-btn" class="btn btn-accent btn-block mt-16" type="button">学習開始</button>
     </div>
 
-    <!-- 今日の学習サマリー -->
-    <div class="card">
-      <div class="card-title">今日の学習サマリー</div>
-      <div class="summary-grid">
+    <!-- 定着率ポップアップ -->
+    <div class="popup-overlay" id="retention-popup">
+      <div class="popup">
+        <h2>「目標定着率」って何？</h2>
+        <p>目標定着率とは、<strong>「次にその単語を見たとき、何%の確率で思い出せるようにしたいか」</strong>という設定です。</p>
+        <ul>
+          <li><strong>85%（おすすめ）</strong>：復習回数と記憶のバランスが最適</li>
+          <li><strong>90%以上</strong>：しっかり覚えたい人向け。復習回数は増えるけど確実</li>
+          <li><strong>70〜80%</strong>：とりあえずざっと覚えたい人向け。復習は少なくて済む</li>
+        </ul>
+        <p>最初は<strong>85%</strong>のままでOK！慣れてきたら調整してみよう。</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">なるほど！</button>
+      </div>
+    </div>
+
+    <!-- 学習開始ボタン -->
+    <div class="card" id="start-card">
+      <div class="card-title">STEP 3：学習スタート！</div>
+      <div id="start-summary" class="mb-8">
+        <p class="text-muted text-sm" id="start-status-msg">上の一覧から範囲を選択してから、学習開始ボタンを押してね。</p>
+      </div>
+
+      <div class="summary-grid mb-8" id="today-summary-grid">
         <div class="summary-item">
           <div class="num" id="due-count">0</div>
-          <div class="label">復習カード</div>
+          <div class="label">復習すべき単語</div>
         </div>
         <div class="summary-item">
           <div class="num" id="new-count">0</div>
-          <div class="label">新規カード</div>
+          <div class="label">新しい単語</div>
         </div>
         <div class="summary-item">
           <div class="num" id="studied-count">0</div>
           <div class="label">今日の学習済み</div>
         </div>
+      </div>
+
+      <button id="start-study-btn" class="btn btn-accent btn-block" type="button" style="font-size:1.1rem;padding:14px">学習開始！</button>
+      <div class="help-bubble success mt-8" id="start-hint" style="display:none">
+        復習すべき単語がある場合はそちらから出題されるよ。復習が終わったら新しい単語（最大20語）が出るよ！
       </div>
     </div>
 
@@ -119,248 +189,293 @@
     <p>東高３年 英単語やったんぞ サイト &copy; 2026</p>
   </footer>
 
+  <div class="toast-container" id="toast-container"></div>
+
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
   <script>
-    (function () {
-      // --- 範囲管理 ---
-      const RANGES_KEY = 'savedRanges';
-      const SETTINGS_KEY = 'studySettings';
-      const CARD_DATA_KEY = 'cardData';
-      const SELECTED_RANGE_KEY = 'selectedRangeId';
+  (function () {
+    'use strict';
+    const RANGES_KEY = 'savedRanges';
+    const SETTINGS_KEY = 'studySettings';
+    const CARD_DATA_KEY = 'cardData';
+    const SELECTED_RANGE_KEY = 'selectedRangeId';
+    const fsrs = window.FSRS;
+    const now = new Date();
 
-      let selectedRangeId = localStorage.getItem(SELECTED_RANGE_KEY) || null;
+    let selectedRangeId = localStorage.getItem(SELECTED_RANGE_KEY) || null;
 
-      function loadRanges() {
-        try {
-          return JSON.parse(localStorage.getItem(RANGES_KEY)) || [];
-        } catch (e) {
-          return [];
+    function loadRanges() {
+      try { return JSON.parse(localStorage.getItem(RANGES_KEY)) || []; } catch (e) { return []; }
+    }
+    function saveRanges(ranges) {
+      localStorage.setItem(RANGES_KEY, JSON.stringify(ranges));
+    }
+    function loadCardData() {
+      try { return JSON.parse(localStorage.getItem(CARD_DATA_KEY)) || {}; } catch (e) { return {}; }
+    }
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(text));
+      return div.innerHTML;
+    }
+
+    // --- 範囲ごとのミニ統計 ---
+    function getRangeStats(range) {
+      const cardData = loadCardData();
+      const total = range.end - range.start + 1;
+      let studied = 0, mastered = 0, good = 0, warning = 0, danger = 0, forgot = 0, newCount = 0, due = 0;
+      const today = now.toISOString().slice(0, 10);
+      let studiedToday = 0;
+
+      for (let i = range.start; i <= range.end; i++) {
+        const card = cardData[i];
+        if (!card || card.state === 'new') {
+          newCount++;
+          continue;
         }
+        studied++;
+        const r = fsrs.getRecallProbability(card, now);
+        if (r >= 0.95) mastered++;
+        else if (r >= 0.85) good++;
+        else if (r >= 0.70) warning++;
+        else if (r >= 0.50) danger++;
+        else forgot++;
+
+        if (r <= 0.85 || card.state === 'learning') due++;
+        if (card.lastReview && card.lastReview.slice(0, 10) === today) studiedToday++;
       }
+      return { total, studied, mastered, good, warning, danger, forgot, newCount, due, studiedToday };
+    }
 
-      function saveRanges(ranges) {
-        localStorage.setItem(RANGES_KEY, JSON.stringify(ranges));
+    function buildMiniBar(stats) {
+      const t = stats.total;
+      if (t === 0) return '';
+      const segs = [
+        { cls: 'seg-perfect', count: stats.mastered },
+        { cls: 'seg-good', count: stats.good },
+        { cls: 'seg-warning', count: stats.warning },
+        { cls: 'seg-danger', count: stats.danger },
+        { cls: 'seg-forgot', count: stats.forgot },
+        { cls: 'seg-new', count: stats.newCount }
+      ];
+      return '<div class="mini-bar">' +
+        segs.filter(s => s.count > 0).map(s =>
+          '<div class="segment ' + s.cls + '" style="width:' + (s.count / t * 100) + '%"></div>'
+        ).join('') +
+      '</div>';
+    }
+
+    // --- 範囲レンダリング ---
+    function renderRanges() {
+      const ranges = loadRanges();
+      const container = document.getElementById('ranges-container');
+      const noMsg = document.getElementById('no-ranges-msg');
+      container.innerHTML = '';
+
+      if (ranges.length === 0) {
+        noMsg.style.display = 'block';
+        updateStepGuide(false);
+        return;
       }
+      noMsg.style.display = 'none';
+      updateStepGuide(true);
 
-      function renderRanges() {
-        const ranges = loadRanges();
-        const ul = document.getElementById('ranges-ul');
-        const noMsg = document.getElementById('no-ranges-msg');
+      ranges.forEach(function (range) {
+        const stats = getRangeStats(range);
+        const isSelected = range.id === selectedRangeId;
+        const pctStudied = stats.total > 0 ? Math.round(stats.studied / stats.total * 100) : 0;
+        const pctMastered = stats.total > 0 ? Math.round(stats.mastered / stats.total * 100) : 0;
 
-        ul.innerHTML = '';
+        const div = document.createElement('div');
+        div.className = 'range-item' + (isSelected ? ' selected' : '');
+        div.innerHTML =
+          '<div class="range-item-header">' +
+            '<span class="range-name">' + escapeHtml(range.name) + '</span>' +
+            '<span class="range-numbers">No.' + range.start + '〜' + range.end + '（' + stats.total + '語）</span>' +
+          '</div>' +
+          buildMiniBar(stats) +
+          '<div class="range-item-stats">' +
+            '<span class="stat-chip">学習済: <strong>' + pctStudied + '%</strong></span>' +
+            '<span class="stat-chip">完全記憶: <strong>' + pctMastered + '%</strong></span>' +
+            '<span class="stat-chip">要復習: <strong style="color:var(--danger)">' + stats.due + '語</strong></span>' +
+            '<span class="stat-chip">今日: <strong>' + stats.studiedToday + '語</strong></span>' +
+          '</div>' +
+          '<div class="range-item-actions">' +
+            '<button class="btn btn-sm ' + (isSelected ? 'btn-accent' : 'btn-outline') + ' select-range-btn" data-id="' + range.id + '">' +
+              (isSelected ? '選択中' : '選択する') +
+            '</button>' +
+            '<button class="btn btn-sm btn-success study-range-btn" data-id="' + range.id + '">学習する</button>' +
+            '<button class="btn btn-sm btn-danger delete-range-btn" data-id="' + range.id + '">削除</button>' +
+          '</div>';
+        container.appendChild(div);
+      });
 
-        if (ranges.length === 0) {
-          noMsg.style.display = 'block';
-          return;
-        }
-
-        noMsg.style.display = 'none';
-
-        ranges.forEach(function (range) {
-          const li = document.createElement('li');
-          li.className = 'range-item' + (range.id === selectedRangeId ? ' selected' : '');
-          li.innerHTML =
-            '<div class="range-info">' +
-              '<span class="range-name">' + escapeHtml(range.name) + '</span>' +
-              '<span class="range-numbers">' + range.start + ' - ' + range.end + '</span>' +
-            '</div>' +
-            '<div class="range-actions">' +
-              '<button class="select-range-btn" data-id="' + range.id + '">選択</button>' +
-              '<button class="study-range-btn" data-id="' + range.id + '">学習する</button>' +
-              '<button class="delete-range-btn" data-id="' + range.id + '">削除</button>' +
-            '</div>';
-          ul.appendChild(li);
+      // Event listeners
+      container.querySelectorAll('.select-range-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          selectedRangeId = this.getAttribute('data-id');
+          localStorage.setItem(SELECTED_RANGE_KEY, selectedRangeId);
+          renderRanges();
+          updateSummary();
         });
-
-        // 選択ボタン
-        ul.querySelectorAll('.select-range-btn').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            selectedRangeId = this.getAttribute('data-id');
-            localStorage.setItem(SELECTED_RANGE_KEY, selectedRangeId);
+      });
+      container.querySelectorAll('.study-range-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          selectedRangeId = this.getAttribute('data-id');
+          localStorage.setItem(SELECTED_RANGE_KEY, selectedRangeId);
+          startStudy(selectedRangeId);
+        });
+      });
+      container.querySelectorAll('.delete-range-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (confirm('「' + ranges.find(r => r.id === this.getAttribute('data-id')).name + '」を削除しますか？\n（学習データは消えません）')) {
+            var rangeId = this.getAttribute('data-id');
+            var newRanges = loadRanges().filter(r => r.id !== rangeId);
+            saveRanges(newRanges);
+            if (selectedRangeId === rangeId) {
+              selectedRangeId = null;
+              localStorage.removeItem(SELECTED_RANGE_KEY);
+            }
             renderRanges();
             updateSummary();
-          });
-        });
-
-        // 学習するボタン
-        ul.querySelectorAll('.study-range-btn').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var rangeId = this.getAttribute('data-id');
-            selectedRangeId = rangeId;
-            localStorage.setItem(SELECTED_RANGE_KEY, selectedRangeId);
-            startStudy(rangeId);
-          });
-        });
-
-        // 削除ボタン
-        ul.querySelectorAll('.delete-range-btn').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var rangeId = this.getAttribute('data-id');
-            if (confirm('この範囲を削除しますか？')) {
-              var ranges = loadRanges().filter(function (r) { return r.id !== rangeId; });
-              saveRanges(ranges);
-              if (selectedRangeId === rangeId) {
-                selectedRangeId = null;
-                localStorage.removeItem(SELECTED_RANGE_KEY);
-              }
-              renderRanges();
-              updateSummary();
-            }
-          });
-        });
-      }
-
-      function escapeHtml(text) {
-        var div = document.createElement('div');
-        div.appendChild(document.createTextNode(text));
-        return div.innerHTML;
-      }
-
-      // 新しい範囲を追加
-      document.getElementById('save-range-btn').addEventListener('click', function () {
-        var name = document.getElementById('range-name').value.trim();
-        var start = parseInt(document.getElementById('range-start').value, 10);
-        var end = parseInt(document.getElementById('range-end').value, 10);
-
-        if (!name) {
-          alert('範囲名を入力してください。');
-          return;
-        }
-        if (isNaN(start) || isNaN(end) || start < 1 || end < 1 || start > 2233 || end > 2233) {
-          alert('開始番号と終了番号は1から2233の間で入力してください。');
-          return;
-        }
-        if (start > end) {
-          alert('開始番号は終了番号以下にしてください。');
-          return;
-        }
-
-        var ranges = loadRanges();
-        var newRange = {
-          id: Date.now().toString(),
-          name: name,
-          start: start,
-          end: end
-        };
-        ranges.push(newRange);
-        saveRanges(ranges);
-
-        // フォームリセット
-        document.getElementById('range-name').value = '';
-        document.getElementById('range-start').value = '1';
-        document.getElementById('range-end').value = '100';
-
-        renderRanges();
-      });
-
-      // --- 学習モード設定 ---
-      function loadSettings() {
-        try {
-          return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {};
-        } catch (e) {
-          return {};
-        }
-      }
-
-      function applySettings() {
-        var settings = loadSettings();
-
-        if (settings.mode) {
-          var modeRadio = document.querySelector('input[name="study-mode"][value="' + settings.mode + '"]');
-          if (modeRadio) modeRadio.checked = true;
-        }
-
-        if (settings.choices) {
-          var choiceRadio = document.querySelector('input[name="choice-count"][value="' + settings.choices + '"]');
-          if (choiceRadio) choiceRadio.checked = true;
-        }
-
-        if (settings.retention !== undefined) {
-          var slider = document.getElementById('retention-slider');
-          slider.value = settings.retention;
-          document.getElementById('retention-value').textContent = settings.retention + '%';
-        }
-      }
-
-      // 定着率スライダー更新
-      document.getElementById('retention-slider').addEventListener('input', function () {
-        document.getElementById('retention-value').textContent = this.value + '%';
-      });
-
-      // 学習開始
-      function startStudy(rangeId) {
-        var mode = document.querySelector('input[name="study-mode"]:checked').value;
-        var choices = document.querySelector('input[name="choice-count"]:checked').value;
-        var retention = document.getElementById('retention-slider').value;
-
-        // 設定を保存
-        var settings = { mode: mode, choices: choices, retention: parseInt(retention, 10) };
-        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-
-        var retentionDecimal = (parseInt(retention, 10) / 100).toFixed(2);
-        var url = 'study.html?rangeId=' + encodeURIComponent(rangeId) +
-                  '&mode=' + encodeURIComponent(mode) +
-                  '&choices=' + encodeURIComponent(choices) +
-                  '&retention=' + encodeURIComponent(retentionDecimal);
-        window.location.href = url;
-      }
-
-      document.getElementById('start-study-btn').addEventListener('click', function () {
-        if (!selectedRangeId) {
-          alert('学習する範囲を選択してください。');
-          return;
-        }
-        startStudy(selectedRangeId);
-      });
-
-      // --- 今日の学習サマリー ---
-      function updateSummary() {
-        var dueCount = 0;
-        var newCount = 0;
-        var studiedCount = 0;
-
-        try {
-          var cardData = JSON.parse(localStorage.getItem(CARD_DATA_KEY)) || {};
-          var today = new Date().toISOString().slice(0, 10);
-
-          if (selectedRangeId) {
-            var ranges = loadRanges();
-            var selectedRange = ranges.find(function (r) { return r.id === selectedRangeId; });
-
-            if (selectedRange) {
-              for (var i = selectedRange.start; i <= selectedRange.end; i++) {
-                var card = cardData[i];
-                if (!card) {
-                  newCount++;
-                } else {
-                  if (card.lastReview && card.lastReview.slice(0, 10) === today) {
-                    studiedCount++;
-                  }
-                  if (card.due) {
-                    var dueDate = new Date(card.due);
-                    if (dueDate <= new Date()) {
-                      dueCount++;
-                    }
-                  }
-                }
-              }
-            }
           }
-        } catch (e) {
-          // データ読み込みエラー時はゼロのまま
-        }
+        });
+      });
+    }
 
-        document.getElementById('due-count').textContent = dueCount;
-        document.getElementById('new-count').textContent = newCount;
-        document.getElementById('studied-count').textContent = studiedCount;
+    // --- ステップガイド更新 ---
+    function updateStepGuide(hasRanges) {
+      const s1 = document.getElementById('step-1');
+      const s2 = document.getElementById('step-2');
+      const s3 = document.getElementById('step-3');
+      s1.className = 'step' + (hasRanges ? ' done' : ' active');
+      s2.className = 'step' + (hasRanges && selectedRangeId ? ' done' : (hasRanges ? ' active' : ''));
+      s3.className = 'step' + (hasRanges && selectedRangeId ? ' active' : '');
+    }
+
+    // --- 範囲追加 ---
+    document.getElementById('save-range-btn').addEventListener('click', function () {
+      var name = document.getElementById('range-name').value.trim();
+      var start = parseInt(document.getElementById('range-start').value, 10);
+      var end = parseInt(document.getElementById('range-end').value, 10);
+
+      if (!name) { alert('範囲の名前を入力してね！\n例：「第1章」「基礎100語」など'); return; }
+      if (isNaN(start) || isNaN(end) || start < 1 || end < 1 || start > 2233 || end > 2233) {
+        alert('番号は1〜2233の間で入力してね！'); return;
       }
+      if (start > end) { alert('開始番号は終了番号以下にしてね！'); return; }
 
-      // --- 初期化 ---
-      applySettings();
+      var ranges = loadRanges();
+      ranges.push({ id: Date.now().toString(), name: name, start: start, end: end });
+      saveRanges(ranges);
+
+      document.getElementById('range-name').value = '';
+      document.getElementById('range-start').value = '1';
+      document.getElementById('range-end').value = '100';
+
+      showToast('「' + name + '」を保存しました！', 'success');
       renderRanges();
       updateSummary();
-    })();
+    });
+
+    // --- 設定復元 ---
+    function loadSettings() {
+      try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch (e) { return {}; }
+    }
+    function applySettings() {
+      var s = loadSettings();
+      if (s.mode) {
+        var r = document.querySelector('input[name="study-mode"][value="' + s.mode + '"]');
+        if (r) r.checked = true;
+      }
+      if (s.choices) {
+        var c = document.querySelector('input[name="choice-count"][value="' + s.choices + '"]');
+        if (c) c.checked = true;
+      }
+      if (s.retention !== undefined) {
+        document.getElementById('retention-slider').value = s.retention;
+        document.getElementById('retention-value').textContent = s.retention + '%';
+      }
+    }
+
+    document.getElementById('retention-slider').addEventListener('input', function () {
+      document.getElementById('retention-value').textContent = this.value + '%';
+    });
+
+    // --- 学習開始 ---
+    function startStudy(rangeId) {
+      var mode = document.querySelector('input[name="study-mode"]:checked').value;
+      var choices = document.querySelector('input[name="choice-count"]:checked').value;
+      var retention = document.getElementById('retention-slider').value;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify({ mode: mode, choices: choices, retention: parseInt(retention) }));
+      var url = 'study.html?rangeId=' + encodeURIComponent(rangeId) +
+        '&mode=' + encodeURIComponent(mode) +
+        '&choices=' + encodeURIComponent(choices) +
+        '&retention=' + encodeURIComponent((parseInt(retention) / 100).toFixed(2));
+      window.location.href = url;
+    }
+
+    document.getElementById('start-study-btn').addEventListener('click', function () {
+      if (!selectedRangeId) {
+        alert('まず上の一覧から、学習したい範囲を「選択」してね！');
+        return;
+      }
+      startStudy(selectedRangeId);
+    });
+
+    // --- 今日のサマリー ---
+    function updateSummary() {
+      var due = 0, newC = 0, studied = 0;
+      var statusMsg = document.getElementById('start-status-msg');
+      var hint = document.getElementById('start-hint');
+
+      if (!selectedRangeId) {
+        statusMsg.textContent = '上の一覧から範囲を選択してから、学習開始ボタンを押してね。';
+        statusMsg.style.display = 'block';
+        hint.style.display = 'none';
+      } else {
+        var ranges = loadRanges();
+        var sel = ranges.find(r => r.id === selectedRangeId);
+        if (sel) {
+          var stats = getRangeStats(sel);
+          due = stats.due;
+          newC = stats.newCount;
+          studied = stats.studiedToday;
+          statusMsg.innerHTML = '選択中：<strong>' + escapeHtml(sel.name) + '</strong>（No.' + sel.start + '〜' + sel.end + '）';
+          hint.style.display = (due > 0 || newC > 0) ? 'block' : 'none';
+        }
+      }
+      document.getElementById('due-count').textContent = due;
+      document.getElementById('new-count').textContent = newC;
+      document.getElementById('studied-count').textContent = studied;
+
+      updateStepGuide(loadRanges().length > 0);
+    }
+
+    // --- Toast ---
+    function showToast(msg, type) {
+      var container = document.getElementById('toast-container');
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + (type || '');
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(function () { toast.remove(); }, 3000);
+    }
+
+    // --- 初回訪問チェック ---
+    if (!localStorage.getItem('visited')) {
+      localStorage.setItem('visited', '1');
+      setTimeout(function () {
+        document.getElementById('how-popup').classList.add('show');
+      }, 500);
+    }
+
+    // --- 初期化 ---
+    applySettings();
+    renderRanges();
+    updateSummary();
+  })();
   </script>
 
 </body>

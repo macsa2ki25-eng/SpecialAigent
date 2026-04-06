@@ -17,6 +17,12 @@
   </header>
 
   <main class="container">
+    <!-- 範囲名と進捗 -->
+    <div class="flex-between mb-4">
+      <span class="text-sm" id="range-label" style="font-weight:700;color:var(--primary)"></span>
+      <span class="text-xs text-muted" id="mode-label"></span>
+    </div>
+
     <!-- セッション情報 -->
     <div class="session-stats" id="session-stats">
       <div class="text-center"><div class="stat-value" id="stat-correct">0</div><div class="text-sm text-muted">正解</div></div>
@@ -29,31 +35,63 @@
       <div class="progress-bar green" id="progress-bar" style="width:0%"></div>
     </div>
 
+    <!-- 初回ガイド（1問目だけ表示） -->
+    <div class="help-bubble" id="first-time-guide">
+      下に表示される問題を読んで、正しい答えを選択肢から選んでタップしてね！
+    </div>
+
     <!-- クイズカード -->
     <div class="card" id="quiz-card">
       <div class="quiz-question">
         <div class="quiz-word-number" id="word-number">No.1</div>
+        <div id="question-label" class="text-xs text-muted mb-4"></div>
         <div id="question-text" class="quiz-word"></div>
       </div>
 
+      <div id="answer-label" class="text-xs text-muted text-center mb-4"></div>
       <div class="answer-grid" id="answer-grid"></div>
 
       <div id="feedback-area" class="hidden">
         <div class="feedback" id="feedback-msg"></div>
-        <div class="text-center text-sm text-muted mt-8" id="card-info"></div>
-        <div class="grade-buttons" id="grade-buttons">
-          <button class="grade-btn again" data-grade="1"><span class="grade-label">もう一回</span><span class="grade-interval" id="interval-1"></span></button>
-          <button class="grade-btn hard" data-grade="2"><span class="grade-label">難しい</span><span class="grade-interval" id="interval-2"></span></button>
-          <button class="grade-btn good" data-grade="3"><span class="grade-label">正解</span><span class="grade-interval" id="interval-3"></span></button>
-          <button class="grade-btn easy" data-grade="4"><span class="grade-label">簡単</span><span class="grade-interval" id="interval-4"></span></button>
+
+        <!-- 正解表示エリア -->
+        <div class="text-center mt-8" id="correct-pair" style="font-size:0.95rem"></div>
+
+        <div class="text-center text-sm text-muted mt-4" id="card-info"></div>
+
+        <!-- 評価ボタンの説明 -->
+        <div class="help-bubble mt-8" id="grade-guide">
+          <strong>下のボタンで「自分の手ごたえ」を評価してね！</strong><br>
+          ボタンの下の時間は「次にこの単語が出題されるまでの間隔」だよ。<br>
+          正解しても「難しかった」と思ったら「難しい」を押してOK！
         </div>
+
+        <div class="grade-buttons" id="grade-buttons">
+          <button class="grade-btn again" data-grade="1">
+            <span class="grade-label">もう一回</span>
+            <span class="grade-interval" id="interval-1"></span>
+          </button>
+          <button class="grade-btn hard" data-grade="2">
+            <span class="grade-label">難しい</span>
+            <span class="grade-interval" id="interval-2"></span>
+          </button>
+          <button class="grade-btn good" data-grade="3">
+            <span class="grade-label">正解</span>
+            <span class="grade-interval" id="interval-3"></span>
+          </button>
+          <button class="grade-btn easy" data-grade="4">
+            <span class="grade-label">簡単</span>
+            <span class="grade-interval" id="interval-4"></span>
+          </button>
+        </div>
+        <div class="text-xs text-muted text-center mt-4" id="grade-hint"></div>
       </div>
     </div>
 
     <!-- セッション完了 -->
     <div class="card hidden" id="session-complete">
       <div class="session-complete">
-        <h2>学習完了！</h2>
+        <h2>お疲れさま！学習完了！</h2>
         <div class="big-score" id="final-accuracy">0%</div>
         <p class="text-muted mt-8">正答率</p>
         <div class="summary-grid mt-16">
@@ -61,9 +99,13 @@
           <div class="summary-item"><div class="num" id="final-wrong">0</div><div class="label">不正解</div></div>
           <div class="summary-item"><div class="num" id="final-total">0</div><div class="label">合計</div></div>
         </div>
+        <div class="help-bubble success mt-16">
+          この調子で毎日続けよう！明日また復習すべき単語が出てくるから、アプリを開いて学習してね。統計ページで自分の成長を確認できるよ！
+        </div>
         <div class="mt-16">
           <a href="index.html" class="btn btn-primary">ホームへ戻る</a>
           <button class="btn btn-accent" id="study-again-btn" style="margin-left:8px">もう一度</button>
+          <a href="stats.html" class="btn btn-outline" style="margin-left:8px">統計を見る</a>
         </div>
       </div>
     </div>
@@ -73,12 +115,29 @@
       <div class="empty-state">
         <div class="empty-icon">📚</div>
         <p>学習範囲が選択されていません。</p>
-        <a href="index.html" class="btn btn-primary mt-16">ホームで範囲を設定</a>
+        <p class="text-sm text-muted mt-8">ホーム画面で範囲を登録して「学習する」ボタンを押してね！</p>
+        <a href="index.html" class="btn btn-primary mt-16">ホームで範囲を設定する</a>
       </div>
     </div>
   </main>
 
   <div class="toast-container" id="toast-container"></div>
+
+  <!-- 評価ボタン説明ポップアップ -->
+  <div class="popup-overlay" id="grade-popup">
+    <div class="popup">
+      <h2>評価ボタンの意味</h2>
+      <p>答えを選んだ後、<strong>自分の手ごたえ</strong>で評価してください。この評価をもとに、次にいつ出題するかをAIが計算します。</p>
+      <ul>
+        <li><strong style="color:var(--danger)">もう一回</strong>：全然わからなかった → すぐにもう一度出題される</li>
+        <li><strong style="color:var(--warning)">難しい</strong>：かなり迷った、ギリギリ → 短い間隔で再出題</li>
+        <li><strong style="color:var(--success)">正解</strong>：ちゃんと覚えていた → 適切な間隔で再出題</li>
+        <li><strong style="color:var(--info)">簡単</strong>：余裕で思い出せた → 長い間隔で再出題</li>
+      </ul>
+      <p><strong>ポイント：</strong>正解しても「難しかった」と感じたら「難しい」を選んでOK！正直に評価するほど効率よく覚えられるよ。</p>
+      <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">OK！</button>
+    </div>
+  </div>
 
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
@@ -88,15 +147,14 @@
     const CARD_DATA_KEY = 'cardData';
     const RANGES_KEY = 'savedRanges';
     const REVIEW_HISTORY_KEY = 'reviewHistory';
+    const STUDY_COUNT_KEY = 'studySessionCount';
 
-    // URL params
     const params = new URLSearchParams(window.location.search);
     const rangeId = params.get('rangeId');
     const mode = params.get('mode') || 'jp2en';
     const choiceCount = parseInt(params.get('choices')) || 4;
     const targetRetention = parseFloat(params.get('retention')) || 0.85;
 
-    // Load range
     const ranges = JSON.parse(localStorage.getItem(RANGES_KEY) || '[]');
     const range = ranges.find(r => r.id === rangeId);
 
@@ -104,67 +162,57 @@
       document.getElementById('quiz-card').classList.add('hidden');
       document.getElementById('session-stats').classList.add('hidden');
       document.getElementById('no-range-msg').classList.remove('hidden');
+      document.querySelector('.progress-bar-container').classList.add('hidden');
+      var fl = document.getElementById('first-time-guide'); if (fl) fl.classList.add('hidden');
       return;
     }
 
-    // Get words in range
+    // Mode labels
+    document.getElementById('range-label').textContent = range.name + '（No.' + range.start + '〜' + range.end + '）';
+    document.getElementById('mode-label').textContent = mode === 'jp2en' ? '日本語→英語' : '英語→日本語';
+    document.getElementById('question-label').textContent = mode === 'jp2en' ? 'この日本語の意味の英単語は？' : 'この英単語の日本語の意味は？';
+    document.getElementById('answer-label').textContent = mode === 'jp2en' ? '正しい英単語を選んでね' : '正しい日本語を選んでね';
+
     const rangeWords = window.WORDS.filter(w => w.no >= range.start && w.no <= range.end);
     if (rangeWords.length === 0) return;
 
-    // Load card data
-    function loadCardData() {
-      return JSON.parse(localStorage.getItem(CARD_DATA_KEY) || '{}');
-    }
-    function saveCardData(data) {
-      localStorage.setItem(CARD_DATA_KEY, JSON.stringify(data));
-    }
+    function loadCardData() { return JSON.parse(localStorage.getItem(CARD_DATA_KEY) || '{}'); }
+    function saveCardData(data) { localStorage.setItem(CARD_DATA_KEY, JSON.stringify(data)); }
 
-    // Build study queue
     const fsrs = window.FSRS;
     const now = new Date();
     let cardData = loadCardData();
 
-    function buildQueue() {
-      const dueCards = [];
-      const newCards = [];
+    // Session count (for showing/hiding guides)
+    let sessionCount = parseInt(localStorage.getItem(STUDY_COUNT_KEY) || '0');
 
+    function buildQueue() {
+      const dueCards = [], newCards = [];
       rangeWords.forEach(w => {
         const card = cardData[w.no];
-        if (!card || card.state === 'new') {
-          newCards.push(w.no);
-        } else {
+        if (!card || card.state === 'new') { newCards.push(w.no); }
+        else {
           const r = fsrs.getRecallProbability(card, now);
           if (r <= targetRetention || card.state === 'learning') {
             dueCards.push({ no: w.no, r: r, state: card.state });
           }
         }
       });
-
-      // Sort due: learning first, then by R ascending (most forgotten first)
       dueCards.sort((a, b) => {
         if (a.state === 'learning' && b.state !== 'learning') return -1;
         if (b.state === 'learning' && a.state !== 'learning') return 1;
         return a.r - b.r;
       });
-
       const queue = dueCards.map(d => d.no);
-      // Add up to 20 new cards
       const newLimit = Math.min(20, newCards.length);
-      for (let i = 0; i < newLimit; i++) {
-        queue.push(newCards[i]);
-      }
+      for (let i = 0; i < newLimit; i++) queue.push(newCards[i]);
       return queue;
     }
 
     let queue = buildQueue();
-    let currentIdx = 0;
-    let sessionCorrect = 0;
-    let sessionWrong = 0;
-    let currentWord = null;
-    let correctAnswer = null;
-    let answered = false;
+    let currentIdx = 0, sessionCorrect = 0, sessionWrong = 0;
+    let currentWord = null, correctAnswer = null, answered = false;
 
-    // DOM elements
     const quizCard = document.getElementById('quiz-card');
     const questionText = document.getElementById('question-text');
     const wordNumber = document.getElementById('word-number');
@@ -175,6 +223,14 @@
     const gradeButtons = document.getElementById('grade-buttons');
     const progressBar = document.getElementById('progress-bar');
     const sessionComplete = document.getElementById('session-complete');
+    const firstTimeGuide = document.getElementById('first-time-guide');
+    const gradeGuide = document.getElementById('grade-guide');
+
+    // Show guides only for first few sessions
+    if (sessionCount >= 3) {
+      firstTimeGuide.style.display = 'none';
+      gradeGuide.style.display = 'none';
+    }
 
     function updateStats() {
       document.getElementById('stat-correct').textContent = sessionCorrect;
@@ -182,30 +238,20 @@
       const total = sessionCorrect + sessionWrong;
       document.getElementById('stat-accuracy').textContent = total > 0 ? Math.round(sessionCorrect / total * 100) + '%' : '-';
       document.getElementById('stat-remaining').textContent = Math.max(0, queue.length - currentIdx);
-      const pct = queue.length > 0 ? (currentIdx / queue.length * 100) : 0;
-      progressBar.style.width = pct + '%';
+      progressBar.style.width = (queue.length > 0 ? (currentIdx / queue.length * 100) : 0) + '%';
     }
 
-    function getWord(no) {
-      return window.WORDS.find(w => w.no === no);
-    }
+    function getWord(no) { return window.WORDS.find(w => w.no === no); }
 
     function generateChoices(correctWord) {
       const choices = [correctWord];
-      const pool = rangeWords.filter(w => w.no !== correctWord.no);
-
-      // If pool too small, use all words
-      const usePool = pool.length >= choiceCount - 1 ? pool : window.WORDS.filter(w => w.no !== correctWord.no);
-
-      while (choices.length < choiceCount && usePool.length > 0) {
-        const idx = Math.floor(Math.random() * usePool.length);
-        const picked = usePool.splice(idx, 1)[0];
-        if (!choices.find(c => c.no === picked.no)) {
-          choices.push(picked);
-        }
+      let pool = rangeWords.filter(w => w.no !== correctWord.no);
+      if (pool.length < choiceCount - 1) pool = window.WORDS.filter(w => w.no !== correctWord.no);
+      while (choices.length < choiceCount && pool.length > 0) {
+        const idx = Math.floor(Math.random() * pool.length);
+        const picked = pool.splice(idx, 1)[0];
+        if (!choices.find(c => c.no === picked.no)) choices.push(picked);
       }
-
-      // Shuffle
       for (let i = choices.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [choices[i], choices[j]] = [choices[j], choices[i]];
@@ -214,10 +260,10 @@
     }
 
     function showQuestion() {
-      if (currentIdx >= queue.length) {
-        showComplete();
-        return;
-      }
+      if (currentIdx >= queue.length) { showComplete(); return; }
+
+      // Hide first-time guide after first question
+      if (currentIdx > 0 && firstTimeGuide) firstTimeGuide.style.display = 'none';
 
       answered = false;
       feedbackArea.classList.add('hidden');
@@ -226,7 +272,6 @@
       correctAnswer = currentWord;
 
       wordNumber.textContent = 'No.' + currentWord.no;
-
       if (mode === 'jp2en') {
         questionText.className = 'quiz-meaning';
         questionText.textContent = currentWord.ja;
@@ -245,7 +290,6 @@
         btn.addEventListener('click', () => handleAnswer(btn, c));
         answerGrid.appendChild(btn);
       });
-
       updateStats();
     }
 
@@ -254,13 +298,9 @@
       answered = true;
 
       const isCorrect = chosen.no === correctAnswer.no;
-
-      // Disable all buttons
       answerGrid.querySelectorAll('.answer-btn').forEach(b => {
         b.classList.add('disabled');
-        if (parseInt(b.dataset.no) === correctAnswer.no) {
-          b.classList.add('correct');
-        }
+        if (parseInt(b.dataset.no) === correctAnswer.no) b.classList.add('correct');
       });
 
       if (isCorrect) {
@@ -271,40 +311,46 @@
       } else {
         btn.classList.add('wrong');
         feedbackMsg.className = 'feedback wrong-fb';
-        feedbackMsg.textContent = '不正解… 正解: ' + (mode === 'jp2en' ? correctAnswer.en : correctAnswer.ja);
+        feedbackMsg.textContent = '不正解…';
         sessionWrong++;
       }
 
-      // Show card info
+      // Show correct pair
+      document.getElementById('correct-pair').innerHTML =
+        '<strong>' + correctAnswer.en + '</strong> ＝ ' + correctAnswer.ja;
+
+      // Card info
       const card = cardData[currentWord.no];
       if (card && card.state !== 'new') {
         const r = fsrs.getRecallProbability(card, now);
-        cardInfo.textContent = '安定性: ' + card.S.toFixed(1) + '日 | 難易度: ' + card.D.toFixed(1) + ' | 記憶率: ' + (r * 100).toFixed(0) + '%';
+        cardInfo.textContent = '記憶率: ' + (r * 100).toFixed(0) + '% | 安定性: ' + card.S.toFixed(1) + '日';
       } else {
-        cardInfo.textContent = '新規カード';
+        cardInfo.textContent = 'はじめて学習する単語です';
       }
 
-      // Show grade intervals
+      // Grade intervals
       const tempCard = card || fsrs.getInitialCard();
       for (let g = 1; g <= 4; g++) {
-        const simulated = fsrs.reviewCard({...tempCard}, g, now);
-        const days = simulated.scheduledDays;
-        const label = days < 1 ? Math.round(days * 24 * 60) + '分' : days < 1.5 ? '1日' : Math.round(days) + '日';
-        document.getElementById('interval-' + g).textContent = label;
+        const sim = fsrs.reviewCard({...tempCard}, g, now);
+        const d = sim.scheduledDays;
+        document.getElementById('interval-' + g).textContent =
+          d < 1 ? 'すぐ' : d < 1.5 ? '1日後' : Math.round(d) + '日後';
       }
 
-      // If wrong, recommend "Again"
+      // Recommend
+      gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('recommended'));
       if (!isCorrect) {
         gradeButtons.querySelector('[data-grade="1"]').classList.add('recommended');
+        document.getElementById('grade-hint').textContent = '間違えたので「もう一回」がおすすめ → すぐにもう一度出題されるよ';
       } else {
         gradeButtons.querySelector('[data-grade="3"]').classList.add('recommended');
+        document.getElementById('grade-hint').textContent = '覚えていたなら「正解」、余裕なら「簡単」を選ぼう';
       }
 
       feedbackArea.classList.remove('hidden');
       updateStats();
     }
 
-    // Grade button handlers
     gradeButtons.querySelectorAll('.grade-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const grade = parseInt(btn.dataset.grade);
@@ -313,20 +359,13 @@
         cardData[currentWord.no] = updated;
         saveCardData(cardData);
 
-        // Record review history
         const today = now.toISOString().slice(0, 10);
         const history = JSON.parse(localStorage.getItem(REVIEW_HISTORY_KEY) || '{}');
         history[today] = (history[today] || 0) + 1;
         localStorage.setItem(REVIEW_HISTORY_KEY, JSON.stringify(history));
 
-        // If grade=1 (Again), re-add to end of queue
-        if (grade === 1) {
-          queue.push(currentWord.no);
-        }
-
-        // Remove recommended class
+        if (grade === 1) queue.push(currentWord.no);
         gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('recommended'));
-
         currentIdx++;
         showQuestion();
       });
@@ -334,6 +373,7 @@
 
     function showComplete() {
       quizCard.classList.add('hidden');
+      if (firstTimeGuide) firstTimeGuide.style.display = 'none';
       sessionComplete.classList.remove('hidden');
       const total = sessionCorrect + sessionWrong;
       document.getElementById('final-correct').textContent = sessionCorrect;
@@ -341,13 +381,13 @@
       document.getElementById('final-total').textContent = total;
       document.getElementById('final-accuracy').textContent = total > 0 ? Math.round(sessionCorrect / total * 100) + '%' : '-';
       updateStats();
+
+      // Increment session count
+      localStorage.setItem(STUDY_COUNT_KEY, (sessionCount + 1).toString());
     }
 
-    document.getElementById('study-again-btn').addEventListener('click', () => {
-      window.location.reload();
-    });
+    document.getElementById('study-again-btn').addEventListener('click', () => window.location.reload());
 
-    // Toast helper
     function showToast(msg, type) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -359,10 +399,16 @@
 
     // Init
     if (queue.length === 0) {
-      quizCard.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><p>復習が必要な単語はありません！</p><p class="text-muted text-sm mt-8">素晴らしい！すべての単語が十分に定着しています。</p><a href="index.html" class="btn btn-primary mt-16">ホームへ戻る</a></div>';
+      if (firstTimeGuide) firstTimeGuide.style.display = 'none';
+      quizCard.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><h2 style="color:var(--primary);margin-bottom:8px">全部できてるよ！</h2><p>今は復習が必要な単語がありません。</p><p class="text-muted text-sm mt-8">明日以降にまた復習すべき単語が出てくるから、忘れずにアプリを開いてね！</p><div style="margin-top:16px"><a href="index.html" class="btn btn-primary">ホームへ戻る</a> <a href="stats.html" class="btn btn-outline" style="margin-left:8px">統計を見る</a></div></div>';
     } else {
-      showToast(range.name + ' (' + queue.length + '問)', 'success');
+      showToast(range.name + '（' + queue.length + '問）スタート！', 'success');
       showQuestion();
+    }
+
+    // Show grade popup on first ever session
+    if (sessionCount === 0) {
+      setTimeout(() => document.getElementById('grade-popup').classList.add('show'), 1000);
     }
   })();
   </script>

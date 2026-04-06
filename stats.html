@@ -17,15 +17,62 @@
   </header>
 
   <main class="container">
+
+    <!-- 統計ページ紹介ヘッダー -->
+    <div class="hero">
+      <h1>あなたの学習状況を見える化！</h1>
+      <p>このページでは、覚えた単語・忘れかけの単語・今日やるべき単語がひと目でわかるよ。<br>定期的にチェックして、効率よく復習しよう！</p>
+      <button class="btn btn-accent mt-8" onclick="document.getElementById('stats-help-popup').classList.add('show')" style="font-size:0.9rem">統計ページの見方</button>
+    </div>
+
+    <!-- 統計ページの見方ポップアップ -->
+    <div class="popup-overlay" id="stats-help-popup">
+      <div class="popup">
+        <h2>統計ページの見方</h2>
+        <p>このページにはいろいろな情報があるけど、<strong>特に大事なのはこの3つ</strong>です：</p>
+        <ul>
+          <li><strong>数字のまとめ（上部）</strong>：今の学習状況が数字でパッとわかる。「要復習」と「今日の予定」を特にチェック！</li>
+          <li><strong>記憶状態分布（カラーバー）</strong>：覚え具合を色で表示。緑が多いほど覚えてる証拠！赤やグレーが多い場合はもっと復習しよう。</li>
+          <li><strong>忘れそうな単語 TOP20</strong>：ヤバい単語ランキング。ここに出てる単語を重点的に復習すると効率的！</li>
+        </ul>
+        <p style="margin-top:12px"><strong>用語の説明：</strong></p>
+        <ul>
+          <li><strong>記憶率</strong>＝今テストしたら正解できる確率。高いほどしっかり覚えてる。</li>
+          <li><strong>安定性</strong>＝記憶がどれくらい長持ちするか（日数）。高いほど忘れにくい。</li>
+          <li><strong>難易度</strong>＝その単語がどれくらい難しいか。高いほど覚えにくい単語。</li>
+        </ul>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">わかった！</button>
+      </div>
+    </div>
+
     <!-- 範囲選択 -->
     <div class="card">
-      <div class="form-group">
-        <label for="range-select">表示範囲：</label>
+      <div class="card-title">表示する範囲を選ぼう <span class="help-icon" onclick="document.getElementById('range-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble">ホーム画面で登録した範囲ごとに統計が見られるよ。「全体」を選ぶと全2233語の統計になります。</div>
+      <div class="form-group mt-8">
         <select id="range-select" class="form-control"></select>
       </div>
     </div>
 
+    <!-- 範囲ヘルプポップアップ -->
+    <div class="popup-overlay" id="range-help-popup">
+      <div class="popup">
+        <h2>範囲の選び方</h2>
+        <p>ホーム画面で登録した範囲がプルダウンに表示されます。</p>
+        <ul>
+          <li><strong>「全体」</strong>を選ぶと、全2233語の統計が表示されます</li>
+          <li><strong>登録した範囲</strong>を選ぶと、その範囲だけの統計が見られます</li>
+        </ul>
+        <p>まだ範囲を登録していない場合は、<a href="index.html" style="color:var(--primary);font-weight:600">ホーム画面</a>で登録してね！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">OK</button>
+      </div>
+    </div>
+
     <!-- 全体サマリー -->
+    <div class="card">
+      <div class="card-title">数字で見る学習状況 <span class="help-icon" onclick="document.getElementById('summary-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble">各数字の意味：<strong>総単語数</strong>＝選択した範囲の全単語数、<strong>学習済み</strong>＝1回以上学習した単語、<strong>完全記憶</strong>＝記憶率95%以上のバッチリ覚えた単語、<strong>要復習</strong>＝忘れかけの単語、<strong>未学習</strong>＝まだ一度も学習していない単語、<strong>今日の予定</strong>＝今日復習すべき単語数</div>
+    </div>
     <div class="summary-grid" id="summary-grid">
       <div class="summary-item"><div class="num" id="s-total">0</div><div class="label">総単語数</div></div>
       <div class="summary-item"><div class="num" id="s-studied">0</div><div class="label">学習済み</div></div>
@@ -35,25 +82,76 @@
       <div class="summary-item"><div class="num" id="s-today">0</div><div class="label">今日の予定</div></div>
     </div>
 
+    <!-- サマリーヘルプポップアップ -->
+    <div class="popup-overlay" id="summary-help-popup">
+      <div class="popup">
+        <h2>各数字の意味</h2>
+        <ul>
+          <li><strong>総単語数</strong>：選んだ範囲に含まれる単語の数</li>
+          <li><strong>学習済み</strong>：1回以上クイズで学習した単語の数</li>
+          <li><strong>完全記憶</strong>：記憶率が95%以上！もうバッチリ覚えてる単語</li>
+          <li><strong>要復習</strong>：記憶率が下がってきた単語。復習しないと忘れちゃうよ！</li>
+          <li><strong>未学習</strong>：まだ一度もクイズに出ていない単語</li>
+          <li><strong>今日の予定</strong>：AIが「今日復習した方がいい」と判断した単語数。これを毎日こなすのがコツ！</li>
+        </ul>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">なるほど！</button>
+      </div>
+    </div>
+
     <!-- 記憶状態分布 -->
     <div class="card">
-      <div class="card-title">記憶状態分布</div>
+      <div class="card-title">記憶状態分布 <span class="help-icon" onclick="document.getElementById('memory-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble">下のカラーバーで、単語の覚え具合を色で一目チェック！<strong>緑が多い＝しっかり覚えてる</strong>、<strong>赤やグレーが多い＝まだまだ復習が必要</strong>。目標は全部緑にすること！</div>
       <div class="stacked-bar" id="memory-bar"></div>
       <div class="legend" id="memory-legend"></div>
       <div class="text-sm text-muted mt-8" id="memory-detail"></div>
     </div>
 
+    <!-- 記憶状態ヘルプポップアップ -->
+    <div class="popup-overlay" id="memory-help-popup">
+      <div class="popup">
+        <h2>記憶状態の色の意味</h2>
+        <ul>
+          <li><span style="display:inline-block;width:14px;height:14px;background:#1b5e20;border-radius:3px;vertical-align:middle"></span> <strong>完全記憶（95%以上）</strong>：バッチリ！しばらく復習しなくても大丈夫</li>
+          <li><span style="display:inline-block;width:14px;height:14px;background:#66bb6a;border-radius:3px;vertical-align:middle"></span> <strong>良好（85〜94%）</strong>：いい感じ！もう少しで完全記憶</li>
+          <li><span style="display:inline-block;width:14px;height:14px;background:#fdd835;border-radius:3px;vertical-align:middle"></span> <strong>要注意（70〜84%）</strong>：そろそろ復習した方がいいかも</li>
+          <li><span style="display:inline-block;width:14px;height:14px;background:#ff9800;border-radius:3px;vertical-align:middle"></span> <strong>危険（50〜69%）</strong>：かなり忘れかけ！早めに復習しよう</li>
+          <li><span style="display:inline-block;width:14px;height:14px;background:#e53935;border-radius:3px;vertical-align:middle"></span> <strong>忘却（50%未満）</strong>：ほぼ忘れてる…復習必須！</li>
+          <li><span style="display:inline-block;width:14px;height:14px;background:#bdbdbd;border-radius:3px;vertical-align:middle"></span> <strong>未学習</strong>：まだ一度も学習していない単語</li>
+        </ul>
+        <p style="margin-top:12px">記憶率（%）は「今テストしたら正解できる確率」です。時間が経つと自然に下がっていくので、ちょうどいいタイミングで復習するのが大事！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">わかった！</button>
+      </div>
+    </div>
+
     <!-- 復習予測カレンダー -->
     <div class="card">
-      <div class="card-title">今後14日間の復習予測</div>
+      <div class="card-title">今後14日間の復習予測 <span class="help-icon" onclick="document.getElementById('forecast-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble">今後2週間で、何日にどれくらいの単語を復習すべきかの予測グラフです。<strong>オレンジのバーが「今日」</strong>。棒が高い日はたくさん復習する日です。</div>
       <div class="forecast-chart" id="forecast-chart"></div>
       <div style="height:24px"></div>
-      <div class="text-sm" id="next-study-msg"></div>
+      <div class="text-sm" id="next-study-msg" style="font-weight:600;color:var(--primary)"></div>
+    </div>
+
+    <!-- 復習予測ヘルプポップアップ -->
+    <div class="popup-overlay" id="forecast-help-popup">
+      <div class="popup">
+        <h2>復習予測グラフの見方</h2>
+        <p>AIが各単語の記憶の減り具合を計算して、「この日に復習すべき」という予測を立てています。</p>
+        <ul>
+          <li><strong>棒の高さ</strong>＝その日に復習が必要な単語の数</li>
+          <li><strong>オレンジの棒</strong>＝今日のぶん</li>
+          <li><strong>紫の棒</strong>＝明日以降のぶん</li>
+        </ul>
+        <p style="margin-top:8px">毎日このグラフの「今日」の分を復習すると、忘れないうちに効率よく覚えられます。復習をサボると、翌日以降の棒がどんどん高くなるので注意！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">OK！</button>
+      </div>
     </div>
 
     <!-- 忘れそうな単語 TOP20 -->
     <div class="card">
-      <div class="card-title">忘れそうな単語 TOP20</div>
+      <div class="card-title">忘れそうな単語 TOP20 <span class="help-icon" onclick="document.getElementById('forget-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble warning">記憶率が低い順に並んでいます。ここに出ている単語は<strong>今すぐ復習</strong>した方がいいよ！</div>
       <div class="table-wrap">
         <table id="forget-table">
           <thead><tr><th>No.</th><th>英語</th><th>日本語</th><th>記憶率</th><th>安定性</th><th>次回復習</th></tr></thead>
@@ -62,9 +160,25 @@
       </div>
     </div>
 
+    <!-- 忘却ヘルプポップアップ -->
+    <div class="popup-overlay" id="forget-help-popup">
+      <div class="popup">
+        <h2>忘れそうな単語TOP20って？</h2>
+        <p>今の記憶率が低い（＝忘れかけている）単語を、記憶率が低い順に20個表示しています。</p>
+        <ul>
+          <li><strong>記憶率</strong>：今テストしたら正解できる確率（%）</li>
+          <li><strong>安定性</strong>：記憶がどれくらい長持ちするか（日数）。0.5日＝12時間くらい</li>
+          <li><strong>次回復習</strong>：AIが計算した次の復習推奨日</li>
+        </ul>
+        <p style="margin-top:8px">この表に出ている単語を中心に復習すると効率的です！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">了解！</button>
+      </div>
+    </div>
+
     <!-- 難しい単語 TOP20 -->
     <div class="card">
-      <div class="card-title">難しい単語 TOP20</div>
+      <div class="card-title">難しい単語 TOP20 <span class="help-icon" onclick="document.getElementById('difficult-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble">何度やっても間違えやすい、手強い単語のランキングです。ノートに書き出して重点的に覚えるのがオススメ！</div>
       <div class="table-wrap">
         <table id="difficult-table">
           <thead><tr><th>No.</th><th>英語</th><th>日本語</th><th>難易度</th><th>間違い</th></tr></thead>
@@ -73,9 +187,24 @@
       </div>
     </div>
 
+    <!-- 難易度ヘルプポップアップ -->
+    <div class="popup-overlay" id="difficult-help-popup">
+      <div class="popup">
+        <h2>難しい単語TOP20って？</h2>
+        <p>AIが計算した「覚えにくさ（難易度）」が高い順に20個表示しています。</p>
+        <ul>
+          <li><strong>難易度</strong>：1〜10の数値。高いほど覚えにくい。学習するたびにAIが自動調整します</li>
+          <li><strong>間違い</strong>：「もう一回」（Again）を押した回数。多いほど苦手な単語</li>
+        </ul>
+        <p style="margin-top:8px">この表の単語は、紙に書いたり声に出したりして、クイズ以外でも覚える工夫をしてみよう！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">やってみる！</button>
+      </div>
+    </div>
+
     <!-- 学習履歴 -->
     <div class="card">
-      <div class="card-title">学習履歴</div>
+      <div class="card-title">学習履歴 <span class="help-icon" onclick="document.getElementById('history-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble success">どれくらい頑張ったかが見える！毎日コツコツ続けることが大事です。</div>
       <div class="summary-grid">
         <div class="summary-item"><div class="num" id="h-today">0</div><div class="label">今日</div></div>
         <div class="summary-item"><div class="num" id="h-week">0</div><div class="label">今週</div></div>
@@ -83,9 +212,25 @@
       </div>
     </div>
 
+    <!-- 学習履歴ヘルプポップアップ -->
+    <div class="popup-overlay" id="history-help-popup">
+      <div class="popup">
+        <h2>学習履歴の数字</h2>
+        <p>これまでに回答した回数（クイズの問題数）を表示しています。</p>
+        <ul>
+          <li><strong>今日</strong>：今日回答した問題数</li>
+          <li><strong>今週</strong>：この1週間で回答した問題数</li>
+          <li><strong>累計</strong>：アプリを使い始めてからの合計回答数</li>
+        </ul>
+        <p style="margin-top:8px">1日20〜30問くらいが続けやすい目安です。無理せず毎日続けよう！</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">OK！</button>
+      </div>
+    </div>
+
     <!-- 単語一覧 -->
     <div class="card">
-      <div class="card-title">単語一覧</div>
+      <div class="card-title">単語一覧 <span class="help-icon" onclick="document.getElementById('wordlist-help-popup').classList.add('show')">?</span></div>
+      <div class="help-bubble">選んだ範囲の全単語の詳細データが見られます。<strong>見出し（No.・英語・記憶率など）をタップすると並び替え</strong>ができるよ！記憶率で並べ替えると、苦手な単語がすぐわかる。</div>
       <div class="table-wrap" style="max-height:500px;overflow-y:auto">
         <table id="word-table">
           <thead><tr>
@@ -101,6 +246,30 @@
         </table>
       </div>
     </div>
+
+    <!-- 単語一覧ヘルプポップアップ -->
+    <div class="popup-overlay" id="wordlist-help-popup">
+      <div class="popup">
+        <h2>単語一覧の見方</h2>
+        <p>選んだ範囲に含まれる全単語の詳細データです。</p>
+        <ul>
+          <li><strong>状態</strong>：「新規」＝未学習、「学習中」＝まだ安定していない、「復習」＝定期復習中、「完全記憶」＝バッチリ！、「要注意」＝忘れかけ</li>
+          <li><strong>記憶率</strong>：今正解できる確率。100%に近いほど覚えてる</li>
+          <li><strong>安定性</strong>：記憶の長持ち度（日数）。例えば「30.0」なら約1ヶ月間忘れない</li>
+          <li><strong>難易度</strong>：覚えにくさ。高い＝苦手な単語</li>
+        </ul>
+        <p style="margin-top:8px"><strong>ヘッダーをタップ</strong>すると、その列で並び替えができます。もう一度タップで昇順/降順が切り替わります。</p>
+        <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">なるほど！</button>
+      </div>
+    </div>
+
+    <!-- ホームへ戻るボタン -->
+    <div class="text-center mt-16 mb-16">
+      <a href="index.html" class="btn btn-primary">ホームに戻る</a>
+      <span style="display:inline-block;width:12px"></span>
+      <a href="study.html" class="btn btn-accent">学習を始める</a>
+    </div>
+
   </main>
 
   <script src="js/words.js"></script>
@@ -360,6 +529,12 @@
 
     // Initial render
     render('all');
+
+    // First visit to stats page: auto-show help popup
+    if (!localStorage.getItem('statsVisited')) {
+      localStorage.setItem('statsVisited', 'true');
+      document.getElementById('stats-help-popup').classList.add('show');
+    }
   })();
   </script>
 </body>
