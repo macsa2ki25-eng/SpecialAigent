@@ -108,7 +108,8 @@
       <div class="help-bubble">
         <strong>日本語→英語</strong>：日本語の意味を見て、英単語を選ぶモード（英作文力UP）<br>
         <strong>英語→日本語</strong>：英単語を見て、日本語の意味を選ぶモード（読解力UP）<br>
-        迷ったら両方やるのがおすすめ！選択肢が多いほど難しくなるよ。
+        <strong>スペル入力</strong>：日本語の意味を見て、英単語のスペルをキーボードで入力するモード（最強！）<br>
+        迷ったら選択肢モードから始めて、慣れたらスペル入力に挑戦しよう！
       </div>
 
       <div class="form-group mt-8">
@@ -116,10 +117,11 @@
         <div class="radio-group">
           <label><input type="radio" name="study-mode" value="jp2en" checked><span>日本語→英語</span></label>
           <label><input type="radio" name="study-mode" value="en2jp"><span>英語→日本語</span></label>
+          <label><input type="radio" name="study-mode" value="spelling"><span>スペル入力</span></label>
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="choice-count-group">
         <label>選択肢の数：</label>
         <div class="radio-group">
           <label><input type="radio" name="choice-count" value="4" checked><span>4択</span></label>
@@ -403,6 +405,19 @@
       document.getElementById('retention-value').textContent = this.value + '%';
     });
 
+    // Hide choice count for spelling mode
+    var choiceGroup = document.getElementById('choice-count-group');
+    document.querySelectorAll('input[name="study-mode"]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        choiceGroup.style.display = this.value === 'spelling' ? 'none' : '';
+      });
+    });
+    // Apply on load
+    (function() {
+      var checked = document.querySelector('input[name="study-mode"]:checked');
+      if (checked && checked.value === 'spelling') choiceGroup.style.display = 'none';
+    })();
+
     // --- 学習開始 ---
     function startStudy(rangeId) {
       var mode = document.querySelector('input[name="study-mode"]:checked').value;
@@ -411,8 +426,10 @@
       localStorage.setItem(SETTINGS_KEY, JSON.stringify({ mode: mode, choices: choices, retention: parseInt(retention) }));
       var url = 'study.html?rangeId=' + encodeURIComponent(rangeId) +
         '&mode=' + encodeURIComponent(mode) +
-        '&choices=' + encodeURIComponent(choices) +
         '&retention=' + encodeURIComponent((parseInt(retention) / 100).toFixed(2));
+      if (mode !== 'spelling') {
+        url += '&choices=' + encodeURIComponent(choices);
+      }
       window.location.href = url;
     }
 

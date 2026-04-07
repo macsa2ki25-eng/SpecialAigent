@@ -36,9 +36,7 @@
     </div>
 
     <!-- 初回ガイド（1問目だけ表示） -->
-    <div class="help-bubble" id="first-time-guide">
-      下に表示される問題を読んで、正しい答えを選択肢から選んでタップしてね！
-    </div>
+    <div class="help-bubble" id="first-time-guide"></div>
 
     <!-- クイズカード -->
     <div class="card" id="quiz-card">
@@ -50,6 +48,55 @@
 
       <div id="answer-label" class="text-xs text-muted text-center mb-4"></div>
       <div class="answer-grid" id="answer-grid"></div>
+
+      <!-- スペル入力エリア（spellingモード時のみ表示） -->
+      <div id="spelling-area" class="spelling-area hidden">
+        <div class="spelling-display focused" id="spelling-display"><span class="spelling-cursor"></span></div>
+        <div class="spelling-submit-row">
+          <button class="btn btn-primary" id="spelling-submit-btn" type="button">決定</button>
+        </div>
+        <div class="custom-keyboard" id="custom-keyboard">
+          <div class="kb-row">
+            <button class="kb-key" data-key="q">q</button>
+            <button class="kb-key" data-key="w">w</button>
+            <button class="kb-key" data-key="e">e</button>
+            <button class="kb-key" data-key="r">r</button>
+            <button class="kb-key" data-key="t">t</button>
+            <button class="kb-key" data-key="y">y</button>
+            <button class="kb-key" data-key="u">u</button>
+            <button class="kb-key" data-key="i">i</button>
+            <button class="kb-key" data-key="o">o</button>
+            <button class="kb-key" data-key="p">p</button>
+          </div>
+          <div class="kb-row">
+            <button class="kb-key" data-key="a">a</button>
+            <button class="kb-key" data-key="s">s</button>
+            <button class="kb-key" data-key="d">d</button>
+            <button class="kb-key" data-key="f">f</button>
+            <button class="kb-key" data-key="g">g</button>
+            <button class="kb-key" data-key="h">h</button>
+            <button class="kb-key" data-key="j">j</button>
+            <button class="kb-key" data-key="k">k</button>
+            <button class="kb-key" data-key="l">l</button>
+          </div>
+          <div class="kb-row">
+            <button class="kb-key wide" data-key="shift">ABC</button>
+            <button class="kb-key" data-key="z">z</button>
+            <button class="kb-key" data-key="x">x</button>
+            <button class="kb-key" data-key="c">c</button>
+            <button class="kb-key" data-key="v">v</button>
+            <button class="kb-key" data-key="b">b</button>
+            <button class="kb-key" data-key="n">n</button>
+            <button class="kb-key" data-key="m">m</button>
+            <button class="kb-key wide" data-key="backspace">←</button>
+          </div>
+          <div class="kb-row">
+            <button class="kb-key space-key" data-key=" ">スペース</button>
+            <button class="kb-key" data-key="-">-</button>
+            <button class="kb-key enter-key" id="kb-enter" data-key="enter">決定</button>
+          </div>
+        </div>
+      </div>
 
       <div id="feedback-area" class="hidden">
         <div class="feedback" id="feedback-msg"></div>
@@ -169,9 +216,15 @@
 
     // Mode labels
     document.getElementById('range-label').textContent = range.name + '（No.' + range.start + '〜' + range.end + '）';
-    document.getElementById('mode-label').textContent = mode === 'jp2en' ? '日本語→英語' : '英語→日本語';
-    document.getElementById('question-label').textContent = mode === 'jp2en' ? 'この日本語の意味の英単語は？' : 'この英単語の日本語の意味は？';
-    document.getElementById('answer-label').textContent = mode === 'jp2en' ? '正しい英単語を選んでね' : '正しい日本語を選んでね';
+    const modeLabels = { jp2en: '日本語→英語', en2jp: '英語→日本語', spelling: 'スペル入力' };
+    document.getElementById('mode-label').textContent = modeLabels[mode] || mode;
+    if (mode === 'spelling') {
+      document.getElementById('question-label').textContent = 'この日本語の意味の英単語のスペルを入力しよう！';
+      document.getElementById('answer-label').textContent = '下のキーボードで英単語を入力してね';
+    } else {
+      document.getElementById('question-label').textContent = mode === 'jp2en' ? 'この日本語の意味の英単語は？' : 'この英単語の日本語の意味は？';
+      document.getElementById('answer-label').textContent = mode === 'jp2en' ? '正しい英単語を選んでね' : '正しい日本語を選んでね';
+    }
 
     const rangeWords = window.WORDS.filter(w => w.no >= range.start && w.no <= range.end);
     if (rangeWords.length === 0) return;
@@ -213,10 +266,14 @@
     let currentIdx = 0, sessionCorrect = 0, sessionWrong = 0;
     let currentWord = null, correctAnswer = null, answered = false;
 
+    const isSpelling = (mode === 'spelling');
     const quizCard = document.getElementById('quiz-card');
     const questionText = document.getElementById('question-text');
     const wordNumber = document.getElementById('word-number');
     const answerGrid = document.getElementById('answer-grid');
+    const spellingArea = document.getElementById('spelling-area');
+    const spellingDisplay = document.getElementById('spelling-display');
+    const spellingSubmitBtn = document.getElementById('spelling-submit-btn');
     const feedbackArea = document.getElementById('feedback-area');
     const feedbackMsg = document.getElementById('feedback-msg');
     const cardInfo = document.getElementById('card-info');
@@ -226,10 +283,111 @@
     const firstTimeGuide = document.getElementById('first-time-guide');
     const gradeGuide = document.getElementById('grade-guide');
 
+    // Set first-time guide text based on mode
+    if (isSpelling) {
+      firstTimeGuide.innerHTML = '日本語の意味を見て、英単語のスペルを<strong>下の専用キーボード</strong>で入力しよう！予測変換は出ないから、自分の力で正確に入力してね。「決定」ボタンで回答！';
+    } else {
+      firstTimeGuide.textContent = '下に表示される問題を読んで、正しい答えを選択肢から選んでタップしてね！';
+    }
+
+    // Show/hide spelling vs choice UI
+    if (isSpelling) {
+      answerGrid.classList.add('hidden');
+      document.getElementById('answer-label').classList.add('hidden');
+      spellingArea.classList.remove('hidden');
+    }
+
     // Show guides only for first few sessions
     if (sessionCount >= 3) {
       firstTimeGuide.style.display = 'none';
       gradeGuide.style.display = 'none';
+    }
+
+    // --- Custom keyboard logic ---
+    let spellingInput = '';
+    let shiftActive = false;
+    let spellingLocked = false;
+
+    function updateSpellingDisplay() {
+      const text = spellingInput;
+      spellingDisplay.innerHTML = (text ? '<span>' + escapeHtml(text) + '</span>' : '') +
+        (spellingLocked ? '' : '<span class="spelling-cursor"></span>');
+    }
+
+    function escapeHtml(t) {
+      var d = document.createElement('div');
+      d.appendChild(document.createTextNode(t));
+      return d.innerHTML;
+    }
+
+    function handleKeyboardKey(key) {
+      if (spellingLocked || answered) return;
+      if (key === 'backspace') {
+        spellingInput = spellingInput.slice(0, -1);
+      } else if (key === 'shift') {
+        shiftActive = !shiftActive;
+        updateShiftDisplay();
+        return;
+      } else if (key === 'enter') {
+        submitSpelling();
+        return;
+      } else {
+        var ch = shiftActive ? key.toUpperCase() : key;
+        spellingInput += ch;
+        if (shiftActive) { shiftActive = false; updateShiftDisplay(); }
+      }
+      updateSpellingDisplay();
+    }
+
+    function updateShiftDisplay() {
+      var shiftBtn = document.querySelector('.kb-key[data-key="shift"]');
+      if (shiftBtn) {
+        shiftBtn.style.background = shiftActive ? 'var(--primary)' : '';
+        shiftBtn.style.color = shiftActive ? '#fff' : '';
+      }
+      document.querySelectorAll('.kb-key').forEach(function(k) {
+        var key = k.dataset.key;
+        if (key && key.length === 1 && key.match(/[a-z]/)) {
+          k.textContent = shiftActive ? key.toUpperCase() : key;
+        }
+      });
+    }
+
+    // Attach keyboard events
+    document.querySelectorAll('#custom-keyboard .kb-key').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleKeyboardKey(this.dataset.key);
+      });
+    });
+    spellingSubmitBtn.addEventListener('click', function() { submitSpelling(); });
+
+    // Block native keyboard on the display area
+    spellingDisplay.addEventListener('focus', function(e) { e.preventDefault(); });
+
+    // Allow physical keyboard input for PC users (route through custom keyboard)
+    if (isSpelling) {
+      document.addEventListener('keydown', function(e) {
+        if (spellingLocked || answered) return;
+        if (e.key === 'Backspace') { e.preventDefault(); handleKeyboardKey('backspace'); }
+        else if (e.key === 'Enter') { e.preventDefault(); handleKeyboardKey('enter'); }
+        else if (e.key === ' ') { e.preventDefault(); handleKeyboardKey(' '); }
+        else if (e.key === '-') { e.preventDefault(); handleKeyboardKey('-'); }
+        else if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+          e.preventDefault();
+          spellingInput += e.key.toLowerCase();
+          updateSpellingDisplay();
+        }
+      });
+    }
+
+    function submitSpelling() {
+      if (spellingLocked || answered || !spellingInput.trim()) return;
+      spellingLocked = true;
+      var userAnswer = spellingInput.trim().toLowerCase();
+      var correctEn = correctAnswer.en.toLowerCase();
+      var isCorrect = (userAnswer === correctEn);
+      handleSpellingResult(isCorrect);
     }
 
     function updateStats() {
@@ -272,7 +430,19 @@
       correctAnswer = currentWord;
 
       wordNumber.textContent = 'No.' + currentWord.no;
-      if (mode === 'jp2en') {
+
+      if (isSpelling) {
+        // Spelling mode: show Japanese, type English
+        questionText.className = 'quiz-meaning';
+        questionText.textContent = currentWord.ja;
+        // Reset spelling input
+        spellingInput = '';
+        spellingLocked = false;
+        shiftActive = false;
+        updateShiftDisplay();
+        updateSpellingDisplay();
+        spellingDisplay.classList.add('focused');
+      } else if (mode === 'jp2en') {
         questionText.className = 'quiz-meaning';
         questionText.textContent = currentWord.ja;
       } else {
@@ -280,16 +450,73 @@
         questionText.textContent = currentWord.en;
       }
 
-      const choices = generateChoices(currentWord);
-      answerGrid.innerHTML = '';
-      choices.forEach(c => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.textContent = mode === 'jp2en' ? c.en : c.ja;
-        btn.dataset.no = c.no;
-        btn.addEventListener('click', () => handleAnswer(btn, c));
-        answerGrid.appendChild(btn);
-      });
+      if (!isSpelling) {
+        const choices = generateChoices(currentWord);
+        answerGrid.innerHTML = '';
+        choices.forEach(c => {
+          const btn = document.createElement('button');
+          btn.className = 'answer-btn';
+          btn.textContent = mode === 'jp2en' ? c.en : c.ja;
+          btn.dataset.no = c.no;
+          btn.addEventListener('click', () => handleAnswer(btn, c));
+          answerGrid.appendChild(btn);
+        });
+      }
+      updateStats();
+    }
+
+    function handleSpellingResult(isCorrect) {
+      answered = true;
+      spellingDisplay.classList.remove('focused');
+      updateSpellingDisplay();
+
+      if (isCorrect) {
+        spellingDisplay.style.borderColor = 'var(--success)';
+        spellingDisplay.style.background = '#e8f5e9';
+        feedbackMsg.className = 'feedback correct-fb';
+        feedbackMsg.textContent = '正解！スペル完璧！';
+        sessionCorrect++;
+      } else {
+        spellingDisplay.style.borderColor = 'var(--danger)';
+        spellingDisplay.style.background = '#ffebee';
+        feedbackMsg.className = 'feedback wrong-fb';
+        feedbackMsg.textContent = '不正解… 正しいスペルは「' + correctAnswer.en + '」';
+        sessionWrong++;
+      }
+
+      // Show correct pair
+      document.getElementById('correct-pair').innerHTML =
+        '<strong>' + correctAnswer.en + '</strong> ＝ ' + correctAnswer.ja;
+
+      // Card info
+      const card = cardData[currentWord.no];
+      if (card && card.state !== 'new') {
+        const r = fsrs.getRecallProbability(card, now);
+        cardInfo.textContent = '記憶率: ' + (r * 100).toFixed(0) + '% | 安定性: ' + card.S.toFixed(1) + '日';
+      } else {
+        cardInfo.textContent = 'はじめて学習する単語です';
+      }
+
+      // Grade intervals
+      const tempCard = card || fsrs.getInitialCard();
+      for (let g = 1; g <= 4; g++) {
+        const sim = fsrs.reviewCard({...tempCard}, g, now);
+        const d = sim.scheduledDays;
+        document.getElementById('interval-' + g).textContent =
+          d < 1 ? 'すぐ' : d < 1.5 ? '1日後' : Math.round(d) + '日後';
+      }
+
+      // Recommend
+      gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('recommended'));
+      if (!isCorrect) {
+        gradeButtons.querySelector('[data-grade="1"]').classList.add('recommended');
+        document.getElementById('grade-hint').textContent = 'スペルが違ったので「もう一回」がおすすめ → すぐにもう一度出題されるよ';
+      } else {
+        gradeButtons.querySelector('[data-grade="3"]').classList.add('recommended');
+        document.getElementById('grade-hint').textContent = 'スペル完璧！「正解」を選ぼう。余裕なら「簡単」でもOK';
+      }
+
+      feedbackArea.classList.remove('hidden');
       updateStats();
     }
 
@@ -366,6 +593,13 @@
 
         if (grade === 1) queue.push(currentWord.no);
         gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('recommended'));
+
+        // Reset spelling display for next question
+        if (isSpelling) {
+          spellingDisplay.style.borderColor = '';
+          spellingDisplay.style.background = '';
+        }
+
         currentIdx++;
         showQuestion();
       });
