@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アバター - 東高３年 英単語やったんぞ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">英単語やったんぞ</div>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="avatar.html" class="active">アバター</a>
+      <a href="stats.html">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- アバター表示 -->
+    <div class="card">
+      <div class="avatar-view" id="avatar-container"></div>
+      <div class="avatar-equip-label" id="equip-label"></div>
+    </div>
+
+    <!-- タブ切り替え -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="dressup">着せ替え</button>
+      <button class="tab-btn" data-tab="shop">ショップ</button>
+    </div>
+
+    <!-- 着せ替えタブ -->
+    <div class="card" id="tab-dressup">
+      <div class="card-title">着せ替え</div>
+      <div class="category-pills" id="dressup-categories"></div>
+      <div class="item-grid" id="dressup-grid"></div>
+      <div class="shop-empty" id="dressup-empty" style="display:none">このカテゴリのアイテムはまだ持っていません。<br>ショップで購入しよう！</div>
+    </div>
+
+    <!-- ショップタブ -->
+    <div class="card hidden" id="tab-shop">
+      <div class="card-title">ショップ</div>
+      <div class="help-bubble mb-8">学習してマコチップを貯めて、アバターの服やアクセサリーを買おう！</div>
+      <div class="category-pills" id="shop-categories"></div>
+      <div class="item-grid" id="shop-grid"></div>
+      <div class="shop-empty" id="shop-empty" style="display:none">このカテゴリは全部購入済みです！</div>
+    </div>
+
+    <!-- 購入確認ポップアップ -->
+    <div class="popup-overlay" id="buy-popup">
+      <div class="popup" style="text-align:center">
+        <h2 id="buy-item-name">アイテム名</h2>
+        <div id="buy-item-preview" class="avatar-view" style="min-height:120px;padding:12px;margin:12px 0"></div>
+        <div style="font-size:1.2rem;font-weight:700;color:var(--accent);margin:8px 0">
+          <span class="chip-icon" style="display:inline-flex;width:20px;height:20px;font-size:0.6rem;vertical-align:middle">M</span>
+          <span id="buy-item-price">0</span> マコチップ
+        </div>
+        <div class="text-sm text-muted" id="buy-balance-info"></div>
+        <div style="margin-top:16px;display:flex;gap:8px">
+          <button class="btn btn-accent" style="flex:1" id="buy-confirm-btn">購入する</button>
+          <button class="btn btn-outline" style="flex:1" onclick="this.closest('.popup-overlay').classList.remove('show')">やめる</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/makochip.js"></script>
+  <script src="js/avatar-items.js"></script>
+  <script src="js/avatar.js"></script>
+  <script>
+  (function() {
+    'use strict';
+    var AS = window.AvatarSystem;
+    var MC = window.MakoChip;
+
+    var currentTab = 'dressup';
+    var dressupCategory = 'tops';
+    var shopCategory = 'tops';
+    var pendingBuyId = null;
+
+    // --- チップ残高表示 ---
+    function updateChipDisplay() {
+      var el = document.getElementById('chip-amount');
+      if (el && MC) el.textContent = MC.getBalance();
+    }
+
+    // --- アバター描画 ---
+    function refreshAvatar() {
+      AS.renderAvatar('avatar-container');
+      updateEquipLabel();
+    }
+
+    function updateEquipLabel() {
+      var eq = AS.getEquipped();
+      var parts = [];
+      AS.CATEGORIES.forEach(function(cat) {
+        if (eq[cat]) {
+          var item = AS.findItem(eq[cat]);
+          if (item && !item.isDefault) parts.push(item.name);
+        }
+      });
+      var label = document.getElementById('equip-label');
+      label.textContent = parts.length > 0 ? parts.join(' / ') : 'デフォルトスタイル';
+    }
+
+    // --- タブ切り替え ---
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        currentTab = this.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        document.getElementById('tab-dressup').classList.toggle('hidden', currentTab !== 'dressup');
+        document.getElementById('tab-shop').classList.toggle('hidden', currentTab !== 'shop');
+        if (currentTab === 'dressup') renderDressup();
+        else renderShop();
+      });
+    });
+
+    // --- カテゴリピル生成 ---
+    function buildCategoryPills(containerId, activeCat, onClick) {
+      var container = document.getElementById(containerId);
+      container.innerHTML = '';
+      AS.CATEGORIES.forEach(function(cat) {
+        var pill = document.createElement('button');
+        pill.className = 'category-pill' + (cat === activeCat ? ' active' : '');
+        pill.textContent = AS.CAT_LABELS[cat];
+        pill.addEventListener('click', function() { onClick(cat); });
+        container.appendChild(pill);
+      });
+    }
+
+    // --- 着せ替えタブ ---
+    function renderDressup() {
+      buildCategoryPills('dressup-categories', dressupCategory, function(cat) {
+        dressupCategory = cat;
+        renderDressup();
+      });
+
+      var grid = document.getElementById('dressup-grid');
+      var empty = document.getElementById('dressup-empty');
+      grid.innerHTML = '';
+
+      var wardrobe = AS.getWardrobe();
+      var eq = AS.getEquipped();
+      var items = AS.getItemsByCategory(dressupCategory).filter(function(item) {
+        return wardrobe.indexOf(item.id) !== -1;
+      });
+
+      if (items.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      items.forEach(function(item) {
+        var isEquipped = eq[item.category] === item.id;
+        var card = document.createElement('div');
+        card.className = 'item-card' + (isEquipped ? ' equipped' : '');
+        card.innerHTML =
+          '<div class="item-preview">' + AS.renderItemPreview(item) + '</div>' +
+          '<div class="item-name">' + item.name + '</div>' +
+          (isEquipped ? '<div class="text-xs" style="color:var(--accent)">タップで外す</div>' : '<div class="text-xs text-muted">タップで装備</div>');
+        card.addEventListener('click', function() {
+          if (isEquipped) {
+            AS.unequipItem(item.category);
+          } else {
+            AS.equipItem(item.id);
+          }
+          refreshAvatar();
+          renderDressup();
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    // --- ショップタブ ---
+    function renderShop() {
+      buildCategoryPills('shop-categories', shopCategory, function(cat) {
+        shopCategory = cat;
+        renderShop();
+      });
+
+      var grid = document.getElementById('shop-grid');
+      var empty = document.getElementById('shop-empty');
+      grid.innerHTML = '';
+
+      var wardrobe = AS.getWardrobe();
+      var balance = MC ? MC.getBalance() : 0;
+      var items = AS.getItemsByCategory(shopCategory);
+
+      // Show all items: owned ones with badge, unowned with buy button
+      var hasUnowned = false;
+      items.forEach(function(item) {
+        var isOwned = wardrobe.indexOf(item.id) !== -1;
+        var canAfford = balance >= item.price;
+        var card = document.createElement('div');
+
+        if (isOwned) {
+          card.className = 'item-card owned';
+          card.innerHTML =
+            '<div class="item-preview">' + AS.renderItemPreview(item) + '</div>' +
+            '<div class="item-name">' + item.name + '</div>' +
+            '<div class="purchased-badge">購入済み</div>';
+        } else {
+          hasUnowned = true;
+          card.className = 'item-card' + (canAfford ? '' : ' locked');
+          card.innerHTML =
+            '<div class="item-preview">' + AS.renderItemPreview(item) + '</div>' +
+            '<div class="item-name">' + item.name + '</div>' +
+            '<div class="item-price"><span class="mini-chip">M</span>' + item.price + '</div>' +
+            '<button class="buy-btn"' + (canAfford ? '' : ' disabled') + '>' +
+              (canAfford ? '購入する' : 'チップ不足') +
+            '</button>';
+
+          if (canAfford) {
+            card.querySelector('.buy-btn').addEventListener('click', function(e) {
+              e.stopPropagation();
+              showBuyPopup(item.id);
+            });
+          }
+        }
+        grid.appendChild(card);
+      });
+
+      empty.style.display = (!hasUnowned && items.length > 0) ? 'block' : 'none';
+      if (items.length === 0) empty.style.display = 'none';
+    }
+
+    // --- 購入ポップアップ ---
+    function showBuyPopup(itemId) {
+      var item = AS.findItem(itemId);
+      if (!item) return;
+      pendingBuyId = itemId;
+      document.getElementById('buy-item-name').textContent = item.name;
+      document.getElementById('buy-item-preview').innerHTML = AS.renderItemPreview(item);
+      document.getElementById('buy-item-price').textContent = item.price;
+      var bal = MC ? MC.getBalance() : 0;
+      document.getElementById('buy-balance-info').textContent = '現在の残高: ' + bal + ' Ⓜ → 購入後: ' + (bal - item.price) + ' Ⓜ';
+      document.getElementById('buy-popup').classList.add('show');
+    }
+
+    document.getElementById('buy-confirm-btn').addEventListener('click', function() {
+      if (!pendingBuyId) return;
+      var result = AS.buyItem(pendingBuyId);
+      document.getElementById('buy-popup').classList.remove('show');
+      if (result.ok) {
+        showToast(result.msg, 'success');
+        // Auto-equip the purchased item
+        AS.equipItem(pendingBuyId);
+        refreshAvatar();
+        updateChipDisplay();
+        if (currentTab === 'shop') renderShop();
+        else renderDressup();
+      } else {
+        showToast(result.msg, 'error');
+      }
+      pendingBuyId = null;
+    });
+
+    // --- Toast ---
+    function showToast(msg, type) {
+      var container = document.getElementById('toast-container');
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + (type || '');
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(function() { toast.remove(); }, 3000);
+    }
+
+    // --- 初期化 ---
+    AS.initDefaults();
+    refreshAvatar();
+    updateChipDisplay();
+    renderDressup();
+  })();
+  </script>
+</body>
+</html>

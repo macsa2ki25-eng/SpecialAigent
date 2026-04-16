@@ -13,6 +13,9 @@
       <a href="index.html">ホーム</a>
       <a href="study.html">学習</a>
       <a href="stats.html" class="active">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
     </nav>
   </header>
 
@@ -274,6 +277,7 @@
 
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
+  <script src="js/makochip.js"></script>
   <script>
   (function() {
     'use strict';
@@ -535,6 +539,12 @@
       localStorage.setItem('statsVisited', 'true');
       document.getElementById('stats-help-popup').classList.add('show');
     }
+
+    // マコチップ残高表示
+    (function() {
+      var el = document.getElementById('chip-amount');
+      if (el && window.MakoChip) el.textContent = MakoChip.getBalance();
+    })();
   })();
   </script>
 </body>

@@ -13,6 +13,9 @@
     <nav>
       <a href="index.html" class="active">ホーム</a>
       <a href="stats.html">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
     </nav>
   </header>
 
@@ -191,10 +194,22 @@
     <p>東高３年 英単語やったんぞ サイト &copy; 2026</p>
   </footer>
 
+  <!-- ログインボーナスポップアップ -->
+  <div class="popup-overlay" id="login-bonus-popup">
+    <div class="popup login-bonus-popup">
+      <div class="login-bonus-icon">M</div>
+      <h2>ログインボーナス！</h2>
+      <div class="login-bonus-amount" id="login-bonus-chips">+5 マコチップ</div>
+      <div class="login-bonus-streak" id="login-bonus-streak">1日連続ログイン中！</div>
+      <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">やったね！</button>
+    </div>
+  </div>
+
   <div class="toast-container" id="toast-container"></div>
 
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
+  <script src="js/makochip.js"></script>
   <script>
   (function () {
     'use strict';
@@ -488,10 +503,32 @@
       }, 500);
     }
 
+    // --- マコチップ残高表示 ---
+    function updateChipDisplay() {
+      var el = document.getElementById('chip-amount');
+      if (el && window.MakoChip) el.textContent = MakoChip.getBalance();
+    }
+
+    // --- ログインボーナスチェック ---
+    function checkLoginBonus() {
+      if (!window.MakoChip) return;
+      var result = MakoChip.checkLoginBonus();
+      if (result) {
+        document.getElementById('login-bonus-chips').textContent = '+' + result.chips + ' マコチップ';
+        document.getElementById('login-bonus-streak').textContent = result.streak + '日連続ログイン中！';
+        setTimeout(function() {
+          document.getElementById('login-bonus-popup').classList.add('show');
+        }, 600);
+        updateChipDisplay();
+      }
+    }
+
     // --- 初期化 ---
     applySettings();
     renderRanges();
     updateSummary();
+    updateChipDisplay();
+    checkLoginBonus();
   })();
   </script>
 

@@ -13,6 +13,9 @@
       <a href="index.html">ホーム</a>
       <a href="study.html" class="active">学習</a>
       <a href="stats.html">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
     </nav>
   </header>
 
@@ -146,6 +149,11 @@
           <div class="summary-item"><div class="num" id="final-wrong">0</div><div class="label">不正解</div></div>
           <div class="summary-item"><div class="num" id="final-total">0</div><div class="label">合計</div></div>
         </div>
+        <div class="chip-reward-summary" id="session-rewards" style="display:none">
+          <div class="chip-reward-title">獲得マコチップ</div>
+          <div id="reward-list"></div>
+          <div class="chip-reward-total">合計: <span id="reward-total">0</span> Ⓜ</div>
+        </div>
         <div class="help-bubble success mt-16">
           この調子で毎日続けよう！明日また復習すべき単語が出てくるから、アプリを開いて学習してね。統計ページで自分の成長を確認できるよ！
         </div>
@@ -188,6 +196,7 @@
 
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
+  <script src="js/makochip.js"></script>
   <script>
   (function() {
     'use strict';
@@ -594,6 +603,15 @@
         if (grade === 1) queue.push(currentWord.no);
         gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('recommended'));
 
+        // マコチップ: 問題回答記録
+        if (window.MakoChip) {
+          var chipReward = MakoChip.recordQuestion();
+          if (chipReward) {
+            showToast('+' + chipReward.chips + ' マコチップ（20問クリア！）', 'chip');
+          }
+          updateChipDisplay();
+        }
+
         // Reset spelling display for next question
         if (isSpelling) {
           spellingDisplay.style.borderColor = '';
@@ -618,9 +636,38 @@
 
       // Increment session count
       localStorage.setItem(STUDY_COUNT_KEY, (sessionCount + 1).toString());
+
+      // マコチップ: セッション完了ボーナス
+      if (window.MakoChip) {
+        var rewards = [];
+        var accBonus = MakoChip.checkAccuracyBonus(sessionCorrect, sessionWrong);
+        if (accBonus) rewards.push({ label: accBonus.reason, chips: accBonus.chips });
+        var masteryBonus = MakoChip.checkRangeMastery(rangeId, range.name, range.start, range.end);
+        if (masteryBonus) rewards.push({ label: '範囲制覇「' + masteryBonus.rangeName + '」', chips: masteryBonus.chips });
+
+        if (rewards.length > 0) {
+          var rewardsDiv = document.getElementById('session-rewards');
+          var listDiv = document.getElementById('reward-list');
+          var totalChips = 0;
+          listDiv.innerHTML = '';
+          rewards.forEach(function(r) {
+            totalChips += r.chips;
+            listDiv.innerHTML += '<div class="chip-reward-row"><span>' + r.label + '</span><span class="reward-amount">+' + r.chips + ' Ⓜ</span></div>';
+          });
+          document.getElementById('reward-total').textContent = totalChips;
+          rewardsDiv.style.display = 'block';
+        }
+        updateChipDisplay();
+      }
     }
 
     document.getElementById('study-again-btn').addEventListener('click', () => window.location.reload());
+
+    // マコチップ残高表示
+    function updateChipDisplay() {
+      var el = document.getElementById('chip-amount');
+      if (el && window.MakoChip) el.textContent = MakoChip.getBalance();
+    }
 
     function showToast(msg, type) {
       const container = document.getElementById('toast-container');
@@ -644,6 +691,8 @@
     if (sessionCount === 0) {
       setTimeout(() => document.getElementById('grade-popup').classList.add('show'), 1000);
     }
+
+    updateChipDisplay();
   })();
   </script>
 </body>
