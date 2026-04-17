@@ -110,13 +110,6 @@
 
         <div class="text-center text-sm text-muted mt-4" id="card-info"></div>
 
-        <!-- 評価ボタンの説明 -->
-        <div class="help-bubble mt-8" id="grade-guide">
-          <strong>下のボタンで「自分の手ごたえ」を評価してね！</strong><br>
-          ボタンの下の時間は「次にこの単語が出題されるまでの間隔」だよ。<br>
-          正解しても「難しかった」と思ったら「難しい」を押してOK！
-        </div>
-
         <div class="grade-buttons" id="grade-buttons">
           <button class="grade-btn again" data-grade="1">
             <span class="grade-label">もう一回</span>
@@ -136,6 +129,13 @@
           </button>
         </div>
         <div class="text-xs text-muted text-center mt-4" id="grade-hint"></div>
+
+        <!-- 評価ボタンの説明 -->
+        <div class="help-bubble mt-8" id="grade-guide">
+          <strong>下のボタンで「自分の手ごたえ」を評価してね！</strong><br>
+          ボタンの下の時間は「次にこの単語が出題されるまでの間隔」だよ。<br>
+          正解しても「難しかった」と思ったら「難しい」を押してOK！
+        </div>
       </div>
     </div>
 
@@ -298,7 +298,7 @@
     if (isSpelling) {
       firstTimeGuide.innerHTML = '日本語の意味を見て、英単語のスペルを<strong>下の専用キーボード</strong>で入力しよう！予測変換は出ないから、自分の力で正確に入力してね。「決定」ボタンで回答！';
     } else {
-      firstTimeGuide.textContent = '下に表示される問題を読んで、正しい答えを選択肢から選んでタップしてね！';
+      firstTimeGuide.textContent = '';
     }
 
     // Show/hide spelling vs choice UI

@@ -141,6 +141,7 @@
     'use strict';
     var RS = window.RankingSync;
     var currentSort = 'totalQuestions';
+    var lastStudents = [];
 
     function updateChipDisplay() {
       var el = document.getElementById('chip-amount');
@@ -214,15 +215,14 @@
       var status = document.getElementById('api-status');
       RS.fetchRanking(function(students, err) {
         if (err) {
-          status.className = 'api-status disconnected';
-          status.textContent = '接続エラー';
+          if (status) { status.className = 'api-status disconnected'; status.textContent = '接続エラー'; }
           document.getElementById('ranking-body').innerHTML =
             '<tr><td colspan="5" class="text-muted" style="padding:24px">データを取得できませんでした。<br>API URLを確認してね。</td></tr>';
           return;
         }
-        status.className = 'api-status connected';
-        status.textContent = '接続OK';
-        renderRanking(students);
+        if (status) { status.className = 'api-status connected'; status.textContent = '接続OK'; }
+        lastStudents = students;
+        renderRanking(lastStudents);
       });
     }
 
@@ -287,7 +287,11 @@
       currentSort = btn.dataset.sort;
       document.querySelectorAll('#sort-pills button').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      loadRanking();
+      if (lastStudents.length > 0) {
+        renderRanking(lastStudents);
+      } else {
+        loadRanking();
+      }
     });
 
     // --- 更新ボタン ---
