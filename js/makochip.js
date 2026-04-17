@@ -4,6 +4,7 @@
   'use strict';
 
   var CHIP_KEY = 'makoChips';
+  var TOTAL_EARNED_KEY = 'makoChipsTotalEarned';
   var LOGIN_KEY = 'makoLoginHistory';
   var STREAK_KEY = 'makoLoginStreak';
   var LAST_LOGIN_KEY = 'makoLastLogin';
@@ -27,8 +28,14 @@
   function addChips(amount, reason) {
     var bal = getBalance();
     setBalance(bal + amount);
+    var totalEarned = parseInt(localStorage.getItem(TOTAL_EARNED_KEY) || '0', 10) + amount;
+    localStorage.setItem(TOTAL_EARNED_KEY, totalEarned.toString());
     logEarning(amount, reason);
     return bal + amount;
+  }
+
+  function getTotalEarned() {
+    return parseInt(localStorage.getItem(TOTAL_EARNED_KEY) || '0', 10);
   }
 
   function spendChips(amount, reason) {
@@ -211,6 +218,7 @@
     checkRangeMastery: checkRangeMastery,
     checkAccuracyBonus: checkAccuracyBonus,
     getLog: getLog,
-    getSessionQuestionCount: getSessionQuestionCount
+    getSessionQuestionCount: getSessionQuestionCount,
+    getTotalEarned: getTotalEarned
   };
 })();

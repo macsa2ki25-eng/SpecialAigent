@@ -41,7 +41,7 @@
     try { loginHistory = JSON.parse(localStorage.getItem('makoLoginHistory') || '[]'); } catch(e) {}
     var totalQuestions = parseInt(localStorage.getItem('makoQuestionCount') || '0', 10);
     var streak         = parseInt(localStorage.getItem('makoLoginStreak')   || '0', 10);
-    var chips          = parseInt(localStorage.getItem('makoChips')         || '0', 10);
+    var chips          = parseInt(localStorage.getItem('makoChipsTotalEarned') || '0', 10);
     var lastLogin      = localStorage.getItem('makoLastLogin') || '';
 
     return {
