@@ -1,33 +1,35 @@
 // ===== 東高３年 英単語やったんぞ - ランキングAPI =====
-// このコードをGoogle Apps Scriptにコピペしてデプロイしてください。
 //
-// 【セットアップ手順】
-// 1. https://script.google.com にアクセス
-// 2. 「新しいプロジェクト」をクリック
-// 3. このコードを貼り付けて保存
-// 4. 「デプロイ」→「新しいデプロイ」
-// 5. 種類：「ウェブアプリ」を選択
-// 6. アクセスできるユーザー：「全員」に設定
-// 7. 「デプロイ」→ 表示されたURLをコピー
-// 8. そのURLをアプリの設定画面（ランキングページ）に貼り付ける
+// 【セットアップ手順】（スプレッドシートからスクリプトを作成する方法）
+//
+// 1. Google スプレッドシートを新規作成する
+//    https://sheets.new にアクセスして新しいスプレッドシートを作る
+//
+// 2. メニューから「拡張機能」→「Apps Script」を開く
+//
+// 3. 表示されたエディタに、このコードをすべて貼り付けて保存する
+//    （デフォルトの function myFunction() {} は消してからペースト）
+//
+// 4. 「デプロイ」→「新しいデプロイ」をクリック
+//    - 種類：「ウェブアプリ」を選択
+//    - 次のユーザーとして実行：「自分」
+//    - アクセスできるユーザー：「全員」に設定
+//
+// 5. 「デプロイ」→ 表示されたURLをコピー
+//
+// 6. そのURLをアプリの js/sync.js の API_URL に設定する
+//
+// 【重要】
+// この方法なら、スクリプトがスプレッドシートに紐づくため、
+// 全生徒のデータが必ず1つのスプレッドシートに保存されます。
+// 「スクリプトのみ」で作成すると毎回新しいシートが生成されるので注意！
 //
 // 【注意】初回デプロイ時にGoogleアカウントの権限承認が必要です。
 
 var SHEET_NAME = 'rankings';
 
 function getSheet() {
-  var props = PropertiesService.getScriptProperties();
-  var ssId = props.getProperty('SPREADSHEET_ID');
-  var ss;
-
-  if (ssId) {
-    try { ss = SpreadsheetApp.openById(ssId); } catch(e) { ss = null; }
-  }
-
-  if (!ss) {
-    ss = SpreadsheetApp.create('英単語やったんぞ ランキングデータ');
-    props.setProperty('SPREADSHEET_ID', ss.getId());
-  }
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
 
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
@@ -123,7 +125,6 @@ function getRanking() {
   var students = [];
 
   for (var i = 1; i < rows.length; i++) {
-    // ランキングには個人情報（氏名・番号）を含めず、ニックネームのみ返す
     students.push({
       nickname:       rows[i][1],
       loginDays:      parseInt(rows[i][6]) || 0,
