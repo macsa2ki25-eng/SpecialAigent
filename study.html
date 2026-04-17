@@ -233,8 +233,8 @@
       document.getElementById('question-label').textContent = 'この日本語の意味の英単語のスペルを入力しよう！';
       document.getElementById('answer-label').textContent = '下のキーボードで英単語を入力してね';
     } else {
-      document.getElementById('question-label').textContent = mode === 'jp2en' ? 'この日本語の意味の英単語は？' : 'この英単語の日本語の意味は？';
-      document.getElementById('answer-label').textContent = mode === 'jp2en' ? '正しい英単語を選んでね' : '正しい日本語を選んでね';
+      document.getElementById('question-label').style.display = 'none';
+      document.getElementById('answer-label').style.display = 'none';
     }
 
     const rangeWords = window.WORDS.filter(w => w.no >= range.start && w.no <= range.end);
@@ -538,7 +538,13 @@
       const isCorrect = chosen.no === correctAnswer.no;
       answerGrid.querySelectorAll('.answer-btn').forEach(b => {
         b.classList.add('disabled');
-        if (parseInt(b.dataset.no) === correctAnswer.no) b.classList.add('correct');
+        var wordNo = parseInt(b.dataset.no);
+        if (wordNo === correctAnswer.no) b.classList.add('correct');
+        var word = getWord(wordNo);
+        if (word) {
+          b.innerHTML = '<span class="ans-en">' + escapeHtml(word.en) + '</span>' +
+                        '<span class="ans-ja">' + escapeHtml(word.ja) + '</span>';
+        }
       });
 
       if (isCorrect) {
@@ -553,9 +559,7 @@
         sessionWrong++;
       }
 
-      // Show correct pair
-      document.getElementById('correct-pair').innerHTML =
-        '<strong>' + correctAnswer.en + '</strong> ＝ ' + correctAnswer.ja;
+      document.getElementById('correct-pair').innerHTML = '';
 
       // Card info
       const card = cardData[currentWord.no];
