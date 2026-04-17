@@ -1294,3 +1294,58 @@ tr:hover { background: var(--gray-50); }
 }
 .api-status.connected { background: #e8f5e9; color: var(--success); }
 .api-status.disconnected { background: #ffebee; color: var(--danger); }
+
+/* --- ログインボーナス カレンダー --- */
+.login-calendar-wrap {
+  margin: 12px 0 4px;
+}
+.cal-month-title {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin-bottom: 6px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.cal-header-cell {
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  padding: 2px 0;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  min-height: 28px;
+}
+.cal-day.has-login { background: #fffde7; }
+.cal-day.today-bonus { background: #fff9c4; border: 1.5px solid #ffd54f; }
+.day-num {
+  font-size: 0.6rem;
+  color: var(--gray-500);
+  line-height: 1.2;
+}
+.day-stamp {
+  font-size: 0.85rem;
+  color: #f9a825;
+  font-weight: 900;
+  line-height: 1;
+}
+.cal-day.today-bonus .day-stamp {
+  animation: stamp-pop 0.7s cubic-bezier(.36,.07,.19,.97) 0.8s both;
+}
+@keyframes stamp-pop {
+  0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+  60%  { transform: scale(1.4) rotate(8deg); opacity: 1; }
+  80%  { transform: scale(0.85); }
+  100% { transform: scale(1) rotate(0); }
+}

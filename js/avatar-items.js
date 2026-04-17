@@ -2,6 +2,123 @@
 // 各アイテムは getSVG() で SVG パーツを返す
 window.AVATAR_ITEMS = [
 
+  // ========== HAIR ==========
+  {
+    id: 'hair_short_dark', name: 'ショートヘア', category: 'hair', price: 0, isDefault: true,
+    getSVG: function() {
+      var c = '#5D4037';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="' + c + '"/>' +
+        '<path d="M50,76 L50,90 Q52,95 58,94 L58,80 Z" fill="' + c + '"/>' +
+        '<path d="M150,76 L150,90 Q148,95 142,94 L142,80 Z" fill="' + c + '"/>';
+    }
+  },
+  {
+    id: 'hair_long_dark', name: 'ロングヘア', category: 'hair', price: 0, isDefault: true,
+    getSVG: function() {
+      var c = '#4A2C17';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M50,80 Q42,150 46,210 L62,210 Q58,150 58,84 Z" fill="' + c + '"/>' +
+        '<path d="M150,80 Q158,150 154,210 L138,210 Q142,150 142,84 Z" fill="' + c + '"/>' +
+        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="' + c + '"/>';
+    }
+  },
+  {
+    id: 'hair_bob', name: 'ボブヘア', category: 'hair', price: 25,
+    getSVG: function() {
+      var c = '#3E2723';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M50,80 L50,120 Q52,128 60,128 L60,84 Z" fill="' + c + '"/>' +
+        '<path d="M150,80 L150,120 Q148,128 140,128 L140,84 Z" fill="' + c + '"/>' +
+        '<path d="M60,122 Q100,132 140,122 L140,128 Q100,138 60,128 Z" fill="' + c + '"/>' +
+        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="' + c + '"/>';
+    }
+  },
+  {
+    id: 'hair_medium', name: 'ミディアムヘア', category: 'hair', price: 20,
+    getSVG: function() {
+      var c = '#5D4037';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M50,80 Q44,130 48,158 L62,158 Q58,130 58,84 Z" fill="' + c + '"/>' +
+        '<path d="M150,80 Q156,130 152,158 L138,158 Q142,130 142,84 Z" fill="' + c + '"/>' +
+        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="' + c + '"/>';
+    }
+  },
+  {
+    id: 'hair_twin_dark', name: 'ツインテール', category: 'hair', price: 30,
+    getSVG: function() {
+      var c = '#4A2C17';
+      return '<path d="M52,78 Q52,26 100,22 Q148,26 148,78 Q146,66 100,62 Q54,66 52,78 Z" fill="' + c + '"/>' +
+        '<path d="M62,74 Q72,54 100,52 Q128,54 138,74 L136,68 Q126,50 100,48 Q74,50 64,68 Z" fill="' + c + '"/>' +
+        '<circle cx="58" cy="90" r="8" fill="' + c + '"/>' +
+        '<circle cx="142" cy="90" r="8" fill="' + c + '"/>' +
+        '<path d="M52,92 Q36,135 38,178 Q40,202 52,207 Q62,202 64,178 Q66,135 66,92 Z" fill="' + c + '"/>' +
+        '<path d="M148,92 Q164,135 162,178 Q160,202 148,207 Q138,202 136,178 Q134,135 134,92 Z" fill="' + c + '"/>' +
+        '<circle cx="58" cy="90" r="5" fill="#E91E63"/>' +
+        '<circle cx="142" cy="90" r="5" fill="#E91E63"/>';
+    }
+  },
+  {
+    id: 'hair_ponytail', name: 'ポニーテール', category: 'hair', price: 30,
+    getSVG: function() {
+      var c = '#5D4037';
+      return '<path d="M52,80 Q52,26 100,22 Q148,26 148,80 Q146,70 100,66 Q54,70 52,80 Z" fill="' + c + '"/>' +
+        '<path d="M90,26 Q88,10 100,6 Q112,10 110,26 Z" fill="' + c + '"/>' +
+        '<path d="M88,22 Q84,52 90,90 L110,90 Q116,52 112,22 Z" fill="#4A2C17"/>' +
+        '<ellipse cx="100" cy="90" rx="8" ry="5" fill="#FDD835"/>' +
+        '<path d="M52,80 L52,102 Q54,108 60,106 L60,86 Z" fill="' + c + '"/>' +
+        '<path d="M148,80 L148,102 Q146,108 140,106 L140,86 Z" fill="' + c + '"/>' +
+        '<path d="M62,74 Q74,56 100,54 Q126,56 138,74 L136,68 Q124,50 100,48 Q76,50 64,68 Z" fill="' + c + '"/>';
+    }
+  },
+  {
+    id: 'hair_short_blonde', name: '金髪ショート', category: 'hair', price: 50,
+    getSVG: function() {
+      var c = '#FFCA28'; var s = '#F9A825';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="' + c + '"/>' +
+        '<path d="M50,76 L50,90 Q52,95 58,94 L58,80 Z" fill="' + s + '"/>' +
+        '<path d="M150,76 L150,90 Q148,95 142,94 L142,80 Z" fill="' + s + '"/>' +
+        '<path d="M72,32 Q78,28 82,34" stroke="#FFF9C4" stroke-width="2" fill="none" stroke-linecap="round"/>';
+    }
+  },
+  {
+    id: 'hair_long_pink', name: 'ピンクロング', category: 'hair', price: 80,
+    getSVG: function() {
+      var c = '#F06292';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M50,80 Q42,150 46,210 L62,210 Q58,150 58,84 Z" fill="' + c + '"/>' +
+        '<path d="M150,80 Q158,150 154,210 L138,210 Q142,150 142,84 Z" fill="' + c + '"/>' +
+        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="' + c + '"/>' +
+        '<path d="M72,30 Q78,26 82,32" stroke="#FFCDD2" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+        '<path d="M90,24 Q96,20 100,24" stroke="#FFCDD2" stroke-width="2" fill="none" stroke-linecap="round"/>';
+    }
+  },
+  {
+    id: 'hair_ponytail_silver', name: 'シルバーポニテ', category: 'hair', price: 70,
+    getSVG: function() {
+      var c = '#B0BEC5'; var s = '#78909C';
+      return '<path d="M52,80 Q52,26 100,22 Q148,26 148,80 Q146,70 100,66 Q54,70 52,80 Z" fill="' + c + '"/>' +
+        '<path d="M90,26 Q88,10 100,6 Q112,10 110,26 Z" fill="' + c + '"/>' +
+        '<path d="M88,22 Q84,52 90,90 L110,90 Q116,52 112,22 Z" fill="' + s + '"/>' +
+        '<ellipse cx="100" cy="90" rx="8" ry="5" fill="#E1F5FE"/>' +
+        '<path d="M52,80 L52,102 Q54,108 60,106 L60,86 Z" fill="' + c + '"/>' +
+        '<path d="M148,80 L148,102 Q146,108 140,106 L140,86 Z" fill="' + c + '"/>' +
+        '<path d="M62,74 Q74,56 100,54 Q126,56 138,74 L136,68 Q124,50 100,48 Q76,50 64,68 Z" fill="' + c + '"/>';
+    }
+  },
+  {
+    id: 'hair_long_red', name: '赤ロング', category: 'hair', price: 90,
+    getSVG: function() {
+      var c = '#E53935'; var s = '#B71C1C';
+      return '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="' + c + '"/>' +
+        '<path d="M50,80 Q42,150 46,210 L62,210 Q58,150 58,84 Z" fill="' + c + '"/>' +
+        '<path d="M150,80 Q158,150 154,210 L138,210 Q142,150 142,84 Z" fill="' + c + '"/>' +
+        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="' + c + '"/>' +
+        '<path d="M72,30 Q78,26 82,32" stroke="#FFCDD2" stroke-width="2" fill="none" stroke-linecap="round"/>';
+    }
+  },
+
   // ========== TOPS ==========
   {
     id: 'tshirt_white', name: '白Tシャツ', category: 'tops', price: 0, isDefault: true,

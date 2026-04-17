@@ -5,11 +5,11 @@
   var WARDROBE_KEY = 'makoAvatarOwned';
   var EQUIPPED_KEY = 'makoAvatarEquipped';
 
-  var CATEGORIES = ['tops','bottoms','headwear','accessory','shoes'];
-  var CAT_LABELS = {tops:'トップス',bottoms:'ボトムス',headwear:'帽子',accessory:'アクセ',shoes:'靴'};
+  var CATEGORIES = ['hair','tops','bottoms','headwear','accessory','shoes'];
+  var CAT_LABELS = {hair:'髪型',tops:'トップス',bottoms:'ボトムス',headwear:'帽子',accessory:'アクセ',shoes:'靴'};
 
   // --- デフォルト装備 ---
-  var DEFAULTS = {tops:'tshirt_white',bottoms:'shorts_blue',shoes:'sneakers_white'};
+  var DEFAULTS = {hair:'hair_short_dark',tops:'tshirt_white',bottoms:'shorts_blue',shoes:'sneakers_white'};
 
   // --- 所持品管理 ---
   function getWardrobe() {
@@ -113,10 +113,6 @@
     return '' +
       // 頭
       '<circle cx="100" cy="80" r="52" fill="#FFDBB4"/>' +
-      // 髪（後ろ）
-      '<path d="M48,75 Q48,28 100,28 Q152,28 152,75 L152,60 Q152,20 100,18 Q48,20 48,60 Z" fill="#5D4037"/>' +
-      // 髪（前髪）
-      '<path d="M52,68 Q60,42 100,38 Q140,42 148,68 L148,58 Q140,30 100,28 Q60,30 52,58 Z" fill="#5D4037"/>' +
       // 左目
       '<ellipse cx="80" cy="82" rx="6" ry="7" fill="#333"/>' +
       // 右目
@@ -164,7 +160,11 @@
     // Layer 5: 頭
     svg += '<g id="layer-head">' + headSVG() + '</g>';
 
-    // Layer 6: ヘッドウェア
+    // Layer 6: 髪型
+    var hairItem = eq.hair ? findItem(eq.hair) : findItem(DEFAULTS.hair);
+    if (hairItem) svg += '<g id="layer-hair">' + hairItem.getSVG() + '</g>';
+
+    // Layer 7: ヘッドウェア
     var hatItem = eq.headwear ? findItem(eq.headwear) : null;
     if (hatItem) svg += '<g id="layer-headwear">' + hatItem.getSVG() + '</g>';
 

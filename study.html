@@ -605,8 +605,8 @@
         if (grade === 1) queue.push(currentWord.no);
         gradeButtons.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('recommended'));
 
-        // マコチップ: 問題回答記録
-        if (window.MakoChip) {
+        // マコチップ: 問題回答記録（もう一回はノーカウント）
+        if (window.MakoChip && grade !== 1) {
           var chipReward = MakoChip.recordQuestion();
           if (chipReward) {
             showToast('+' + chipReward.chips + ' マコチップ（20問クリア！）', 'chip');

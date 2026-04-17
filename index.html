@@ -202,6 +202,7 @@
       <h2>ログインボーナス！</h2>
       <div class="login-bonus-amount" id="login-bonus-chips">+5 マコチップ</div>
       <div class="login-bonus-streak" id="login-bonus-streak">1日連続ログイン中！</div>
+      <div id="login-calendar-area" class="login-calendar-wrap"></div>
       <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">やったね！</button>
     </div>
   </div>
@@ -518,11 +519,43 @@
       if (result) {
         document.getElementById('login-bonus-chips').textContent = '+' + result.chips + ' マコチップ';
         document.getElementById('login-bonus-streak').textContent = result.streak + '日連続ログイン中！';
+        document.getElementById('login-calendar-area').innerHTML = buildLoginCalendar();
         setTimeout(function() {
           document.getElementById('login-bonus-popup').classList.add('show');
         }, 600);
         updateChipDisplay();
       }
+    }
+
+    function buildLoginCalendar() {
+      var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+      var today = new Date().toISOString().slice(0, 10);
+      var history = MakoChip.getLoginHistory();
+      var histSet = {};
+      history.forEach(function(d) { histSet[d] = true; });
+
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = now.getMonth();
+      var daysInMonth = new Date(year, month + 1, 0).getDate();
+      var firstDow = new Date(year, month, 1).getDay();
+
+      var html = '<div class="cal-month-title">' + (month + 1) + '月 ' + year + '</div>';
+      html += '<div class="calendar-grid">';
+      ['日','月','火','水','木','金','土'].forEach(function(d) {
+        html += '<div class="cal-header-cell">' + d + '</div>';
+      });
+      for (var i = 0; i < firstDow; i++) html += '<div class="cal-day"></div>';
+      for (var d = 1; d <= daysInMonth; d++) {
+        var ds = year + '-' + pad(month + 1) + '-' + pad(d);
+        var hasLogin = !!histSet[ds];
+        var isToday = ds === today;
+        var cls = 'cal-day' + (hasLogin ? ' has-login' : '') + (isToday ? ' today-bonus' : '');
+        html += '<div class="' + cls + '"><span class="day-num">' + d + '</span>' +
+          (hasLogin ? '<span class="day-stamp">M</span>' : '') + '</div>';
+      }
+      html += '</div>';
+      return html;
     }
 
     // --- ランキング同期（バックグラウンド） ---
