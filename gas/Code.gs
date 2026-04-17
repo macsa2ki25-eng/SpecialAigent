@@ -23,8 +23,10 @@ function getSheet() {
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(['id', 'nickname', 'loginDays', 'totalQuestions', 'streak', 'chips', 'lastActive', 'updatedAt']);
-    sheet.getRange(1, 1, 1, 8).setFontWeight('bold');
+    // 教員向け個人情報列（grade, cls, number, realName）を含む
+    sheet.appendRow(['id', 'nickname', 'grade', 'cls', 'number', 'realName',
+                     'loginDays', 'totalQuestions', 'streak', 'chips', 'lastActive', 'updatedAt']);
+    sheet.getRange(1, 1, 1, 12).setFontWeight('bold');
   }
   return sheet;
 }
@@ -86,16 +88,20 @@ function syncStudent(data) {
   var rowData = [
     data.id,
     data.nickname,
-    parseInt(data.loginDays) || 0,
+    data.grade    || '',
+    data.cls      || '',
+    data.number   || '',
+    data.realName || '',
+    parseInt(data.loginDays)      || 0,
     parseInt(data.totalQuestions) || 0,
-    parseInt(data.streak) || 0,
-    parseInt(data.chips) || 0,
+    parseInt(data.streak)         || 0,
+    parseInt(data.chips)          || 0,
     data.lastActive || now.slice(0, 10),
     now
   ];
 
   if (rowIndex > 0) {
-    sheet.getRange(rowIndex, 1, 1, 8).setValues([rowData]);
+    sheet.getRange(rowIndex, 1, 1, 12).setValues([rowData]);
   } else {
     sheet.appendRow(rowData);
   }
@@ -109,13 +115,14 @@ function getRanking() {
   var students = [];
 
   for (var i = 1; i < rows.length; i++) {
+    // ランキングには個人情報（氏名・番号）を含めず、ニックネームのみ返す
     students.push({
-      nickname: rows[i][1],
-      loginDays: parseInt(rows[i][2]) || 0,
-      totalQuestions: parseInt(rows[i][3]) || 0,
-      streak: parseInt(rows[i][4]) || 0,
-      chips: parseInt(rows[i][5]) || 0,
-      lastActive: rows[i][6] || ''
+      nickname:       rows[i][1],
+      loginDays:      parseInt(rows[i][6]) || 0,
+      totalQuestions: parseInt(rows[i][7]) || 0,
+      streak:         parseInt(rows[i][8]) || 0,
+      chips:          parseInt(rows[i][9]) || 0,
+      lastActive:     rows[i][10] || ''
     });
   }
 

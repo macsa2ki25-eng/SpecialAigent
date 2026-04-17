@@ -22,19 +22,33 @@
   <main class="container">
     <!-- 未設定時の案内 -->
     <div class="card" id="setup-card" style="display:none">
-      <div class="card-title">ランキング設定</div>
+      <div class="card-title">ランキング参加登録</div>
       <div class="help-bubble">
-        ランキング機能を使うには、<strong>ニックネーム</strong>と<strong>API URL</strong>の設定が必要です。<br>
-        API URLは先生から共有されたURLを入力してね！
+        ランキングに参加するために、以下の情報を入力してください。<br>
+        <strong>氏名・クラス情報は先生だけが確認できます。ランキングにはニックネームのみ表示されます。</strong>
       </div>
 
-      <div class="form-group mt-8">
-        <label for="setup-nickname">ニックネーム：</label>
-        <input type="text" id="setup-nickname" class="form-control" placeholder="例：まこ" maxlength="12">
+      <div class="form-row mt-8">
+        <div class="form-group">
+          <label for="setup-grade">学年：</label>
+          <input type="number" id="setup-grade" class="form-control" placeholder="3" min="1" max="6" style="width:80px">
+        </div>
+        <div class="form-group">
+          <label for="setup-class">クラス：</label>
+          <input type="number" id="setup-class" class="form-control" placeholder="2" min="1" max="10" style="width:80px">
+        </div>
+        <div class="form-group">
+          <label for="setup-number">出席番号：</label>
+          <input type="number" id="setup-number" class="form-control" placeholder="15" min="1" max="50" style="width:80px">
+        </div>
       </div>
       <div class="form-group mt-8">
-        <label for="setup-api-url">API URL（先生から共有）：</label>
-        <input type="text" id="setup-api-url" class="form-control" placeholder="https://script.google.com/macros/s/...">
+        <label for="setup-realname">氏名（本名）：</label>
+        <input type="text" id="setup-realname" class="form-control" placeholder="例：東高 太郎" maxlength="20">
+      </div>
+      <div class="form-group mt-8">
+        <label for="setup-nickname">ニックネーム（ランキングに表示される名前）：</label>
+        <input type="text" id="setup-nickname" class="form-control" placeholder="例：まこたん" maxlength="12">
       </div>
       <button class="btn btn-accent btn-block mt-8" id="setup-save-btn">設定して参加する！</button>
     </div>
@@ -85,15 +99,29 @@
 
       <!-- 設定変更 -->
       <details class="mt-16" style="font-size:0.85rem">
-        <summary style="cursor:pointer;color:var(--gray-600)">設定変更</summary>
+        <summary style="cursor:pointer;color:var(--gray-600)">登録情報を変更する</summary>
         <div class="api-setup mt-8">
+          <div class="form-row">
+            <div class="form-group">
+              <label>学年：</label>
+              <input type="number" id="edit-grade" min="1" max="6" style="width:80px">
+            </div>
+            <div class="form-group">
+              <label>クラス：</label>
+              <input type="number" id="edit-class" min="1" max="10" style="width:80px">
+            </div>
+            <div class="form-group">
+              <label>出席番号：</label>
+              <input type="number" id="edit-number" min="1" max="50" style="width:80px">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>氏名：</label>
+            <input type="text" id="edit-realname" maxlength="20">
+          </div>
           <div class="form-group">
             <label>ニックネーム：</label>
             <input type="text" id="edit-nickname" maxlength="12">
-          </div>
-          <div class="form-group">
-            <label>API URL：</label>
-            <input type="text" id="edit-api-url">
           </div>
           <button class="btn btn-sm btn-primary mt-8" id="edit-save-btn">保存</button>
           <span class="api-status" id="api-status"></span>
@@ -133,8 +161,12 @@
       if (RS.isConfigured()) {
         document.getElementById('setup-card').style.display = 'none';
         document.getElementById('ranking-main').style.display = 'block';
+        // 編集フォームに現在の値をセット
+        document.getElementById('edit-grade').value    = RS.getGrade();
+        document.getElementById('edit-class').value    = RS.getClass();
+        document.getElementById('edit-number').value   = RS.getNumber();
+        document.getElementById('edit-realname').value = RS.getRealName();
         document.getElementById('edit-nickname').value = RS.getNickname();
-        document.getElementById('edit-api-url').value = RS.getApiUrl();
         loadRanking();
         RS.syncToServer();
       } else {
@@ -143,26 +175,36 @@
       }
     }
 
+    function validateAndSave(grade, cls, number, realName, nickname) {
+      if (!grade)    { alert('学年を入力してね！'); return false; }
+      if (!cls)      { alert('クラスを入力してね！'); return false; }
+      if (!number)   { alert('出席番号を入力してね！'); return false; }
+      if (!realName) { alert('氏名を入力してね！'); return false; }
+      if (!nickname) { alert('ニックネームを入力してね！'); return false; }
+      RS.setProfile(nickname, grade, cls, number, realName);
+      return true;
+    }
+
     // --- 初期設定保存 ---
     document.getElementById('setup-save-btn').addEventListener('click', function() {
+      var grade    = document.getElementById('setup-grade').value.trim();
+      var cls      = document.getElementById('setup-class').value.trim();
+      var number   = document.getElementById('setup-number').value.trim();
+      var realName = document.getElementById('setup-realname').value.trim();
       var nickname = document.getElementById('setup-nickname').value.trim();
-      var apiUrl = document.getElementById('setup-api-url').value.trim();
-      if (!nickname) { alert('ニックネームを入力してね！'); return; }
-      if (!apiUrl) { alert('API URLを入力してね！先生から共有されたURLだよ'); return; }
-      RS.setNickname(nickname);
-      RS.setApiUrl(apiUrl);
-      showToast('設定完了！ランキングに参加しました', 'success');
+      if (!validateAndSave(grade, cls, number, realName, nickname)) return;
+      showToast('登録完了！ランキングに参加しました', 'success');
       checkSetup();
     });
 
     // --- 設定変更保存 ---
     document.getElementById('edit-save-btn').addEventListener('click', function() {
+      var grade    = document.getElementById('edit-grade').value.trim();
+      var cls      = document.getElementById('edit-class').value.trim();
+      var number   = document.getElementById('edit-number').value.trim();
+      var realName = document.getElementById('edit-realname').value.trim();
       var nickname = document.getElementById('edit-nickname').value.trim();
-      var apiUrl = document.getElementById('edit-api-url').value.trim();
-      if (!nickname) { alert('ニックネームを入力してね！'); return; }
-      if (!apiUrl) { alert('API URLを入力してね！'); return; }
-      RS.setNickname(nickname);
-      RS.setApiUrl(apiUrl);
+      if (!validateAndSave(grade, cls, number, realName, nickname)) return;
       showToast('設定を保存しました', 'success');
       RS.syncToServer(function() { loadRanking(); });
     });
