@@ -2,7 +2,7 @@
 (function() {
   'use strict';
 
-  var API_URL = 'https://script.google.com/macros/s/AKfycbxwWheLG8qgXW1sXNK6sa_EJ5cAsZA8O-Wf0cwwiDTVROSeQ0DExDyopNcAV723lnqJaw/exec';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbxmSna2slvzpw0D05au8Q6RNCkrP6xIhGyGTvb0FGh1mIIQXWC462v5W3UXDbnge6bI/exec';
   var USER_ID_KEY   = 'rankingUserId';
   var NICKNAME_KEY  = 'rankingNickname';
   var GRADE_KEY     = 'rankingGrade';    // 学年
