@@ -16,14 +16,22 @@
 var SHEET_NAME = 'rankings';
 
 function getSheet() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var props = PropertiesService.getScriptProperties();
+  var ssId = props.getProperty('SPREADSHEET_ID');
+  var ss;
+
+  if (ssId) {
+    try { ss = SpreadsheetApp.openById(ssId); } catch(e) { ss = null; }
+  }
+
   if (!ss) {
     ss = SpreadsheetApp.create('英単語やったんぞ ランキングデータ');
+    props.setProperty('SPREADSHEET_ID', ss.getId());
   }
+
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    // 教員向け個人情報列（grade, cls, number, realName）を含む
     sheet.appendRow(['id', 'nickname', 'grade', 'cls', 'number', 'realName',
                      'loginDays', 'totalQuestions', 'streak', 'chips', 'lastActive', 'updatedAt']);
     sheet.getRange(1, 1, 1, 12).setFontWeight('bold');
