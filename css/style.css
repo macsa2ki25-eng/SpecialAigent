@@ -1174,3 +1174,123 @@ tr:hover { background: var(--gray-50); }
   color: var(--gray-500);
   font-size: 0.9rem;
 }
+
+/* ===== ランキング ===== */
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.ranking-table th {
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  position: sticky;
+  top: 0;
+}
+.ranking-table td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--gray-200);
+}
+.ranking-table tr:hover { background: var(--gray-50); }
+.ranking-table tr.is-me {
+  background: #fff8e1;
+  font-weight: 700;
+}
+.ranking-table tr.is-me td { color: var(--accent); }
+.rank-num {
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+.rank-1 { color: #ffd54f; }
+.rank-2 { color: #bdbdbd; }
+.rank-3 { color: #cd7f32; }
+.rank-name { text-align: left !important; font-weight: 600; }
+.ranking-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.ranking-summary .summary-item {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 8px;
+  text-align: center;
+}
+.ranking-summary .num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+.ranking-summary .label {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin-top: 2px;
+}
+.ranking-sort-pills {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.ranking-sort-pills button {
+  padding: 6px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 16px;
+  background: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ranking-sort-pills button.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* --- ニックネーム設定ポップアップ --- */
+.nickname-popup .nickname-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 12px 0;
+}
+.nickname-popup .nickname-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26,35,126,0.15);
+}
+
+/* --- API設定エリア --- */
+.api-setup {
+  background: var(--gray-50);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.api-setup input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  margin: 8px 0;
+}
+.api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+.api-status.connected { background: #e8f5e9; color: var(--success); }
+.api-status.disconnected { background: #ffebee; color: var(--danger); }

@@ -12,6 +12,7 @@
     <div class="brand">東高３年 英単語やったんぞ</div>
     <nav>
       <a href="index.html" class="active">ホーム</a>
+      <a href="ranking.html">ランキング</a>
       <a href="stats.html">統計</a>
       <a href="avatar.html" class="chip-display" id="chip-balance">
         <span class="chip-icon">M</span><span id="chip-amount">0</span>
@@ -210,6 +211,7 @@
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
   <script src="js/makochip.js"></script>
+  <script src="js/sync.js"></script>
   <script>
   (function () {
     'use strict';
@@ -523,12 +525,20 @@
       }
     }
 
+    // --- ランキング同期（バックグラウンド） ---
+    function syncRanking() {
+      if (window.RankingSync && RankingSync.isConfigured()) {
+        RankingSync.syncToServer();
+      }
+    }
+
     // --- 初期化 ---
     applySettings();
     renderRanges();
     updateSummary();
     updateChipDisplay();
     checkLoginBonus();
+    syncRanking();
   })();
   </script>
 

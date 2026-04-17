@@ -12,6 +12,7 @@
     <nav>
       <a href="index.html">ホーム</a>
       <a href="study.html" class="active">学習</a>
+      <a href="ranking.html">ランキング</a>
       <a href="stats.html">統計</a>
       <a href="avatar.html" class="chip-display" id="chip-balance">
         <span class="chip-icon">M</span><span id="chip-amount">0</span>
@@ -197,6 +198,7 @@
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
   <script src="js/makochip.js"></script>
+  <script src="js/sync.js"></script>
   <script>
   (function() {
     'use strict';
@@ -658,6 +660,11 @@
           rewardsDiv.style.display = 'block';
         }
         updateChipDisplay();
+      }
+
+      // ランキング同期
+      if (window.RankingSync && RankingSync.isConfigured()) {
+        RankingSync.syncToServer();
       }
     }
 

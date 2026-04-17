@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ランキング - 東高３年 英単語やったんぞ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">英単語やったんぞ</div>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="ranking.html" class="active">ランキング</a>
+      <a href="stats.html">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- 未設定時の案内 -->
+    <div class="card" id="setup-card" style="display:none">
+      <div class="card-title">ランキング設定</div>
+      <div class="help-bubble">
+        ランキング機能を使うには、<strong>ニックネーム</strong>と<strong>API URL</strong>の設定が必要です。<br>
+        API URLは先生から共有されたURLを入力してね！
+      </div>
+
+      <div class="form-group mt-8">
+        <label for="setup-nickname">ニックネーム：</label>
+        <input type="text" id="setup-nickname" class="form-control" placeholder="例：まこ" maxlength="12">
+      </div>
+      <div class="form-group mt-8">
+        <label for="setup-api-url">API URL（先生から共有）：</label>
+        <input type="text" id="setup-api-url" class="form-control" placeholder="https://script.google.com/macros/s/...">
+      </div>
+      <button class="btn btn-accent btn-block mt-8" id="setup-save-btn">設定して参加する！</button>
+    </div>
+
+    <!-- 設定済み：ランキング表示 -->
+    <div id="ranking-main" style="display:none">
+      <!-- 自分の順位 -->
+      <div class="ranking-summary" id="my-rank-summary">
+        <div class="summary-item">
+          <div class="num" id="my-rank">-</div>
+          <div class="label">自分の順位</div>
+        </div>
+        <div class="summary-item">
+          <div class="num" id="my-questions">0</div>
+          <div class="label">解いた問題数</div>
+        </div>
+        <div class="summary-item">
+          <div class="num" id="my-login-days">0</div>
+          <div class="label">ログイン日数</div>
+        </div>
+      </div>
+
+      <!-- ソート切り替え -->
+      <div class="ranking-sort-pills" id="sort-pills">
+        <button class="active" data-sort="totalQuestions">解いた問題数</button>
+        <button data-sort="loginDays">ログイン日数</button>
+        <button data-sort="streak">連続ログイン</button>
+        <button data-sort="chips">マコチップ</button>
+      </div>
+
+      <!-- ランキングテーブル -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th class="rank-name">名前</th>
+              <th>問題数</th>
+              <th>ログイン</th>
+              <th>連続</th>
+            </tr>
+          </thead>
+          <tbody id="ranking-body">
+            <tr><td colspan="5" class="text-muted" style="padding:24px">読み込み中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 設定変更 -->
+      <details class="mt-16" style="font-size:0.85rem">
+        <summary style="cursor:pointer;color:var(--gray-600)">設定変更</summary>
+        <div class="api-setup mt-8">
+          <div class="form-group">
+            <label>ニックネーム：</label>
+            <input type="text" id="edit-nickname" maxlength="12">
+          </div>
+          <div class="form-group">
+            <label>API URL：</label>
+            <input type="text" id="edit-api-url">
+          </div>
+          <button class="btn btn-sm btn-primary mt-8" id="edit-save-btn">保存</button>
+          <span class="api-status" id="api-status"></span>
+        </div>
+      </details>
+
+      <button class="btn btn-outline btn-block mt-8" id="refresh-btn">ランキングを更新</button>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/makochip.js"></script>
+  <script src="js/sync.js"></script>
+  <script>
+  (function() {
+    'use strict';
+    var RS = window.RankingSync;
+    var currentSort = 'totalQuestions';
+
+    function updateChipDisplay() {
+      var el = document.getElementById('chip-amount');
+      if (el && window.MakoChip) el.textContent = MakoChip.getBalance();
+    }
+
+    function showToast(msg, type) {
+      var container = document.getElementById('toast-container');
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + (type || '');
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(function() { toast.remove(); }, 3000);
+    }
+
+    // --- 初期表示判定 ---
+    function checkSetup() {
+      if (RS.isConfigured()) {
+        document.getElementById('setup-card').style.display = 'none';
+        document.getElementById('ranking-main').style.display = 'block';
+        document.getElementById('edit-nickname').value = RS.getNickname();
+        document.getElementById('edit-api-url').value = RS.getApiUrl();
+        loadRanking();
+        RS.syncToServer();
+      } else {
+        document.getElementById('setup-card').style.display = 'block';
+        document.getElementById('ranking-main').style.display = 'none';
+      }
+    }
+
+    // --- 初期設定保存 ---
+    document.getElementById('setup-save-btn').addEventListener('click', function() {
+      var nickname = document.getElementById('setup-nickname').value.trim();
+      var apiUrl = document.getElementById('setup-api-url').value.trim();
+      if (!nickname) { alert('ニックネームを入力してね！'); return; }
+      if (!apiUrl) { alert('API URLを入力してね！先生から共有されたURLだよ'); return; }
+      RS.setNickname(nickname);
+      RS.setApiUrl(apiUrl);
+      showToast('設定完了！ランキングに参加しました', 'success');
+      checkSetup();
+    });
+
+    // --- 設定変更保存 ---
+    document.getElementById('edit-save-btn').addEventListener('click', function() {
+      var nickname = document.getElementById('edit-nickname').value.trim();
+      var apiUrl = document.getElementById('edit-api-url').value.trim();
+      if (!nickname) { alert('ニックネームを入力してね！'); return; }
+      if (!apiUrl) { alert('API URLを入力してね！'); return; }
+      RS.setNickname(nickname);
+      RS.setApiUrl(apiUrl);
+      showToast('設定を保存しました', 'success');
+      RS.syncToServer(function() { loadRanking(); });
+    });
+
+    // --- ランキング読み込み ---
+    function loadRanking() {
+      var status = document.getElementById('api-status');
+      RS.fetchRanking(function(students, err) {
+        if (err) {
+          status.className = 'api-status disconnected';
+          status.textContent = '接続エラー';
+          document.getElementById('ranking-body').innerHTML =
+            '<tr><td colspan="5" class="text-muted" style="padding:24px">データを取得できませんでした。<br>API URLを確認してね。</td></tr>';
+          return;
+        }
+        status.className = 'api-status connected';
+        status.textContent = '接続OK';
+        renderRanking(students);
+      });
+    }
+
+    // --- ランキング描画 ---
+    function renderRanking(students) {
+      students.sort(function(a, b) { return (b[currentSort] || 0) - (a[currentSort] || 0); });
+
+      var myNickname = RS.getNickname();
+      var myRank = -1;
+      var myData = null;
+
+      for (var i = 0; i < students.length; i++) {
+        if (students[i].nickname === myNickname) {
+          myRank = i + 1;
+          myData = students[i];
+          break;
+        }
+      }
+
+      document.getElementById('my-rank').textContent = myRank > 0 ? myRank + '位' : '-';
+      if (myData) {
+        document.getElementById('my-questions').textContent = myData.totalQuestions;
+        document.getElementById('my-login-days').textContent = myData.loginDays;
+      }
+
+      var tbody = document.getElementById('ranking-body');
+      if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-muted" style="padding:24px">まだ参加者がいません</td></tr>';
+        return;
+      }
+
+      var html = '';
+      students.forEach(function(s, idx) {
+        var rank = idx + 1;
+        var isMe = s.nickname === myNickname;
+        var rankClass = '';
+        if (rank === 1) rankClass = 'rank-1';
+        else if (rank === 2) rankClass = 'rank-2';
+        else if (rank === 3) rankClass = 'rank-3';
+
+        html += '<tr' + (isMe ? ' class="is-me"' : '') + '>' +
+          '<td><span class="rank-num ' + rankClass + '">' + rank + '</span></td>' +
+          '<td class="rank-name">' + escapeHtml(s.nickname) + (isMe ? ' (自分)' : '') + '</td>' +
+          '<td>' + s.totalQuestions + '</td>' +
+          '<td>' + s.loginDays + '日</td>' +
+          '<td>' + s.streak + '日</td>' +
+          '</tr>';
+      });
+      tbody.innerHTML = html;
+    }
+
+    function escapeHtml(t) {
+      var d = document.createElement('div');
+      d.appendChild(document.createTextNode(t));
+      return d.innerHTML;
+    }
+
+    // --- ソート切り替え ---
+    document.getElementById('sort-pills').addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      currentSort = btn.dataset.sort;
+      document.querySelectorAll('#sort-pills button').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      loadRanking();
+    });
+
+    // --- 更新ボタン ---
+    document.getElementById('refresh-btn').addEventListener('click', function() {
+      localStorage.removeItem('rankingCache');
+      localStorage.removeItem('rankingCacheTime');
+      RS.syncToServer(function() { loadRanking(); });
+      showToast('更新中...', '');
+    });
+
+    // --- 初期化 ---
+    updateChipDisplay();
+    checkSetup();
+  })();
+  </script>
+</body>
+</html>
