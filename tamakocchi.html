@@ -283,33 +283,59 @@
       render();
     });
 
+    // --- 学習ページへの遷移ヘルパー ---
+    function goStudy() {
+      var ranges = [];
+      try { ranges = JSON.parse(localStorage.getItem('savedRanges') || '[]'); } catch(e) {}
+      if (ranges.length === 0) {
+        showToast('先にホームで学習範囲を登録してね！', 'error');
+        return;
+      }
+      var settings = {};
+      try { settings = JSON.parse(localStorage.getItem('studySettings') || '{}'); } catch(e) {}
+      var rangeId = ranges[0].id;
+      var mode = settings.mode || 'jp2en';
+      var retention = settings.retention ? (parseInt(settings.retention) / 100).toFixed(2) : '0.85';
+      var url = 'study.html?rangeId=' + encodeURIComponent(rangeId) +
+        '&mode=' + encodeURIComponent(mode) +
+        '&retention=' + encodeURIComponent(retention);
+      if (mode !== 'spelling') {
+        var choices = settings.choices || '4';
+        url += '&choices=' + encodeURIComponent(choices);
+      }
+      window.location.href = url;
+    }
+
     // --- Feed ---
     document.getElementById('tc-btn-feed').addEventListener('click', function() {
       var s = TK.getState();
-      if (s.isDead || s.stage < 1) return;
+      if (s.isDead) { showToast('まこっちは旅立ってしまった…', 'error'); return; }
+      if (s.stage < 0) { showToast('まずたまごをもらおう！', ''); return; }
+      if (s.stage === 0) { showToast('学習してたまごを孵化させよう！', ''); goStudy(); return; }
       if (s.hunger >= TK.MAX_STAT) {
-        showToast('おなかいっぱいだよ！勉強して減るのを待とう', '');
+        showToast('おなかいっぱいだよ！', '');
         return;
       }
-      window.location.href = 'study.html';
+      goStudy();
     });
 
     // --- Study ---
     document.getElementById('tc-btn-study').addEventListener('click', function() {
-      window.location.href = 'study.html';
+      goStudy();
     });
 
     // --- Play mini-game ---
     document.getElementById('tc-btn-play').addEventListener('click', function() {
       var s = TK.getState();
-      if (s.isDead || s.stage < 1) return;
+      if (s.isDead) { showToast('まこっちは旅立ってしまった…', 'error'); return; }
+      if (s.stage < 1) { showToast('まず学習してたまごを孵化させよう！', ''); return; }
       startMiniGame();
     });
 
     // --- Status popup ---
     document.getElementById('tc-btn-status').addEventListener('click', function() {
       var s = TK.getState();
-      if (s.stage < 1) return;
+      if (s.stage < 1) { showToast('まだペットがいないよ', ''); return; }
       var ch = TK.getCharInfo(s.charId);
       var stageName = TK.STAGE_NAMES[s.stage] || '';
       var acc = s.totalStudied > 0 ? Math.round(s.totalCorrect / s.totalStudied * 100) + '%' : '-';
