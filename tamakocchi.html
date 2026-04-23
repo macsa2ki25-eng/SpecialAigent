@@ -397,17 +397,16 @@
         });
         choicesDiv.appendChild(btn);
       });
-      // Timer: 8 seconds
-      var timeLeft = 8;
-      document.getElementById('tc-game-timer').textContent = timeLeft;
+      var GAME_TIME = 3;
+      document.getElementById('tc-game-timer').textContent = GAME_TIME;
       document.getElementById('tc-game-timer').style.width = '100%';
       clearTimeout(gameTimer);
       var timerStart = Date.now();
       function tickTimer() {
         var elapsed = (Date.now() - timerStart) / 1000;
-        var remain = Math.max(0, 8 - elapsed);
+        var remain = Math.max(0, GAME_TIME - elapsed);
         document.getElementById('tc-game-timer').textContent = Math.ceil(remain);
-        document.getElementById('tc-game-timer').style.width = (remain / 8 * 100) + '%';
+        document.getElementById('tc-game-timer').style.width = (remain / GAME_TIME * 100) + '%';
         if (remain <= 0) {
           gameIdx++;
           showGameQuestion();

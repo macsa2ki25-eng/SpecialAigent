@@ -4,16 +4,18 @@
 
   var STORAGE_KEY = 'tamakocchi';
   var MAX_STAT = 4;
-  var HUNGER_DECAY_MS = 6 * 3600000;
-  var HAPPY_DECAY_MS = 8 * 3600000;
+  var HUNGER_DECAY_MS = 3 * 3600000;
+  var HAPPY_DECAY_MS = 4 * 3600000;
   var CARE_MISS_THRESHOLD_MS = 3600000;
   var DEATH_CARE_MISSES = 10;
+  var FEED_EVERY_N = 15;
+  var HAPPY_EVERY_N = 8;
 
   var STAGE_DURATION = [
     0,
+    8 * 3600000,
+    16 * 3600000,
     24 * 3600000,
-    48 * 3600000,
-    72 * 3600000,
     Infinity
   ];
 
@@ -193,10 +195,10 @@
     if (s.stage === 0) s = hatchEgg(s);
     s.totalStudied++;
     if (isCorrect) s.totalCorrect++;
-    if (s.totalStudied % 5 === 0) {
+    if (s.totalStudied % FEED_EVERY_N === 0) {
       s.hunger = Math.min(MAX_STAT, s.hunger + 1);
     }
-    if (isCorrect && s.totalCorrect % 3 === 0) {
+    if (isCorrect && s.totalCorrect % HAPPY_EVERY_N === 0) {
       s.happiness = Math.min(MAX_STAT, s.happiness + 1);
     }
     s = tickDecay(s);
