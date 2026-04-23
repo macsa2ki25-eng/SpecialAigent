@@ -3,13 +3,13 @@
   'use strict';
 
   var STORAGE_KEY = 'tamakocchi';
-  var MAX_STAT = 4;
+  var MAX_STAT = 8;
   var HUNGER_DECAY_MS = 3 * 3600000;
   var HAPPY_DECAY_MS = 4 * 3600000;
   var CARE_MISS_THRESHOLD_MS = 3600000;
   var DEATH_CARE_MISSES = 10;
-  var FEED_EVERY_N = 15;
-  var HAPPY_EVERY_N = 8;
+  var FEED_EVERY_N = 12;
+  var HAPPY_EVERY_N = 6;
 
   var STAGE_DURATION = [
     0,

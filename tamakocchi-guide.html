@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>育て方ガイド - たまこっち!</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">英単語やったんぞ</div>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="ranking.html">ランキング</a>
+      <a href="avatar.html">アバター</a>
+      <a href="tamakocchi.html" class="active">たまこっち</a>
+      <a href="stats.html">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="card" style="text-align:center">
+      <h1 class="tc-title" style="margin-bottom:4px">育て方ガイド</h1>
+      <div class="text-sm text-muted">たまこっちをしあわせに育てるコツ！</div>
+    </div>
+
+    <!-- STEP 1: はじめかた -->
+    <div class="card">
+      <div class="card-title">① はじめかた</div>
+      <ol class="tc-guide-list">
+        <li>たまこっちページで「たまごをもらう！」をタップ</li>
+        <li>学習ページで英単語を勉強すると、たまごが<strong>かえる</strong>よ！</li>
+        <li>生まれたてのベビー「まこっち」に会えるよ</li>
+      </ol>
+    </div>
+
+    <!-- STEP 2: ステータス -->
+    <div class="card">
+      <div class="card-title">② ステータスのみかた</div>
+      <div class="tc-guide-stat">
+        <div class="tc-guide-stat-icon"><span class="tc-heart full" style="font-size:1.4rem">♥</span></div>
+        <div class="tc-guide-stat-body">
+          <div class="tc-guide-stat-name">おなか（最大8）</div>
+          <div class="text-sm text-muted">学習するとたまる。何もしないと<strong>3時間ごと</strong>に1減る。0になると「お世話ミス」になるよ！</div>
+        </div>
+      </div>
+      <div class="tc-guide-stat">
+        <div class="tc-guide-stat-icon"><span class="tc-star full" style="font-size:1.4rem">★</span></div>
+        <div class="tc-guide-stat-body">
+          <div class="tc-guide-stat-name">きもち（最大8）</div>
+          <div class="text-sm text-muted">問題に<strong>正解</strong>するとたまる。<strong>4時間ごと</strong>に1減る。0になるとお世話ミス！</div>
+        </div>
+      </div>
+      <div class="tc-guide-stat">
+        <div class="tc-guide-stat-icon"><span class="tc-bar full" style="font-size:1.4rem">▮</span></div>
+        <div class="tc-guide-stat-body">
+          <div class="tc-guide-stat-name">しつけ（最大8）</div>
+          <div class="text-sm text-muted">ミニゲーム「あそぶ」の正解でたまる。これは<strong>減らない</strong>よ！</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: ケアボタン -->
+    <div class="card">
+      <div class="card-title">③ ケアボタンの使い方</div>
+      <div class="tc-guide-care">
+        <div class="tc-guide-care-name">🍚 ごはん</div>
+        <div class="text-sm text-muted">学習ページへジャンプ。<strong>12問</strong>解くとおなか+1だよ！</div>
+      </div>
+      <div class="tc-guide-care">
+        <div class="tc-guide-care-name">🎮 あそぶ</div>
+        <div class="text-sm text-muted"><strong>2秒制限</strong>のスピードクイズ5問！正解するときもち+、しつけ+。</div>
+      </div>
+      <div class="tc-guide-care">
+        <div class="tc-guide-care-name">📖 べんきょう</div>
+        <div class="text-sm text-muted">学習ページへ。たくさん解くほどステータスが回復！</div>
+      </div>
+      <div class="tc-guide-care">
+        <div class="tc-guide-care-name">📊 ようす</div>
+        <div class="text-sm text-muted">詳しいステータスやお世話ミス回数を確認できるよ。</div>
+      </div>
+    </div>
+
+    <!-- STEP 4: 学習の効果 -->
+    <div class="card">
+      <div class="card-title">④ 学習の効果</div>
+      <ul class="tc-guide-list">
+        <li><strong>12問</strong>解くごとに おなか +1</li>
+        <li><strong>正解6回</strong>ごとに きもち +1</li>
+        <li>たくさん解いて正答率が高いほど、たまこっちは喜ぶ！</li>
+        <li>「もう一回」ボタンを押した問題はカウントされないよ</li>
+      </ul>
+    </div>
+
+    <!-- STEP 5: 進化のヒント -->
+    <div class="card tc-guide-hint">
+      <div class="card-title">⑤ 進化のヒント <span style="font-size:0.8rem">✨</span></div>
+      <p class="text-sm">たまこっちは時間とともに大きく成長するよ！<br>ベビー → こども → ティーン → おとな と変化する。</p>
+      <div class="help-bubble" style="margin-top:12px">
+        <strong>どんな姿になるかは、あなたのお世話しだい…！</strong><br>
+        ・おせわミスが少ないほど、かわいい姿に進化するかも？<br>
+        ・正答率が高いと、すごいキャラが見られるかも？<br>
+        ・サボりすぎると…？<br>
+        <span class="text-xs text-muted">※進化先はぜんぶで<strong>12種類</strong>！どれに会えるかは お楽しみ ✨</span>
+      </div>
+    </div>
+
+    <!-- STEP 6: 注意 -->
+    <div class="card" style="border:2px solid #f0c0a0">
+      <div class="card-title" style="color:#c06030">⚠ ちゅうい</div>
+      <ul class="tc-guide-list">
+        <li>お世話ミスが<strong>10回</strong>たまるとたまこっちは旅立ってしまう…</li>
+        <li>旅立ったら「もう一度たまごから」で再スタート（コレクションは残るよ）</li>
+        <li>進化は時間が来ると<strong>自動</strong>で起きるよ。そのときの状態で進化先が決まる！</li>
+        <li>毎日コツコツ学習するのが一番しあわせ！</li>
+      </ul>
+    </div>
+
+    <!-- Back button -->
+    <div class="card" style="text-align:center">
+      <a href="tamakocchi.html" class="btn btn-accent">← たまこっちに戻る</a>
+    </div>
+  </main>
+
+  <script src="js/makochip.js"></script>
+  <script>
+  (function() {
+    var el = document.getElementById('chip-amount');
+    if (el && window.MakoChip) el.textContent = MakoChip.getBalance();
+  })();
+  </script>
+</body>
+</html>

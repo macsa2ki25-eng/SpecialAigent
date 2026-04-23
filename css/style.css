@@ -1380,15 +1380,16 @@ tr:hover { background: var(--gray-50); }
 .tc-age { margin-top: 2px; }
 
 .tc-stats { display: flex; flex-direction: column; gap: 6px; }
-.tc-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; }
+.tc-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; gap: 8px; }
 .tc-stat-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); min-width: 50px; }
-.tc-stat-hearts { font-size: 1.3rem; letter-spacing: 4px; }
-.tc-heart.full { color: #e05060; }
-.tc-heart.empty { color: #ddd; }
-.tc-star.full { color: #f0a030; }
-.tc-star.empty { color: #ddd; }
+.tc-stat-hearts { font-size: 1.15rem; letter-spacing: 1.5px; flex: 1; text-align: right; }
+.tc-stat-num { font-size: 0.75rem; color: var(--text-muted); min-width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+.tc-heart.full { color: #e05060; text-shadow: 0 0 2px rgba(224,80,96,0.3); }
+.tc-heart.empty { color: #c8c8d0; }
+.tc-star.full { color: #f0a030; text-shadow: 0 0 2px rgba(240,160,48,0.3); }
+.tc-star.empty { color: #c8c8d0; }
 .tc-bar.full { color: #4090d0; }
-.tc-bar.empty { color: #ddd; }
+.tc-bar.empty { color: #c8c8d0; }
 
 .tc-evo-bar-wrap { margin-top: 10px; }
 .tc-evo-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
@@ -1451,3 +1452,15 @@ tr:hover { background: var(--gray-50); }
 .tc-mini-info { flex: 1; font-size: 0.75rem; }
 .tc-mini-name { font-weight: 700; }
 .tc-mini-hearts { font-size: 0.85rem; letter-spacing: 1px; }
+
+.tc-guide-list { padding-left: 20px; line-height: 1.8; font-size: 0.9rem; }
+.tc-guide-list li { margin-bottom: 4px; }
+.tc-guide-stat { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; align-items: flex-start; }
+.tc-guide-stat:last-child { border-bottom: none; }
+.tc-guide-stat-icon { flex-shrink: 0; width: 30px; text-align: center; padding-top: 2px; }
+.tc-guide-stat-body { flex: 1; }
+.tc-guide-stat-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+.tc-guide-care { padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
+.tc-guide-care:last-child { border-bottom: none; }
+.tc-guide-care-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+.tc-guide-hint { background: linear-gradient(135deg, #fff8f0, #ffeed8); }

@@ -48,19 +48,25 @@
           <div class="tc-stat-row">
             <span class="tc-stat-label">おなか</span>
             <span class="tc-stat-hearts" id="tc-hunger"></span>
+            <span class="tc-stat-num" id="tc-hunger-num"></span>
           </div>
           <div class="tc-stat-row">
             <span class="tc-stat-label">きもち</span>
             <span class="tc-stat-hearts" id="tc-happy"></span>
+            <span class="tc-stat-num" id="tc-happy-num"></span>
           </div>
           <div class="tc-stat-row">
             <span class="tc-stat-label">しつけ</span>
             <span class="tc-stat-hearts" id="tc-disc"></span>
+            <span class="tc-stat-num" id="tc-disc-num"></span>
           </div>
         </div>
         <div class="tc-evo-bar-wrap" id="tc-evo-wrap" style="display:none">
           <div class="text-xs text-muted" style="margin-bottom:4px">次の進化まで</div>
           <div class="tc-evo-bar"><div class="tc-evo-fill" id="tc-evo-fill"></div></div>
+        </div>
+        <div style="text-align:right;margin-top:8px">
+          <a href="tamakocchi-guide.html" class="text-xs text-muted" style="text-decoration:underline">育て方ガイド →</a>
         </div>
       </div>
 
@@ -223,6 +229,9 @@
       document.getElementById('tc-hunger').innerHTML = renderHearts(s.hunger, TK.MAX_STAT, '<span class="tc-heart full">&#9829;</span>', '<span class="tc-heart empty">&#9825;</span>');
       document.getElementById('tc-happy').innerHTML = renderHearts(s.happiness, TK.MAX_STAT, '<span class="tc-star full">&#9733;</span>', '<span class="tc-star empty">&#9734;</span>');
       document.getElementById('tc-disc').innerHTML = renderHearts(s.discipline, TK.MAX_STAT, '<span class="tc-bar full">&#9646;</span>', '<span class="tc-bar empty">&#9647;</span>');
+      document.getElementById('tc-hunger-num').textContent = s.hunger + ' / ' + TK.MAX_STAT;
+      document.getElementById('tc-happy-num').textContent = s.happiness + ' / ' + TK.MAX_STAT;
+      document.getElementById('tc-disc-num').textContent = s.discipline + ' / ' + TK.MAX_STAT;
 
       // Evolution progress
       var prog = TK.getEvolutionProgress(s);
@@ -423,7 +432,7 @@
         });
         choicesDiv.appendChild(btn);
       });
-      var GAME_TIME = 3;
+      var GAME_TIME = 2;
       document.getElementById('tc-game-timer').textContent = GAME_TIME;
       document.getElementById('tc-game-timer').style.width = '100%';
       clearTimeout(gameTimer);
