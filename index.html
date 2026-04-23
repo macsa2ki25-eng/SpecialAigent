@@ -13,6 +13,8 @@
     <nav>
       <a href="index.html" class="active">ホーム</a>
       <a href="ranking.html">ランキング</a>
+      <a href="avatar.html">アバター</a>
+      <a href="tamakocchi.html">たまこっち</a>
       <a href="stats.html">統計</a>
       <a href="avatar.html" class="chip-display" id="chip-balance">
         <span class="chip-icon">M</span><span id="chip-amount">0</span>
@@ -46,6 +48,15 @@
         <button class="close-popup" onclick="this.closest('.popup-overlay').classList.remove('show')">わかった！</button>
       </div>
     </div>
+
+    <!-- たまこっちミニウィジェット -->
+    <a href="tamakocchi.html" class="tc-mini-widget" id="tc-widget" style="display:none">
+      <div class="tc-mini-pet" id="tc-widget-pet"></div>
+      <div class="tc-mini-info">
+        <div class="tc-mini-name" id="tc-widget-name"></div>
+        <div class="tc-mini-hearts" id="tc-widget-hearts"></div>
+      </div>
+    </a>
 
     <!-- ステップガイド -->
     <div class="card">
@@ -212,6 +223,8 @@
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
   <script src="js/makochip.js"></script>
+  <script src="js/tamakocchi.js"></script>
+  <script src="js/tamakocchi-chars.js"></script>
   <script src="js/sync.js"></script>
   <script>
   (function () {
@@ -565,6 +578,23 @@
       }
     }
 
+    // --- たまこっちウィジェット ---
+    function renderTCWidget() {
+      if (!window.Tamakocchi || !window.TamakocchiChars) return;
+      var s = Tamakocchi.getState();
+      var w = document.getElementById('tc-widget');
+      if (s.stage < 0) { w.style.display = 'none'; return; }
+      w.style.display = 'flex';
+      var ch = Tamakocchi.getCharInfo(s.charId);
+      document.getElementById('tc-widget-pet').innerHTML = s.isDead ? TamakocchiChars.renderChar('dead') : TamakocchiChars.renderChar(s.charId);
+      document.getElementById('tc-widget-name').textContent = s.isDead ? 'たまこっち…' : (ch ? ch.name : '');
+      var hearts = '';
+      for (var i = 0; i < Tamakocchi.MAX_STAT; i++) hearts += i < s.hunger ? '♥' : '♡';
+      hearts += ' ';
+      for (var j = 0; j < Tamakocchi.MAX_STAT; j++) hearts += j < s.happiness ? '★' : '☆';
+      document.getElementById('tc-widget-hearts').innerHTML = '<span style="color:#e05060">' + hearts.split(' ')[0] + '</span> <span style="color:#f0a030">' + hearts.split(' ')[1] + '</span>';
+    }
+
     // --- 初期化 ---
     applySettings();
     renderRanges();
@@ -572,6 +602,7 @@
     updateChipDisplay();
     checkLoginBonus();
     syncRanking();
+    renderTCWidget();
   })();
   </script>
 

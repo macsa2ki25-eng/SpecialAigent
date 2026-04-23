@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>たまこっち! - 東高３年 英単語やったんぞ</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="brand">英単語やったんぞ</div>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="ranking.html">ランキング</a>
+      <a href="avatar.html">アバター</a>
+      <a href="tamakocchi.html" class="active">たまこっち</a>
+      <a href="stats.html">統計</a>
+      <a href="avatar.html" class="chip-display" id="chip-balance">
+        <span class="chip-icon">M</span><span id="chip-amount">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- ペット未作成時 -->
+    <div class="card tc-welcome" id="tc-welcome" style="display:none;text-align:center">
+      <h2 class="tc-title">たまこっち!</h2>
+      <div class="help-bubble mb-8">英単語を学習して、ペットを育てよう！<br>お世話をしっかりすると良い子に進化するよ！</div>
+      <div id="tc-egg-preview" style="width:120px;height:120px;margin:16px auto"></div>
+      <button class="btn btn-accent" id="tc-start-btn">たまごを もらう！</button>
+    </div>
+
+    <!-- メイン育成画面 -->
+    <div id="tc-main" style="display:none">
+      <!-- ペット表示 -->
+      <div class="card tc-screen-card">
+        <div class="tc-screen" id="tc-screen"></div>
+        <div class="tc-info">
+          <div class="tc-name" id="tc-name"></div>
+          <div class="tc-desc text-sm text-muted" id="tc-desc"></div>
+          <div class="tc-age text-xs text-muted" id="tc-age"></div>
+        </div>
+      </div>
+
+      <!-- ステータス -->
+      <div class="card">
+        <div class="tc-stats">
+          <div class="tc-stat-row">
+            <span class="tc-stat-label">おなか</span>
+            <span class="tc-stat-hearts" id="tc-hunger"></span>
+          </div>
+          <div class="tc-stat-row">
+            <span class="tc-stat-label">きもち</span>
+            <span class="tc-stat-hearts" id="tc-happy"></span>
+          </div>
+          <div class="tc-stat-row">
+            <span class="tc-stat-label">しつけ</span>
+            <span class="tc-stat-hearts" id="tc-disc"></span>
+          </div>
+        </div>
+        <div class="tc-evo-bar-wrap" id="tc-evo-wrap" style="display:none">
+          <div class="text-xs text-muted" style="margin-bottom:4px">次の進化まで</div>
+          <div class="tc-evo-bar"><div class="tc-evo-fill" id="tc-evo-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- ケアボタン -->
+      <div class="card">
+        <div class="tc-care-grid">
+          <button class="tc-care-btn" id="tc-btn-feed">
+            <div class="tc-care-icon" id="tc-icon-feed"></div>
+            <span>ごはん</span>
+          </button>
+          <button class="tc-care-btn" id="tc-btn-play">
+            <div class="tc-care-icon" id="tc-icon-play"></div>
+            <span>あそぶ</span>
+          </button>
+          <button class="tc-care-btn" id="tc-btn-study">
+            <div class="tc-care-icon" id="tc-icon-study"></div>
+            <span>べんきょう</span>
+          </button>
+          <button class="tc-care-btn" id="tc-btn-status">
+            <div class="tc-care-icon" id="tc-icon-status"></div>
+            <span>ようす</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 死亡画面 -->
+      <div class="card tc-dead-card" id="tc-dead" style="display:none;text-align:center">
+        <h3>まこっちは 旅立ってしまった…</h3>
+        <p class="text-muted">お世話ミスが多すぎたよ…<br>次はもっと大切に育てよう！</p>
+        <button class="btn btn-accent" id="tc-restart-btn">もう一度 たまごから</button>
+      </div>
+
+      <!-- 育成記録 -->
+      <div class="card">
+        <div class="card-title">育成記録</div>
+        <div class="tc-record" id="tc-record"></div>
+      </div>
+
+      <!-- コレクション -->
+      <div class="card" id="tc-collection-card" style="display:none">
+        <div class="card-title">コレクション</div>
+        <div class="tc-collection-grid" id="tc-collection"></div>
+      </div>
+    </div>
+
+    <!-- ミニゲームポップアップ -->
+    <div class="popup-overlay" id="tc-game-popup">
+      <div class="popup tc-game-popup">
+        <h2>たまこっちとあそぼう！</h2>
+        <div class="tc-game-area" id="tc-game-area">
+          <div class="tc-game-timer" id="tc-game-timer"></div>
+          <div class="tc-game-question" id="tc-game-q"></div>
+          <div class="tc-game-choices" id="tc-game-choices"></div>
+        </div>
+        <div class="tc-game-result" id="tc-game-result" style="display:none">
+          <div class="tc-game-score" id="tc-game-score"></div>
+          <button class="btn btn-accent" id="tc-game-close">とじる</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ようすポップアップ -->
+    <div class="popup-overlay" id="tc-status-popup">
+      <div class="popup">
+        <h2>ようす</h2>
+        <div id="tc-status-detail"></div>
+        <button class="btn btn-outline" style="width:100%;margin-top:12px" onclick="document.getElementById('tc-status-popup').classList.remove('show')">とじる</button>
+      </div>
+    </div>
+
+    <!-- 進化通知ポップアップ -->
+    <div class="popup-overlay" id="tc-evolve-popup">
+      <div class="popup" style="text-align:center">
+        <h2>進化した！</h2>
+        <div id="tc-evolve-preview" style="width:120px;height:120px;margin:12px auto"></div>
+        <div class="tc-evolve-name" id="tc-evolve-name"></div>
+        <div class="tc-evolve-desc text-muted" id="tc-evolve-desc"></div>
+        <button class="btn btn-accent" style="width:100%;margin-top:16px" id="tc-evolve-ok">やったね！</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="js/makochip.js"></script>
+  <script src="js/words.js"></script>
+  <script src="js/tamakocchi.js"></script>
+  <script src="js/tamakocchi-chars.js"></script>
+  <script>
+  (function() {
+    'use strict';
+    var TK = window.Tamakocchi;
+    var TC = window.TamakocchiChars;
+    var MC = window.MakoChip;
+    var WORDS = window.WORDS;
+
+    function updateChipDisplay() {
+      var el = document.getElementById('chip-amount');
+      if (el && MC) el.textContent = MC.getBalance();
+    }
+
+    function showToast(msg, type) {
+      var c = document.getElementById('toast-container');
+      var t = document.createElement('div');
+      t.className = 'toast ' + (type || '');
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(function() { t.remove(); }, 3000);
+    }
+
+    function renderHearts(val, max, full, empty) {
+      var s = '';
+      for (var i = 0; i < max; i++) {
+        s += i < val ? full : empty;
+      }
+      return s;
+    }
+
+    // --- Main render ---
+    function render() {
+      var s = TK.getState();
+      var welcome = document.getElementById('tc-welcome');
+      var main = document.getElementById('tc-main');
+
+      if (s.stage < 0) {
+        welcome.style.display = 'block';
+        main.style.display = 'none';
+        document.getElementById('tc-egg-preview').innerHTML = TC.renderChar('egg');
+        return;
+      }
+
+      welcome.style.display = 'none';
+      main.style.display = 'block';
+
+      // Check evolution notice
+      if (s.evolvedNotice) {
+        showEvolvePopup(s.evolvedNotice);
+        TK.clearEvolvedNotice();
+      }
+
+      var ch = TK.getCharInfo(s.charId);
+      var screen = document.getElementById('tc-screen');
+      var deadCard = document.getElementById('tc-dead');
+
+      if (s.isDead) {
+        screen.innerHTML = TC.renderChar('dead');
+        deadCard.style.display = 'block';
+        document.getElementById('tc-name').textContent = '';
+        document.getElementById('tc-desc').textContent = 'まこっちは旅立ってしまった…';
+        document.getElementById('tc-age').textContent = '';
+      } else {
+        screen.innerHTML = TC.renderChar(s.charId);
+        deadCard.style.display = 'none';
+        document.getElementById('tc-name').textContent = ch ? ch.name : '';
+        document.getElementById('tc-desc').textContent = ch ? ch.desc : '';
+        document.getElementById('tc-age').textContent = s.stage > 0 ? '生後 ' + TK.getAge(s) : '';
+      }
+
+      // Stats
+      document.getElementById('tc-hunger').innerHTML = renderHearts(s.hunger, TK.MAX_STAT, '<span class="tc-heart full">&#9829;</span>', '<span class="tc-heart empty">&#9825;</span>');
+      document.getElementById('tc-happy').innerHTML = renderHearts(s.happiness, TK.MAX_STAT, '<span class="tc-star full">&#9733;</span>', '<span class="tc-star empty">&#9734;</span>');
+      document.getElementById('tc-disc').innerHTML = renderHearts(s.discipline, TK.MAX_STAT, '<span class="tc-bar full">&#9646;</span>', '<span class="tc-bar empty">&#9647;</span>');
+
+      // Evolution progress
+      var prog = TK.getEvolutionProgress(s);
+      var evoWrap = document.getElementById('tc-evo-wrap');
+      if (prog !== null) {
+        evoWrap.style.display = 'block';
+        document.getElementById('tc-evo-fill').style.width = Math.round(prog * 100) + '%';
+      } else {
+        evoWrap.style.display = 'none';
+      }
+
+      // Record
+      var acc = s.totalStudied > 0 ? Math.round(s.totalCorrect / s.totalStudied * 100) : 0;
+      document.getElementById('tc-record').innerHTML =
+        '<div class="tc-rec-row"><span>世代</span><span>第' + s.generation + '世代</span></div>' +
+        '<div class="tc-rec-row"><span>お世話ミス</span><span>' + s.careMistakes + '回</span></div>' +
+        '<div class="tc-rec-row"><span>学習問題数</span><span>' + s.totalStudied + '問</span></div>' +
+        '<div class="tc-rec-row"><span>正答率</span><span>' + acc + '%</span></div>';
+
+      // Collection
+      var col = s.collection || [];
+      var colCard = document.getElementById('tc-collection-card');
+      if (col.length > 0) {
+        colCard.style.display = 'block';
+        var html = '';
+        col.forEach(function(id) {
+          var info = TK.getCharInfo(id);
+          html += '<div class="tc-col-item">' +
+            '<div class="tc-col-char">' + TC.renderChar(id) + '</div>' +
+            '<div class="tc-col-name">' + (info ? info.name : id) + '</div>' +
+          '</div>';
+        });
+        document.getElementById('tc-collection').innerHTML = html;
+      } else {
+        colCard.style.display = 'none';
+      }
+
+      // Care icons
+      document.getElementById('tc-icon-feed').innerHTML = TC.renderIcon('feed');
+      document.getElementById('tc-icon-play').innerHTML = TC.renderIcon('play');
+      document.getElementById('tc-icon-study').innerHTML = TC.renderIcon('study');
+      document.getElementById('tc-icon-status').innerHTML = TC.renderIcon('status');
+
+      updateChipDisplay();
+    }
+
+    // --- Start pet ---
+    document.getElementById('tc-start-btn').addEventListener('click', function() {
+      TK.startNewPet();
+      showToast('たまごを もらった！学習して育てよう！', 'success');
+      render();
+    });
+
+    // --- Restart ---
+    document.getElementById('tc-restart-btn').addEventListener('click', function() {
+      TK.startNewPet();
+      showToast('新しいたまごが やってきた！', 'success');
+      render();
+    });
+
+    // --- Feed ---
+    document.getElementById('tc-btn-feed').addEventListener('click', function() {
+      var s = TK.getState();
+      if (s.isDead || s.stage < 1) return;
+      if (s.hunger >= TK.MAX_STAT) {
+        showToast('おなかいっぱいだよ！勉強して減るのを待とう', '');
+        return;
+      }
+      window.location.href = 'study.html';
+    });
+
+    // --- Study ---
+    document.getElementById('tc-btn-study').addEventListener('click', function() {
+      window.location.href = 'study.html';
+    });
+
+    // --- Play mini-game ---
+    document.getElementById('tc-btn-play').addEventListener('click', function() {
+      var s = TK.getState();
+      if (s.isDead || s.stage < 1) return;
+      startMiniGame();
+    });
+
+    // --- Status popup ---
+    document.getElementById('tc-btn-status').addEventListener('click', function() {
+      var s = TK.getState();
+      if (s.stage < 1) return;
+      var ch = TK.getCharInfo(s.charId);
+      var stageName = TK.STAGE_NAMES[s.stage] || '';
+      var acc = s.totalStudied > 0 ? Math.round(s.totalCorrect / s.totalStudied * 100) + '%' : '-';
+      document.getElementById('tc-status-detail').innerHTML =
+        '<div class="tc-rec-row"><span>なまえ</span><span>' + (ch ? ch.name : '') + '</span></div>' +
+        '<div class="tc-rec-row"><span>ステージ</span><span>' + stageName + '</span></div>' +
+        '<div class="tc-rec-row"><span>年齢</span><span>' + TK.getAge(s) + '</span></div>' +
+        '<div class="tc-rec-row"><span>おなか</span><span>' + s.hunger + '/' + TK.MAX_STAT + '</span></div>' +
+        '<div class="tc-rec-row"><span>きもち</span><span>' + s.happiness + '/' + TK.MAX_STAT + '</span></div>' +
+        '<div class="tc-rec-row"><span>しつけ</span><span>' + s.discipline + '/' + TK.MAX_STAT + '</span></div>' +
+        '<div class="tc-rec-row"><span>お世話ミス</span><span>' + s.careMistakes + '回（このステージ: ' + s.stageCareMistakes + '回）</span></div>' +
+        '<div class="tc-rec-row"><span>正答率</span><span>' + acc + '</span></div>' +
+        (ch && ch.rank ? '<div class="tc-rec-row"><span>ランク</span><span>' + ch.rank + 'ランク</span></div>' : '');
+      document.getElementById('tc-status-popup').classList.add('show');
+    });
+
+    // --- Evolution popup ---
+    function showEvolvePopup(charId) {
+      var ch = TK.getCharInfo(charId);
+      if (!ch) return;
+      document.getElementById('tc-evolve-preview').innerHTML = TC.renderChar(charId);
+      document.getElementById('tc-evolve-name').textContent = ch.name;
+      document.getElementById('tc-evolve-desc').textContent = ch.desc;
+      document.getElementById('tc-evolve-popup').classList.add('show');
+    }
+    document.getElementById('tc-evolve-ok').addEventListener('click', function() {
+      document.getElementById('tc-evolve-popup').classList.remove('show');
+    });
+
+    // --- Mini-game ---
+    var gameQuestions = [];
+    var gameIdx = 0;
+    var gameCorrect = 0;
+    var gameTotal = 5;
+    var gameTimer = null;
+
+    function startMiniGame() {
+      gameQuestions = [];
+      gameIdx = 0;
+      gameCorrect = 0;
+      for (var i = 0; i < gameTotal; i++) {
+        var w = WORDS[Math.floor(Math.random() * WORDS.length)];
+        var choices = [w.ja];
+        while (choices.length < 4) {
+          var r = WORDS[Math.floor(Math.random() * WORDS.length)].ja;
+          if (choices.indexOf(r) === -1) choices.push(r);
+        }
+        choices.sort(function() { return Math.random() - 0.5; });
+        gameQuestions.push({ en: w.en, answer: w.ja, choices: choices });
+      }
+      document.getElementById('tc-game-result').style.display = 'none';
+      document.getElementById('tc-game-area').style.display = 'block';
+      document.getElementById('tc-game-popup').classList.add('show');
+      showGameQuestion();
+    }
+
+    function showGameQuestion() {
+      if (gameIdx >= gameTotal) {
+        endMiniGame();
+        return;
+      }
+      var q = gameQuestions[gameIdx];
+      document.getElementById('tc-game-q').innerHTML =
+        '<div class="tc-game-count">' + (gameIdx + 1) + ' / ' + gameTotal + '</div>' +
+        '<div class="tc-game-word">' + q.en + '</div>';
+      var choicesDiv = document.getElementById('tc-game-choices');
+      choicesDiv.innerHTML = '';
+      q.choices.forEach(function(c) {
+        var btn = document.createElement('button');
+        btn.className = 'tc-game-choice';
+        btn.textContent = c;
+        btn.addEventListener('click', function() {
+          clearTimeout(gameTimer);
+          if (c === q.answer) {
+            gameCorrect++;
+            btn.classList.add('correct');
+          } else {
+            btn.classList.add('wrong');
+            var btns = choicesDiv.querySelectorAll('.tc-game-choice');
+            for (var j = 0; j < btns.length; j++) {
+              if (btns[j].textContent === q.answer) btns[j].classList.add('correct');
+            }
+          }
+          setTimeout(function() { gameIdx++; showGameQuestion(); }, 800);
+        });
+        choicesDiv.appendChild(btn);
+      });
+      // Timer: 8 seconds
+      var timeLeft = 8;
+      document.getElementById('tc-game-timer').textContent = timeLeft;
+      document.getElementById('tc-game-timer').style.width = '100%';
+      clearTimeout(gameTimer);
+      var timerStart = Date.now();
+      function tickTimer() {
+        var elapsed = (Date.now() - timerStart) / 1000;
+        var remain = Math.max(0, 8 - elapsed);
+        document.getElementById('tc-game-timer').textContent = Math.ceil(remain);
+        document.getElementById('tc-game-timer').style.width = (remain / 8 * 100) + '%';
+        if (remain <= 0) {
+          gameIdx++;
+          showGameQuestion();
+        } else {
+          gameTimer = setTimeout(tickTimer, 100);
+        }
+      }
+      tickTimer();
+    }
+
+    function endMiniGame() {
+      clearTimeout(gameTimer);
+      document.getElementById('tc-game-area').style.display = 'none';
+      document.getElementById('tc-game-result').style.display = 'block';
+      document.getElementById('tc-game-score').innerHTML =
+        '<div style="font-size:2rem;font-weight:700;color:var(--accent)">' + gameCorrect + ' / ' + gameTotal + '</div>' +
+        '<div class="text-muted" style="margin-top:8px">' +
+          (gameCorrect >= 4 ? 'すごい！まこっちも大喜び！' :
+           gameCorrect >= 2 ? 'まあまあ！もっとがんばろう！' :
+           'ドンマイ！次はきっとできるよ！') +
+        '</div>';
+      TK.onPlayGame(gameCorrect, gameTotal);
+      render();
+    }
+
+    document.getElementById('tc-game-close').addEventListener('click', function() {
+      document.getElementById('tc-game-popup').classList.remove('show');
+    });
+
+    // --- Auto-update timer ---
+    setInterval(function() { render(); }, 60000);
+
+    // --- Init ---
+    render();
+    updateChipDisplay();
+  })();
+  </script>
+</body>
+</html>

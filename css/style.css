@@ -1359,3 +1359,95 @@ tr:hover { background: var(--gray-50); }
   80%  { transform: scale(0.85); }
   100% { transform: scale(1) rotate(0); }
 }
+
+/* ===== たまこっち! ===== */
+.tc-title { text-align: center; font-size: 1.6rem; color: var(--accent); margin-bottom: 8px; }
+.tc-welcome .help-bubble { margin: 0 auto 12px; max-width: 320px; }
+
+.tc-screen-card { text-align: center; padding-bottom: 8px; }
+.tc-screen {
+  width: 160px; height: 160px; margin: 0 auto;
+  background: linear-gradient(135deg, #f8f6f0, #e8e4d8);
+  border: 3px solid #d0c8b0; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.06);
+  position: relative; overflow: hidden;
+}
+.tc-screen .tamakocchi-char { width: 120px; height: 120px; }
+.tc-info { margin-top: 8px; }
+.tc-name { font-size: 1.2rem; font-weight: 700; color: var(--text); }
+.tc-desc { margin-top: 2px; }
+.tc-age { margin-top: 2px; }
+
+.tc-stats { display: flex; flex-direction: column; gap: 6px; }
+.tc-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; }
+.tc-stat-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); min-width: 50px; }
+.tc-stat-hearts { font-size: 1.3rem; letter-spacing: 4px; }
+.tc-heart.full { color: #e05060; }
+.tc-heart.empty { color: #ddd; }
+.tc-star.full { color: #f0a030; }
+.tc-star.empty { color: #ddd; }
+.tc-bar.full { color: #4090d0; }
+.tc-bar.empty { color: #ddd; }
+
+.tc-evo-bar-wrap { margin-top: 10px; }
+.tc-evo-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+.tc-evo-fill { height: 100%; background: linear-gradient(90deg, #80d0a0, #40b080); border-radius: 4px; transition: width 0.5s; }
+
+.tc-care-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tc-care-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 8px; border: 2px solid #e8e4d8; border-radius: 12px;
+  background: linear-gradient(135deg, #faf8f2, #f0ece0); cursor: pointer;
+  transition: all 0.15s;
+}
+.tc-care-btn:hover { border-color: var(--accent); background: #fff; }
+.tc-care-btn:active { transform: scale(0.96); }
+.tc-care-btn span { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.tc-care-icon { width: 36px; height: 36px; }
+.care-icon-svg { width: 100%; height: 100%; }
+
+.tc-dead-card h3 { color: #888; }
+
+.tc-rec-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+.tc-rec-row:last-child { border-bottom: none; }
+
+.tc-collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+.tc-col-item { text-align: center; padding: 6px; border-radius: 8px; background: #f8f6f0; }
+.tc-col-char { width: 60px; height: 60px; margin: 0 auto; }
+.tc-col-char .tamakocchi-char { width: 100%; height: 100%; }
+.tc-col-name { font-size: 0.7rem; font-weight: 600; margin-top: 2px; color: var(--text-muted); }
+
+.tc-game-popup { max-width: 360px; }
+.tc-game-timer {
+  height: 6px; background: var(--accent); border-radius: 3px;
+  margin-bottom: 12px; transition: width 0.1s linear;
+}
+.tc-game-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+.tc-game-word { font-size: 1.6rem; font-weight: 700; text-align: center; margin: 12px 0; color: var(--text); }
+.tc-game-choices { display: flex; flex-direction: column; gap: 8px; }
+.tc-game-choice {
+  padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 10px;
+  background: #fff; font-size: 0.9rem; cursor: pointer; text-align: left;
+  transition: all 0.15s;
+}
+.tc-game-choice:hover { border-color: var(--accent); background: #faf6ff; }
+.tc-game-choice.correct { border-color: #40b080; background: #e8f8f0; color: #208060; font-weight: 600; }
+.tc-game-choice.wrong { border-color: #e05060; background: #fde8ea; color: #c03040; }
+
+.tc-game-result { text-align: center; padding: 20px 0; }
+.tc-evolve-name { font-size: 1.3rem; font-weight: 700; margin-top: 8px; color: var(--accent); }
+
+.tc-mini-widget {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  background: linear-gradient(135deg, #f8f6f0, #f0ece0);
+  border: 1px solid #e0dcd0; border-radius: 10px;
+  text-decoration: none; color: var(--text); cursor: pointer;
+  transition: border-color 0.15s;
+}
+.tc-mini-widget:hover { border-color: var(--accent); }
+.tc-mini-pet { width: 40px; height: 40px; }
+.tc-mini-pet .tamakocchi-char { width: 100%; height: 100%; }
+.tc-mini-info { flex: 1; font-size: 0.75rem; }
+.tc-mini-name { font-weight: 700; }
+.tc-mini-hearts { font-size: 0.85rem; letter-spacing: 1px; }

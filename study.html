@@ -13,6 +13,8 @@
       <a href="index.html">ホーム</a>
       <a href="study.html" class="active">学習</a>
       <a href="ranking.html">ランキング</a>
+      <a href="avatar.html">アバター</a>
+      <a href="tamakocchi.html">たまこっち</a>
       <a href="stats.html">統計</a>
       <a href="avatar.html" class="chip-display" id="chip-balance">
         <span class="chip-icon">M</span><span id="chip-amount">0</span>
@@ -198,6 +200,7 @@
   <script src="js/words.js"></script>
   <script src="js/fsrs.js"></script>
   <script src="js/makochip.js"></script>
+  <script src="js/tamakocchi.js"></script>
   <script src="js/sync.js"></script>
   <script>
   (function() {
@@ -616,6 +619,11 @@
             showToast('+' + chipReward.chips + ' マコチップ（20問クリア！）', 'chip');
           }
           updateChipDisplay();
+        }
+
+        // たまこっち: 学習記録
+        if (window.Tamakocchi && grade !== 1) {
+          Tamakocchi.onStudyQuestion(grade >= 3);
         }
 
         // Reset spelling display for next question
