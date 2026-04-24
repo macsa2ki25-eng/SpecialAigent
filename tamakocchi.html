@@ -128,6 +128,15 @@
       </div>
     </div>
 
+    <!-- 範囲選択ポップアップ -->
+    <div class="popup-overlay" id="tc-range-popup">
+      <div class="popup">
+        <h2>学習する範囲をえらぼう</h2>
+        <div id="tc-range-list" class="tc-range-list"></div>
+        <button class="btn btn-outline" style="width:100%;margin-top:12px" onclick="document.getElementById('tc-range-popup').classList.remove('show')">やめる</button>
+      </div>
+    </div>
+
     <!-- ようすポップアップ -->
     <div class="popup-overlay" id="tc-status-popup">
       <div class="popup">
@@ -300,9 +309,29 @@
         showToast('先にホームで学習範囲を登録してね！', 'error');
         return;
       }
+      if (ranges.length === 1) {
+        navigateToStudy(ranges[0].id);
+        return;
+      }
+      var list = document.getElementById('tc-range-list');
+      list.innerHTML = '';
+      ranges.forEach(function(r) {
+        var btn = document.createElement('button');
+        btn.className = 'tc-range-item';
+        btn.innerHTML = '<span class="tc-range-item-name">' + r.name + '</span>' +
+          '<span class="tc-range-item-detail">No.' + r.start + '〜' + r.end + '</span>';
+        btn.addEventListener('click', function() {
+          document.getElementById('tc-range-popup').classList.remove('show');
+          navigateToStudy(r.id);
+        });
+        list.appendChild(btn);
+      });
+      document.getElementById('tc-range-popup').classList.add('show');
+    }
+
+    function navigateToStudy(rangeId) {
       var settings = {};
       try { settings = JSON.parse(localStorage.getItem('studySettings') || '{}'); } catch(e) {}
-      var rangeId = ranges[0].id;
       var mode = settings.mode || 'jp2en';
       var retention = settings.retention ? (parseInt(settings.retention) / 100).toFixed(2) : '0.85';
       var url = 'study.html?rangeId=' + encodeURIComponent(rangeId) +

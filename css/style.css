@@ -1453,6 +1453,18 @@ tr:hover { background: var(--gray-50); }
 .tc-mini-name { font-weight: 700; }
 .tc-mini-hearts { font-size: 0.85rem; letter-spacing: 1px; }
 
+.tc-range-list { display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow-y: auto; }
+.tc-range-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border: 2px solid #e8e4d8; border-radius: 10px;
+  background: #fff; cursor: pointer; text-align: left; width: 100%;
+  transition: all 0.15s;
+}
+.tc-range-item:hover { border-color: var(--accent); background: #faf6ff; }
+.tc-range-item:active { transform: scale(0.97); }
+.tc-range-item-name { font-weight: 700; font-size: 0.95rem; }
+.tc-range-item-detail { font-size: 0.8rem; color: var(--text-muted); }
+
 .tc-guide-list { padding-left: 20px; line-height: 1.8; font-size: 0.9rem; }
 .tc-guide-list li { margin-bottom: 4px; }
 .tc-guide-stat { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; align-items: flex-start; }
