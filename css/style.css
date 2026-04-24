@@ -1453,6 +1453,20 @@ tr:hover { background: var(--gray-50); }
 .tc-mini-name { font-weight: 700; }
 .tc-mini-hearts { font-size: 0.85rem; letter-spacing: 1px; }
 
+.tc-study-report {
+  margin-top: 16px; padding: 14px; border-radius: 12px;
+  background: linear-gradient(135deg, #f8f6f0, #f0ece0);
+  border: 2px solid #e0dcd0;
+}
+.tc-study-report-inner { display: flex; align-items: center; gap: 12px; }
+.tc-study-report-pet { width: 60px; height: 60px; flex-shrink: 0; }
+.tc-study-report-pet .tamakocchi-char { width: 100%; height: 100%; }
+.tc-study-report-body { flex: 1; }
+.tc-study-report-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+.tc-report-line { font-size: 0.85rem; padding: 1px 0; }
+.tc-report-line.up { color: #30a060; font-weight: 600; }
+.tc-report-line.down { color: #c04040; }
+
 .tc-range-list { display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow-y: auto; }
 .tc-range-item {
   display: flex; justify-content: space-between; align-items: center;

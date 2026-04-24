@@ -157,6 +157,19 @@
           <div id="reward-list"></div>
           <div class="chip-reward-total">合計: <span id="reward-total">0</span> Ⓜ</div>
         </div>
+        <!-- たまこっち情報（たまこっち経由時のみ表示） -->
+        <div class="tc-study-report" id="tc-study-report" style="display:none">
+          <div class="tc-study-report-inner">
+            <div class="tc-study-report-pet" id="tc-report-pet"></div>
+            <div class="tc-study-report-body">
+              <div class="tc-study-report-name" id="tc-report-name"></div>
+              <div class="tc-study-report-changes" id="tc-report-changes"></div>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <a href="tamakocchi.html" class="btn btn-outline" style="font-size:0.85rem">たまこっちを見に行く →</a>
+          </div>
+        </div>
         <div class="help-bubble success mt-16">
           この調子で毎日続けよう！明日また復習すべき単語が出てくるから、アプリを開いて学習してね。統計ページで自分の成長を確認できるよ！
         </div>
@@ -201,6 +214,7 @@
   <script src="js/fsrs.js"></script>
   <script src="js/makochip.js"></script>
   <script src="js/tamakocchi.js"></script>
+  <script src="js/tamakocchi-chars.js"></script>
   <script src="js/sync.js"></script>
   <script>
   (function() {
@@ -212,7 +226,15 @@
 
     const params = new URLSearchParams(window.location.search);
     const rangeId = params.get('rangeId');
+    const isFromTamakocchi = params.get('from') === 'tamakocchi';
     const mode = params.get('mode') || 'jp2en';
+
+    // たまこっち経由時: 開始前のステータスを保存
+    var tcStateBefore = null;
+    if (isFromTamakocchi && window.Tamakocchi) {
+      var _ts = Tamakocchi.getState();
+      tcStateBefore = { hunger: _ts.hunger, happiness: _ts.happiness, discipline: _ts.discipline, charId: _ts.charId, stage: _ts.stage };
+    }
     const choiceCount = parseInt(params.get('choices')) || 4;
     const targetRetention = parseFloat(params.get('retention')) || 0.85;
 
@@ -677,6 +699,33 @@
       // ランキング同期
       if (window.RankingSync && RankingSync.isConfigured()) {
         RankingSync.syncToServer();
+      }
+
+      // たまこっちレポート
+      if (isFromTamakocchi && window.Tamakocchi && window.TamakocchiChars && tcStateBefore) {
+        var tcNow = Tamakocchi.getState();
+        var report = document.getElementById('tc-study-report');
+        var ch = Tamakocchi.getCharInfo(tcNow.charId);
+        document.getElementById('tc-report-pet').innerHTML = tcNow.isDead ? TamakocchiChars.renderChar('dead') : TamakocchiChars.renderChar(tcNow.charId);
+        document.getElementById('tc-report-name').textContent = ch ? ch.name : '';
+        var changes = [];
+        var hDiff = tcNow.hunger - tcStateBefore.hunger;
+        var kDiff = tcNow.happiness - tcStateBefore.happiness;
+        var dDiff = tcNow.discipline - tcStateBefore.discipline;
+        if (hDiff > 0) changes.push('おなか +' + hDiff + '  (' + tcNow.hunger + '/' + Tamakocchi.MAX_STAT + ')');
+        else if (hDiff === 0) changes.push('おなか ±0  (' + tcNow.hunger + '/' + Tamakocchi.MAX_STAT + ')');
+        else changes.push('おなか ' + hDiff + '  (' + tcNow.hunger + '/' + Tamakocchi.MAX_STAT + ')');
+        if (kDiff > 0) changes.push('きもち +' + kDiff + '  (' + tcNow.happiness + '/' + Tamakocchi.MAX_STAT + ')');
+        else if (kDiff === 0) changes.push('きもち ±0  (' + tcNow.happiness + '/' + Tamakocchi.MAX_STAT + ')');
+        else changes.push('きもち ' + kDiff + '  (' + tcNow.happiness + '/' + Tamakocchi.MAX_STAT + ')');
+        if (tcNow.charId !== tcStateBefore.charId) changes.push('✨ 進化した！→ ' + (ch ? ch.name : ''));
+        var html = '';
+        changes.forEach(function(c) {
+          var cls = c.indexOf('+') !== -1 ? 'up' : (c.indexOf('±') !== -1 ? '' : 'down');
+          html += '<div class="tc-report-line ' + cls + '">' + c + '</div>';
+        });
+        document.getElementById('tc-report-changes').innerHTML = html;
+        report.style.display = 'block';
       }
     }
 
