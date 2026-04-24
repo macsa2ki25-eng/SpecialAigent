@@ -180,7 +180,7 @@
     function renderHearts(val, max, full, empty) {
       var s = '';
       for (var i = 0; i < max; i++) {
-        s += i < val ? full : empty;
+        s += i < (max - val) ? empty : full;
       }
       return s;
     }

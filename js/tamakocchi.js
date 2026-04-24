@@ -151,8 +151,8 @@
     var hungerLost = Math.floor(elapsed / HUNGER_DECAY_MS);
     var happyLost = Math.floor(elapsed / HAPPY_DECAY_MS);
     if (hungerLost > 0 || happyLost > 0) {
-      s.hunger = Math.max(0, s.hunger - hungerLost);
-      s.happiness = Math.max(0, s.happiness - happyLost);
+      s.hunger = Math.max(0, s.hunger - hungerLost * 2);
+      s.happiness = Math.max(0, s.happiness - happyLost * 2);
       s.lastDecayTime = now;
     }
 
@@ -211,7 +211,11 @@
     if (s.stage < 1 || s.isDead) return s;
     var boost = Math.min(correct, MAX_STAT);
     s.happiness = Math.min(MAX_STAT, s.happiness + boost);
-    s.discipline = Math.min(MAX_STAT, s.discipline + Math.floor(correct / 2));
+    if (correct >= 4) {
+      s.discipline = Math.min(MAX_STAT, s.discipline + 1);
+    } else {
+      s.discipline = Math.max(0, s.discipline - 1);
+    }
     s.totalStudied += total;
     s.totalCorrect += correct;
     s.lastPlayTime = Date.now();
