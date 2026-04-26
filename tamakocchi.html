@@ -332,16 +332,13 @@
     function navigateToStudy(rangeId) {
       var settings = {};
       try { settings = JSON.parse(localStorage.getItem('studySettings') || '{}'); } catch(e) {}
-      var mode = settings.mode || 'jp2en';
       var retention = settings.retention ? (parseInt(settings.retention) / 100).toFixed(2) : '0.85';
+      var choices = settings.choices || '4';
       var url = 'study.html?rangeId=' + encodeURIComponent(rangeId) +
-        '&mode=' + encodeURIComponent(mode) +
+        '&mode=en2jp' +
         '&retention=' + encodeURIComponent(retention) +
+        '&choices=' + encodeURIComponent(choices) +
         '&from=tamakocchi';
-      if (mode !== 'spelling') {
-        var choices = settings.choices || '4';
-        url += '&choices=' + encodeURIComponent(choices);
-      }
       window.location.href = url;
     }
 
@@ -489,9 +486,9 @@
       document.getElementById('tc-game-score').innerHTML =
         '<div style="font-size:2rem;font-weight:700;color:var(--accent)">' + gameCorrect + ' / ' + gameTotal + '</div>' +
         '<div class="text-muted" style="margin-top:8px">' +
-          (gameCorrect >= 4 ? 'すごい！まこっちも大喜び！' :
-           gameCorrect >= 2 ? 'まあまあ！もっとがんばろう！' :
-           'ドンマイ！次はきっとできるよ！') +
+          (gameCorrect >= 4 ? 'すごい！きもち +1！まこっちも大喜び！' :
+           gameCorrect >= 2 ? 'きもち -1…もっとがんばろう！' :
+           'きもち -1…ドンマイ！次こそ4問正解！') +
         '</div>';
       TK.onPlayGame(gameCorrect, gameTotal);
       render();

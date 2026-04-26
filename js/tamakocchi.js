@@ -9,7 +9,6 @@
   var CARE_MISS_THRESHOLD_MS = 3600000;
   var DEATH_CARE_MISSES = 10;
   var FEED_EVERY_N = 12;
-  var HAPPY_EVERY_N = 6;
 
   var STAGE_DURATION = [
     0,
@@ -77,7 +76,8 @@
       happyEmptyTime: null,
       collection: [],
       lastPlayTime: null,
-      evolvedNotice: null
+      evolvedNotice: null,
+      lastLoginDate: null
     };
   }
 
@@ -198,9 +198,6 @@
     if (s.totalStudied % FEED_EVERY_N === 0) {
       s.hunger = Math.min(MAX_STAT, s.hunger + 1);
     }
-    if (isCorrect && s.totalCorrect % HAPPY_EVERY_N === 0) {
-      s.happiness = Math.min(MAX_STAT, s.happiness + 1);
-    }
     s = tickDecay(s);
     save(s);
     return s;
@@ -209,12 +206,10 @@
   function onPlayGame(correct, total) {
     var s = load();
     if (s.stage < 1 || s.isDead) return s;
-    var boost = Math.min(correct, MAX_STAT);
-    s.happiness = Math.min(MAX_STAT, s.happiness + boost);
     if (correct >= 4) {
-      s.discipline = Math.min(MAX_STAT, s.discipline + 1);
+      s.happiness = Math.min(MAX_STAT, s.happiness + 1);
     } else {
-      s.discipline = Math.max(0, s.discipline - 1);
+      s.happiness = Math.max(0, s.happiness - 1);
     }
     s.totalStudied += total;
     s.totalCorrect += correct;
@@ -240,9 +235,31 @@
     save(s);
   }
 
+  function checkLoginDiscipline(s) {
+    if (s.stage < 1 || s.isDead) return s;
+    var today = new Date().toISOString().slice(0, 10);
+    if (s.lastLoginDate === today) return s;
+    var diff = 0;
+    if (s.lastLoginDate) {
+      diff = Math.round((new Date(today) - new Date(s.lastLoginDate)) / 86400000);
+    }
+    if (diff === 1 || !s.lastLoginDate) {
+      s.discipline = Math.min(MAX_STAT, s.discipline + 1);
+    } else if (diff >= 2) {
+      var penalty = 2 + Math.max(0, diff - 2);
+      s.discipline = Math.max(0, s.discipline - penalty);
+    }
+    s.lastLoginDate = today;
+    save(s);
+    return s;
+  }
+
   function getState() {
     var s = load();
-    if (s.stage >= 1) s = tickDecay(s);
+    if (s.stage >= 1) {
+      s = checkLoginDiscipline(s);
+      s = tickDecay(s);
+    }
     return s;
   }
 

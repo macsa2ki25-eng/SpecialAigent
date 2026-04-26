@@ -710,14 +710,9 @@
         document.getElementById('tc-report-name').textContent = ch ? ch.name : '';
         var changes = [];
         var hDiff = tcNow.hunger - tcStateBefore.hunger;
-        var kDiff = tcNow.happiness - tcStateBefore.happiness;
-        var dDiff = tcNow.discipline - tcStateBefore.discipline;
         if (hDiff > 0) changes.push('おなか +' + hDiff + '  (' + tcNow.hunger + '/' + Tamakocchi.MAX_STAT + ')');
         else if (hDiff === 0) changes.push('おなか ±0  (' + tcNow.hunger + '/' + Tamakocchi.MAX_STAT + ')');
         else changes.push('おなか ' + hDiff + '  (' + tcNow.hunger + '/' + Tamakocchi.MAX_STAT + ')');
-        if (kDiff > 0) changes.push('きもち +' + kDiff + '  (' + tcNow.happiness + '/' + Tamakocchi.MAX_STAT + ')');
-        else if (kDiff === 0) changes.push('きもち ±0  (' + tcNow.happiness + '/' + Tamakocchi.MAX_STAT + ')');
-        else changes.push('きもち ' + kDiff + '  (' + tcNow.happiness + '/' + Tamakocchi.MAX_STAT + ')');
         if (tcNow.charId !== tcStateBefore.charId) changes.push('✨ 進化した！→ ' + (ch ? ch.name : ''));
         var html = '';
         changes.forEach(function(c) {
