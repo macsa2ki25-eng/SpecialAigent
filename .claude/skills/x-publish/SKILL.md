@@ -1,28 +1,37 @@
 ---
 name: x-publish
-description: 承認済みの投稿をXに実際に投稿する。X API v2 Free tierを使用。「投稿して」「Xに上げて」「公開して」などの依頼で発火。
+description: 承認済みのX投稿/ブログ記事を実際に公開する。「投稿して」「Xに上げて」「ブログ公開して」「全部公開」などの依頼で発火。
 ---
 
-# X 投稿公開スキル
+# 投稿公開スキル (X + はてなブログ)
 
 ## 目的
 
-承認済み (`status: approved`) の投稿を X API v2 で公開する。
+承認済み (`status: approved`) の投稿を、種別に応じて X / はてなブログ / 両方 に公開する。
+
+## コマンドの選び方
+
+| 言い回し例 | コマンド |
+|---|---|
+| 「Xに投稿して」「Xだけ」 | `python -m src.cli publish --target x` |
+| 「ブログ公開して」 | `python -m src.cli publish --target blog` |
+| 「全部公開」「両方投稿」 | `python -m src.cli publish --target all` |
+| 「3件だけX投稿」 | `python -m src.cli publish --target x --limit 3` |
 
 ## 守ってほしいこと
 
 - 必ず `python -m src.cli publish` を使う (生のAPIを直接叩かない)
-- 投稿前に **必ず** ユーザーに確認を取る:
-  1. `python -m src.cli publish --dry-run` で何が投稿されるかを表示
-  2. 「この N 件を投稿してよいですか?」と問いかける
-  3. 明示的にYesが返ってきたら `python -m src.cli publish` を実行
-- Free tier は月 500 投稿が上限。1日あたりの上限 (`MAX_POSTS_PER_DAY`) は `.env` で制御される
-  - もし `429 Too Many Requests` が返ってきたら、レート制限に達している可能性を案内
-- 投稿に失敗した場合、ファイルは `pending/` に残るので再試行可能
-  - 3回失敗したら「X API側の問題の可能性」として一旦止めるようユーザーに伝える
+- 投稿前に **必ず** ユーザー確認:
+  1. `python -m src.cli publish --target <X> --dry-run` で何が投稿されるか表示
+  2. 「この内容を公開してよいですか?」と問いかける
+  3. 明示的Yesが返ってきたら本実行
+- X (Pay Per Use) は投稿1件あたりクレジット消費、`MAX_POSTS_PER_DAY` でソフト制限
+- はてなブログは AtomPub 経由 (`MAX_BLOG_POSTS_PER_DAY` でソフト制限)
+- 失敗したファイルは `pending/` に残るので再試行可能
+- 投稿エラー (401/403/Payment Required等) は `.env` のキー、権限設定、クレジット残高を疑う
 
 ## 完了時に必ず伝えること
 
-- 成功/失敗の件数
-- 投稿した URL 一覧 (最大5件)
-- 今月の累計投稿数 (Free tier 500/月 に対する残量)
+- X / ブログ それぞれの 成功/失敗 件数
+- 投稿した URL 一覧 (各最大3件)
+- 失敗があれば原因の推定とユーザーへの対処案内

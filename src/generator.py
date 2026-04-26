@@ -1,7 +1,10 @@
-"""Claude API を使って X 投稿文を生成する。
+"""Claude API で X投稿 / ブログ記事を生成する。
 
-バズ型テンプレートとトピック候補をランダムに組み合わせ、
-1投稿あたり280文字以内の日本語テキストを出力する。
+中核ロジック:
+  1. data/products.yaml から商品を1件選ぶ
+  2. researcher.py で楽天APIから商品情報、バズサンプルを取得
+  3. テンプレ(型) + 商品情報 + バズ参考例 を組み合わせて Claude に渡す
+  4. X投稿(本ツイート + リプライ) または ブログ記事を生成
 """
 
 from __future__ import annotations
@@ -14,110 +17,304 @@ from pathlib import Path
 
 from anthropic import Anthropic
 
-from src.config import PENDING_DIR, Settings, load_topics, load_viral_patterns
+from src.config import (
+    PENDING_DIR,
+    Settings,
+    load_blog_patterns,
+    load_x_patterns,
+)
+from src.researcher import ResearchBundle, Researcher
 
-SYSTEM_PROMPT = """\
-あなたは日本語X(旧Twitter)で、雑学・ライフハック・心に響く言葉の投稿を作るプロの運用者です。
+X_SYSTEM_PROMPT = """\
+あなたは日本語X(旧Twitter)で、実体験ベースの商品レビュー投稿を作るプロの運用者です。
 
 厳守するルール:
 1. 日本語で書く
-2. 本文は 140文字以内(半角280文字相当)に収める - これは絶対
-3. ハッシュタグは付けない (アルゴリズム上、一般投稿では不利なので)
-4. URLは付けない
+2. 本文は 140文字以内(全角140 / 半角280) - これは絶対
+3. ハッシュタグは付けない (一般投稿では拡散の足を引っ張る)
+4. URLは付けない (本文には書かない、リプライ側で別途案内する)
 5. 絵文字は 0〜1個まで(bot感を避けるため)
-6. 「いいね!してね」「フォローしてね」等のCTAは書かない
-7. 断定できない医療/法律/投資アドバイスは書かない
-8. 政治・宗教・時事批判は避ける
-9. 特定の誰かを揶揄する内容は書かない
-10. 改行を適切に入れて、読みやすいリズムを作る
+6. 「いいね」「フォロー」「リプ」誘導はしない
+7. 「PR」「広告」と明示しない (リプ側のリンクで「※楽天アフィリエイト含む」と表記)
+8. 過剰な薬事/効果効能の断定はしない (「治る」「絶対に効く」などNG)
+9. 政治・宗教・他者批判は書かない
+10. 改行を適切に入れて、3秒で読めるリズムを作る
+11. 商品名は1〜2回までに留める (売り込み感を出さない)
+12. 「実体験」のトーン。妻が実際に買って使った前提で語る
 
 出力形式:
-- 投稿本文のテキストのみを出力。前置き・解説・引用符は付けない。
+- 投稿本文のテキストのみ。前置き・解説・引用符は付けない。
 """
 
-USER_PROMPT_TEMPLATE = """\
-以下の「型」と「テーマ」で X 投稿を1つ書いてください。
+X_USER_TEMPLATE = """\
+# 商品情報 (妻が実際に買ったもの)
 
-# 型: {pattern_name}
+商品名: {product_name}
+カテゴリ: {category}
+抱えていた問題: {problem}
+使ってみた体験: {experience}
+おすすめしたい人: {recommended_for}
 
+# 楽天での実勢価格・評価 (リアリティ用)
+
+{rakuten_summary}
+
+# バズ参考例 (構造を真似する。内容はパクらない)
+
+{buzz_block}
+
+# 今回の型
+
+型ID: {pattern_id}
+型名: {pattern_name}
+構造:
 {pattern_structure}
+制約:
+{pattern_constraints}
 
-# 参考例(この構造を守って、内容は自由に作る)
+# 出力
 
-{pattern_example}
-
-# 今回のテーマ
-
-{topic}
-
-# 追加指示
-
-- 上の型の構造を厳密に守りながら、テーマに沿った内容にすること
-- 冒頭1行でスクロールを止める引きを作ること
-- 最後は余韻を残すか、読者に気づきを与える一文で終わる
-- 140文字以内に収める
+上記の型と制約に厳密に従って、X投稿の本文を1つ生成してください。
 """
+
+BLOG_SYSTEM_PROMPT = """\
+あなたは商品レビュー専門の日本語ブロガーです。SEOと読みやすさを両立する記事を書きます。
+
+厳守するルール:
+1. はてなブログMarkdown記法で書く (見出しは ## ### ...)
+2. 1500〜3000字を目安
+3. 体験談ベース、妻が実際に買って使った前提
+4. 過剰な薬事/効果効能の断定はしない
+5. 「特定商取引法に基づく表記」相当の文言は不要 (個別記事では)
+6. 商品名は自然に出す (詰め込みすぎない、SEOキーワードを意識)
+7. 必ず「気になった点」セクションを入れる (信頼性UP)
+8. 文末に「※本記事には楽天アフィリエイトリンクを含みます」を1行追加
+9. アフィリエイトリンクは {AFFILIATE_LINK} という placeholder で記載 (後でツールが置換)
+
+出力形式:
+- 1行目: タイトル (h1にせず、はてなブログのタイトルフィールド用)
+- 2行目以降: 本文Markdown
+- タイトルと本文の間は空行1つ
+"""
+
+BLOG_USER_TEMPLATE = """\
+# 商品情報 (妻が実際に買ったもの)
+
+商品名: {product_name}
+カテゴリ: {category}
+抱えていた問題: {problem}
+使ってみた体験: {experience}
+おすすめしたい人: {recommended_for}
+購入価格: {price_paid}円
+
+# 楽天での実勢価格・評価 (記事内に自然に組み込む材料)
+
+{rakuten_summary}
+
+# 今回の型
+
+型ID: {pattern_id}
+型名: {pattern_name}
+SEO狙い:
+{pattern_seo_focus}
+構造:
+{pattern_structure}
+アフィリ配置の指針:
+{pattern_affiliate}
+
+# 出力
+
+上記の型に従って、はてなブログ記事を1本生成してください。
+タイトルは1行目、本文は2行目以降。
+アフィリリンクを入れたい箇所には {{AFFILIATE_LINK}} と書いてください (後で置換)。
+"""
+
+
+def _format_rakuten_summary(bundle: ResearchBundle) -> str:
+    if not bundle.rakuten:
+        return "(楽天API情報なし。商品情報のみで生成してください。)"
+    r = bundle.rakuten
+    parts = [
+        f"楽天での商品名: {r.name}",
+        f"価格: {r.price}円",
+        f"ショップ: {r.shop_name}",
+    ]
+    if r.review_average is not None and r.review_count:
+        parts.append(f"レビュー: ★{r.review_average} ({r.review_count}件)")
+    return "\n".join(parts)
+
+
+def _format_buzz_block(bundle: ResearchBundle) -> str:
+    if not bundle.buzz_examples:
+        return "(参考例なし)"
+    blocks = []
+    for ex in bundle.buzz_examples:
+        block = (
+            f"--- {ex.get('id', '?')} ({ex.get('category', '')}) ---\n"
+            f"フック: {ex.get('hook', '')}\n"
+            f"構造: {ex.get('structure', '').strip()}\n"
+            f"なぜバズったか: {ex.get('why_works', '').strip()}"
+        )
+        blocks.append(block)
+    return "\n\n".join(blocks)
 
 
 class Generator:
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or Settings.load()
         self.client = Anthropic(api_key=self.settings.anthropic_api_key)
-        self.patterns = load_viral_patterns()
-        self.topics = load_topics()["themes"]
+        self.x_patterns = load_x_patterns()
+        self.blog_patterns = load_blog_patterns()
+        self.researcher = Researcher(self.settings)
 
-    def generate_one(
+    # -------------------------- X投稿 --------------------------
+
+    def generate_x_post(
         self,
+        product: dict,
         *,
         pattern_id: str | None = None,
-        topic: str | None = None,
     ) -> dict:
-        pattern = (
-            next(p for p in self.patterns if p["id"] == pattern_id)
-            if pattern_id
-            else random.choice(self.patterns)
-        )
-        theme = topic or random.choice(self.topics)
+        bundle = self.researcher.research(product)
+        pattern = self._pick_x_pattern(pattern_id)
 
-        user_prompt = USER_PROMPT_TEMPLATE.format(
+        user_prompt = X_USER_TEMPLATE.format(
+            product_name=product.get("name", ""),
+            category=product.get("category", ""),
+            problem=product.get("problem", "").strip(),
+            experience=product.get("experience", "").strip(),
+            recommended_for=product.get("recommended_for", ""),
+            rakuten_summary=_format_rakuten_summary(bundle),
+            buzz_block=_format_buzz_block(bundle),
+            pattern_id=pattern["id"],
             pattern_name=pattern["name"],
-            pattern_structure=pattern["structure"],
-            pattern_example=pattern["example"],
-            topic=theme,
+            pattern_structure=pattern.get("structure", "").strip(),
+            pattern_constraints=pattern.get("constraints", "").strip(),
         )
 
-        response = self.client.messages.create(
+        resp = self.client.messages.create(
             model=self.settings.anthropic_model,
-            max_tokens=500,
-            system=SYSTEM_PROMPT,
+            max_tokens=600,
+            system=X_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": user_prompt}],
         )
-        text = response.content[0].text.strip()
+        text = resp.content[0].text.strip()
 
-        # 140文字(半角280文字)超過は切らずに再生成を促すマーカー付きで保存
-        over_limit = len(text) > 140
+        affiliate_url = bundle.rakuten.affiliate_url if bundle.rakuten else None
+        # リプ用テキスト: ブログ記事URLが将来できたらそちらを優先する想定
+        # 現時点ではアフィリリンク直貼り (※マーク付き)
+        reply_text = (
+            f"使ったのはこれです👇\n{affiliate_url}\n※楽天アフィリエイト含む"
+            if affiliate_url
+            else None
+        )
 
         return {
-            "id": f"{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}",
-            "text": text,
+            "id": _new_id(),
+            "type": "x",
+            "product_id": product.get("id"),
             "pattern_id": pattern["id"],
             "pattern_name": pattern["name"],
-            "topic": theme,
+            "text": text,
             "char_count": len(text),
-            "over_limit": over_limit,
+            "over_limit": len(text) > 140,
+            "reply_text": reply_text,
+            "affiliate_url": affiliate_url,
+            "rakuten": bundle.rakuten.to_dict() if bundle.rakuten else None,
             "model": self.settings.anthropic_model,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "status": "pending",
         }
 
-    def generate_batch(self, count: int) -> list[Path]:
-        PENDING_DIR.mkdir(parents=True, exist_ok=True)
-        paths: list[Path] = []
-        for _ in range(count):
-            post = self.generate_one()
-            path = PENDING_DIR / f"{post['id']}.json"
-            path.write_text(
-                json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8"
+    def _pick_x_pattern(self, pattern_id: str | None) -> dict:
+        if pattern_id:
+            return next(p for p in self.x_patterns if p["id"] == pattern_id)
+        return random.choice(self.x_patterns)
+
+    # -------------------------- ブログ --------------------------
+
+    def generate_blog_post(
+        self,
+        product: dict,
+        *,
+        pattern_id: str | None = None,
+    ) -> dict:
+        bundle = self.researcher.research(product)
+        pattern = self._pick_blog_pattern(pattern_id)
+
+        user_prompt = BLOG_USER_TEMPLATE.format(
+            product_name=product.get("name", ""),
+            category=product.get("category", ""),
+            problem=product.get("problem", "").strip(),
+            experience=product.get("experience", "").strip(),
+            recommended_for=product.get("recommended_for", ""),
+            price_paid=product.get("price_paid", "?"),
+            rakuten_summary=_format_rakuten_summary(bundle),
+            pattern_id=pattern["id"],
+            pattern_name=pattern["name"],
+            pattern_seo_focus=pattern.get("seo_focus", "").strip(),
+            pattern_structure=pattern.get("structure", "").strip(),
+            pattern_affiliate=pattern.get("affiliate_placement", "").strip(),
+        )
+
+        resp = self.client.messages.create(
+            model=self.settings.anthropic_model,
+            max_tokens=4000,
+            system=BLOG_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = resp.content[0].text.strip()
+        title, body = _split_title_body(raw)
+
+        # アフィリンクを実URLに置換
+        affiliate_url = bundle.rakuten.affiliate_url if bundle.rakuten else None
+        if affiliate_url:
+            link_html = (
+                f'<a href="{affiliate_url}" target="_blank" rel="nofollow noopener">'
+                f"{bundle.rakuten.name}を楽天市場で見る</a>"
             )
-            paths.append(path)
-        return paths
+            body = body.replace("{AFFILIATE_LINK}", link_html)
+        else:
+            body = body.replace("{AFFILIATE_LINK}", "")
+
+        return {
+            "id": _new_id(),
+            "type": "blog",
+            "product_id": product.get("id"),
+            "pattern_id": pattern["id"],
+            "pattern_name": pattern["name"],
+            "title": title,
+            "body_markdown": body,
+            "char_count": len(body),
+            "affiliate_url": affiliate_url,
+            "rakuten": bundle.rakuten.to_dict() if bundle.rakuten else None,
+            "model": self.settings.anthropic_model,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "status": "pending",
+        }
+
+    def _pick_blog_pattern(self, pattern_id: str | None) -> dict:
+        if pattern_id:
+            return next(p for p in self.blog_patterns if p["id"] == pattern_id)
+        return self.blog_patterns[0]  # デフォルトは product_review
+
+    # -------------------------- 保存 --------------------------
+
+    def save(self, post: dict) -> Path:
+        PENDING_DIR.mkdir(parents=True, exist_ok=True)
+        path = PENDING_DIR / f"{post['id']}.json"
+        path.write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
+        return path
+
+
+def _new_id() -> str:
+    return f"{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}"
+
+
+def _split_title_body(raw: str) -> tuple[str, str]:
+    lines = raw.splitlines()
+    if not lines:
+        return "(no title)", ""
+    title = lines[0].lstrip("# ").strip()
+    body = "\n".join(lines[1:]).lstrip("\n")
+    return title, body

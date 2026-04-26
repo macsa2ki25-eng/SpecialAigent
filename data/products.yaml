@@ -1,0 +1,30 @@
+# 妻が買った商品のリスト。投稿のネタ元になる。
+#
+# 1商品ごとに「ブログ記事1本 + X投稿を複数アングル」が生成可能。
+# 詳しい記入方法は docs/PRODUCTS_GUIDE.md 参照。
+#
+# 必須項目: id, name, search_query, category, problem, experience
+# 任意項目: recommended_for, price_paid, bought_at, tags, image_path,
+#           rakuten_item_url (手動指定したい場合)、posted_at_x、posted_at_blog
+
+products:
+  - id: necosogi-2025
+    name: ネコソギトップ粒剤
+    search_query: ネコソギ 顆粒 除草剤 2kg
+    category: 園芸・ガーデニング
+    problem: |
+      庭の雑草が手作業では追いつかない。
+      草刈り機を回しても2週間で元通り。腰も痛い。
+    experience: |
+      ホームセンターを3軒回って、店員さんイチ押しのコレを購入。
+      梅雨入り前の晴れ間に、土の上に直接バラ撒くだけ。
+      1週間後、雑草が黄色く枯れ始めた。
+      2週間後、根まで完全に枯れた。
+      その後2ヶ月は新しい雑草がほぼ生えてこなかった。
+      今年は雑草と戦わずに済みそうで、休日が返ってきた。
+    recommended_for: 戸建てで庭の雑草に毎年悩んでる人
+    price_paid: 2980
+    bought_at: 2026-04-20
+    tags: [庭, 除草, 時短, 戸建て]
+    posted_at_x: null
+    posted_at_blog: null
