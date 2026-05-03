@@ -33,6 +33,7 @@ from src.config import (
     Settings,
     ensure_dirs,
     load_products,
+    load_story_topics,
 )
 
 console = Console()
@@ -47,6 +48,66 @@ def main() -> None:
 # ============================================================
 # products
 # ============================================================
+
+
+@main.command("topics")
+def cmd_topics() -> None:
+    """data/story_topics.yaml に登録された教育系ストーリーのネタ一覧."""
+    topics = load_story_topics()
+    if not topics:
+        console.print("[yellow]ストーリーのネタが登録されていません。data/story_topics.yaml を編集してください。[/yellow]")
+        return
+    table = Table(title="教育系ストーリー ネタ帳")
+    table.add_column("ID")
+    table.add_column("タイトル")
+    table.add_column("カテゴリ")
+    table.add_column("難易度")
+    for t in topics:
+        table.add_row(
+            t.get("id", ""),
+            t.get("title", ""),
+            t.get("category", ""),
+            t.get("difficulty", ""),
+        )
+    console.print(table)
+
+
+@main.command("generate-thread")
+@click.option("--topic", "topic_id", default=None, help="対象のネタID (story_topics.yaml)")
+@click.option("--length", default=6, type=int, help="ツイート数 (5-6推奨)")
+@click.option("--pattern", default=None, help="型ID (x_thread_patterns.yaml)")
+def cmd_generate_thread(topic_id: str | None, length: int, pattern: str | None) -> None:
+    """教育系ストーリーをXスレッドとして生成し承認キューに入れる."""
+    from src.generator import Generator
+
+    topics = load_story_topics()
+    if not topics:
+        console.print("[red]data/story_topics.yaml にネタが登録されていません。[/red]")
+        sys.exit(1)
+
+    if topic_id:
+        target = next((t for t in topics if t.get("id") == topic_id), None)
+        if not target:
+            console.print(f"[red]ID '{topic_id}' のネタが見つかりません。[/red]")
+            sys.exit(1)
+    else:
+        target = topics[0]
+
+    console.print(
+        f"[cyan]ネタ: {target['id']} ({target.get('title', '')}) / {length}ツイート構成[/cyan]"
+    )
+
+    gen = Generator()
+    with console.status("[cyan]Claude API でスレッド生成中...[/cyan]"):
+        post = gen.generate_x_thread(target, length=length, pattern_id=pattern)
+        path = gen.save(post)
+
+    over = sum(1 for t in post["tweets"] if t.get("over_limit"))
+    msg = f"[green]✅ スレッド生成: {path.name}[/green] ({post['tweet_count']}ツイート)"
+    if over:
+        msg += f" [yellow]⚠️ 140字超過 {over}件あり、reviewで要修正[/yellow]"
+    console.print(msg)
+    console.print("\n次は [bold]python -m src.cli review[/bold] で確認してください。")
 
 
 @main.command("products")
@@ -222,10 +283,16 @@ def _publish_x(paths: list, settings: Settings, *, dry_run: bool) -> None:
     if dry_run:
         for p in paths:
             post = json.loads(p.read_text(encoding="utf-8"))
-            console.rule(post.get("pattern_name", "?"))
-            console.print(post.get("text", ""))
-            if post.get("reply_text"):
-                console.print(f"[dim]リプ: {post['reply_text']}[/dim]")
+            ptype = post.get("type", "x")
+            if ptype == "x_thread":
+                console.rule(f"スレッド: {post.get('topic_title', '?')}")
+                for i, t in enumerate(post.get("tweets", []), start=1):
+                    console.print(f"[bold]\\[{i}][/bold] {t.get('text', '')}\n")
+            else:
+                console.rule(post.get("pattern_name", "?"))
+                console.print(post.get("text", ""))
+                if post.get("reply_text"):
+                    console.print(f"[dim]リプ: {post['reply_text']}[/dim]")
         console.print("[dim](dry-run のため未送信)[/dim]")
         return
 
@@ -234,9 +301,18 @@ def _publish_x(paths: list, settings: Settings, *, dry_run: bool) -> None:
     pub = XPublisher(settings)
     success, failure = 0, 0
     for p in paths:
+        post = json.loads(p.read_text(encoding="utf-8"))
+        ptype = post.get("type", "x")
         try:
-            result = pub.publish_from_file(p)
-            console.print(f"[green]✅ X投稿[/green] {result['main']['url']}")
+            if ptype == "x_thread":
+                result = pub.publish_thread_from_file(p)
+                first_url = result["tweet_results"][0]["url"]
+                console.print(
+                    f"[green]✅ Xスレッド[/green] ({len(result['tweet_results'])}ツイート) {first_url}"
+                )
+            else:
+                result = pub.publish_from_file(p)
+                console.print(f"[green]✅ X投稿[/green] {result['main']['url']}")
             success += 1
         except Exception as e:  # noqa: BLE001
             console.print(f"[red]❌ X失敗 {p.name}: {e}[/red]")

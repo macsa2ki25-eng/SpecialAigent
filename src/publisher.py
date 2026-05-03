@@ -78,6 +78,34 @@ class XPublisher:
         post["published_at"] = datetime.now(timezone.utc).isoformat()
         return _move_to_published(post, path)
 
+    def post_thread(self, tweets: list[str]) -> list[dict]:
+        """ツイートのリストをスレッドとして連投する (各ツイートを前のツイートのリプライにする)."""
+        results: list[dict] = []
+        previous_id: str | None = None
+        for text in tweets:
+            r = self.post_text(text, in_reply_to=previous_id)
+            results.append(r)
+            previous_id = str(r["tweet_id"])
+        return results
+
+    def publish_thread_from_file(self, path: Path) -> dict:
+        """承認済みスレッドを連投する."""
+        post = json.loads(path.read_text(encoding="utf-8"))
+        if post.get("status") != "approved":
+            raise ValueError(f"未承認のスレッドは送信できません: {path.name}")
+        if post.get("type") != "x_thread":
+            raise ValueError(f"スレッド投稿ではありません: {path.name} (type={post.get('type')})")
+
+        tweet_texts = [t["text"] for t in post.get("tweets", [])]
+        if not tweet_texts:
+            raise ValueError(f"スレッドにツイートが含まれていません: {path.name}")
+
+        results = self.post_thread(tweet_texts)
+        post["tweet_results"] = results
+        post["status"] = "published"
+        post["published_at"] = datetime.now(timezone.utc).isoformat()
+        return _move_to_published(post, path)
+
 
 # ============================================================
 # はてなブログ

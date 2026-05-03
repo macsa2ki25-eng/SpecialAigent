@@ -32,14 +32,30 @@ def list_pending() -> list[Path]:
 def list_approved(*, post_type: str | None = None) -> list[Path]:
     """承認済みだがまだ投稿されていないファイル一覧。
 
-    post_type を指定すると ("x" | "blog") そのタイプだけに絞る。
+    post_type:
+      - "x" : 単発X投稿 + X連投スレッドの両方
+      - "x_single" : 単発X投稿のみ
+      - "x_thread" : スレッドのみ
+      - "blog" : ブログ記事のみ
+      - None : 全部
     """
+    if post_type == "x":
+        allowed = {"x", "x_thread"}
+    elif post_type == "x_single":
+        allowed = {"x"}
+    elif post_type == "x_thread":
+        allowed = {"x_thread"}
+    elif post_type == "blog":
+        allowed = {"blog"}
+    else:
+        allowed = None
+
     results = []
     for p in PENDING_DIR.glob("*.json"):
         data = json.loads(p.read_text(encoding="utf-8"))
         if data.get("status") != "approved":
             continue
-        if post_type and data.get("type") != post_type:
+        if allowed is not None and data.get("type") not in allowed:
             continue
         results.append(p)
     return sorted(results)
@@ -100,6 +116,24 @@ def _render_blog_post(post: dict, idx: int, total: int) -> tuple[str, str]:
     return title, body
 
 
+def _render_x_thread(post: dict, idx: int, total: int) -> tuple[str, str]:
+    tweets = post.get("tweets", [])
+    over = sum(1 for t in tweets if t.get("over_limit"))
+    header = (
+        f"[{idx}/{total}] Xスレッド / 型: {post.get('pattern_name', '?')} / "
+        f"テーマ: {post.get('topic_title', '?')} / {len(tweets)}ツイート"
+    )
+    if over:
+        header += f" (140字超過 {over}件あり!)"
+    lines = []
+    for i, t in enumerate(tweets, start=1):
+        marker = " ⚠️超過" if t.get("over_limit") else ""
+        lines.append(f"--- [{i}/{len(tweets)}] ({t.get('char_count', 0)}字{marker}) ---")
+        lines.append(t.get("text", ""))
+        lines.append("")
+    return header, "\n".join(lines).rstrip()
+
+
 def review_all() -> dict[str, int]:
     """承認キューを対話的に処理。結果のサマリを返す。"""
     paths = list_pending()
@@ -116,6 +150,8 @@ def review_all() -> dict[str, int]:
 
         if post_type == "blog":
             header, body = _render_blog_post(post, idx, len(paths))
+        elif post_type == "x_thread":
+            header, body = _render_x_thread(post, idx, len(paths))
         else:
             header, body = _render_x_post(post, idx, len(paths))
 
@@ -155,6 +191,25 @@ def review_all() -> dict[str, int]:
                 post["title"] = new_title
                 post["body_markdown"] = new_body
                 post["char_count"] = len(new_body)
+            elif post_type == "x_thread":
+                # スレッドは === TWEET N === マーカーで区切られたテキストを編集
+                tweets = post.get("tweets", [])
+                blocks = []
+                for i, t in enumerate(tweets, start=1):
+                    blocks.append(f"=== TWEET {i} ===")
+                    blocks.append(t.get("text", ""))
+                    blocks.append("")
+                edited = _edit_text("\n".join(blocks))
+                # 編集後を再パース
+                import re
+
+                parts = re.split(r"={3,}\s*TWEET\s*\d+\s*={3,}", edited)
+                new_texts = [p.strip() for p in parts if p.strip()]
+                post["tweets"] = [
+                    {"text": t, "char_count": len(t), "over_limit": len(t) > 140}
+                    for t in new_texts
+                ]
+                post["tweet_count"] = len(new_texts)
             else:
                 edited = _edit_text(post.get("text", ""))
                 post["text"] = edited

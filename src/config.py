@@ -19,6 +19,7 @@ REJECTED_DIR = DATA_DIR / "posts" / "rejected"
 
 PRODUCTS_FILE = DATA_DIR / "products.yaml"
 BUZZ_EXAMPLES_FILE = DATA_DIR / "buzz_examples.yaml"
+STORY_TOPICS_FILE = DATA_DIR / "story_topics.yaml"
 
 load_dotenv(ROOT / ".env")
 
@@ -105,6 +106,19 @@ def load_x_patterns() -> list[dict]:
 def load_blog_patterns() -> list[dict]:
     with (TEMPLATES_DIR / "blog_patterns.yaml").open(encoding="utf-8") as f:
         return yaml.safe_load(f)["patterns"]
+
+
+def load_thread_patterns() -> list[dict]:
+    with (TEMPLATES_DIR / "x_thread_patterns.yaml").open(encoding="utf-8") as f:
+        return yaml.safe_load(f)["patterns"]
+
+
+def load_story_topics() -> list[dict]:
+    if not STORY_TOPICS_FILE.exists():
+        return []
+    with STORY_TOPICS_FILE.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+        return data.get("topics", [])
 
 
 def load_products() -> list[dict]:
