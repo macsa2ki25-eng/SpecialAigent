@@ -166,6 +166,122 @@ def cmd_auto_post(dry_run: bool, retry: int) -> None:
     )
 
 
+@main.command("auto-post-instagram")
+@click.option("--dry-run", is_flag=True, help="画像生成までして投稿せず終了")
+@click.option(
+    "--commit-images",
+    is_flag=True,
+    default=True,
+    help="生成した画像をリポジトリにcommit/push (github_raw使用時のデフォルト)",
+)
+def cmd_auto_post_instagram(dry_run: bool, commit_images: bool) -> None:
+    """知育ネタを1件、Instagramカルーセルとして自動投稿."""
+    settings = Settings.load()
+    topics = load_chiiku_topics()
+    if not topics:
+        console.print("[red]知育トピックが未登録です。data/chiiku_topics.yaml を編集してください。[/red]")
+        sys.exit(1)
+
+    topic, angle, angle_index = _pick_next_chiiku(topics)
+    if not topic or not angle:
+        console.print("[yellow]全アングル投稿済み。新ネタ追加が必要です。[/yellow]")
+        sys.exit(0)
+
+    console.print(
+        f"[cyan]ネタ: {topic['id']} / アングル: {angle.get('id', '?')} ({angle.get('learning', '')})[/cyan]"
+    )
+
+    from src.generator import Generator
+    from src.image_gen import CarouselGenerator
+    from src.instagram import ImageHost, InstagramPublisher
+
+    # 1. テキスト生成
+    gen = Generator(settings)
+    with console.status("[cyan]Claude API でカルーセル素材を生成中...[/cyan]"):
+        post = gen.generate_chiiku_carousel(topic, angle)
+
+    if not post["slides"]:
+        console.print("[red]スライド生成失敗。Claudeの出力を確認してください。[/red]")
+        sys.exit(1)
+
+    console.rule("生成されたキャプション")
+    console.print(post["caption"])
+    console.rule(f"スライド ({len(post['slides'])}枚)")
+    for i, s in enumerate(post["slides"], start=1):
+        console.print(f"[bold][{i}] type={s.get('type')}[/bold]")
+        for k, v in s.items():
+            if k != "type":
+                console.print(f"  {k}: {v}")
+
+    # 2. 画像生成
+    with console.status("[cyan]画像をレンダリング中...[/cyan]"):
+        cg = CarouselGenerator()
+        image_paths = cg.generate(post["id"], post["slides"])
+    console.print(f"[green]✅ {len(image_paths)} 枚の画像を生成しました[/green]")
+
+    if dry_run:
+        console.print(f"[dim](dry-run のため未投稿。画像は {image_paths[0].parent} に保存)[/dim]")
+        return
+
+    # 3. 画像をホスティング (公開URL化)
+    if settings.image_hosting == "github_raw" and commit_images:
+        _commit_and_push_images(image_paths, post["id"])
+
+    host = ImageHost(settings)
+    image_urls = host.upload(image_paths)
+    console.print(f"[green]✅ 画像URL取得[/green] {len(image_urls)} 件")
+
+    # 4. Instagram に投稿
+    pub = InstagramPublisher(settings)
+    try:
+        result = pub.post_carousel(image_urls, post["caption"])
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[red]❌ Instagram投稿失敗: {e}[/red]")
+        console.print("[yellow]投稿カウントは増やしません。次回同じアングルで再試行。[/yellow]")
+        sys.exit(1)
+
+    post["main"] = result
+    post["image_urls"] = image_urls
+    post["status"] = "published"
+    post["published_at"] = datetime.now(timezone.utc).isoformat()
+    PUBLISHED_DIR.mkdir(parents=True, exist_ok=True)
+    out = PUBLISHED_DIR / f"{post['id']}.json"
+    out.write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 5. 投稿カウントを更新
+    topic["posted_angles_count"] = angle_index + 1
+    save_chiiku_topics(topics)
+
+    console.print(f"[green]✅ Instagram 投稿完了[/green] media_id={result.get('media_id')}")
+
+
+def _commit_and_push_images(image_paths: list, post_id: str) -> None:
+    """生成画像をgitにcommit/push (github_raw方式の場合)."""
+    import subprocess
+
+    files = [str(p) for p in image_paths]
+    try:
+        subprocess.run(["git", "add", *files], check=True, capture_output=True)
+        msg = f"chore(instagram): add carousel images for {post_id} [skip ci]"
+        subprocess.run(
+            ["git", "commit", "-m", msg], check=True, capture_output=True
+        )
+        subprocess.run(["git", "push"], check=True, capture_output=True)
+        console.print(f"[green]✅ 画像をrepo にpush[/green]")
+    except subprocess.CalledProcessError as e:
+        console.print(f"[yellow]git push 失敗 (手動実行が必要): {e.stderr.decode() if e.stderr else e}[/yellow]")
+
+
+@main.command("test-instagram")
+def cmd_test_instagram() -> None:
+    """Instagram Graph API への疎通確認."""
+    from src.instagram import InstagramPublisher
+
+    pub = InstagramPublisher()
+    name = pub.verify()
+    console.print(f"[green]✅ Instagram API 接続OK[/green] (@{name})")
+
+
 @main.command("topics")
 def cmd_topics() -> None:
     """data/story_topics.yaml に登録された教育系ストーリーのネタ一覧."""

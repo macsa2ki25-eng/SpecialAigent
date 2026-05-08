@@ -22,6 +22,10 @@ BUZZ_EXAMPLES_FILE = DATA_DIR / "buzz_examples.yaml"
 STORY_TOPICS_FILE = DATA_DIR / "story_topics.yaml"
 CHIIKU_TOPICS_FILE = DATA_DIR / "chiiku_topics.yaml"
 
+ASSETS_DIR = ROOT / "assets"
+FONT_DIR = ASSETS_DIR / "fonts"
+INSTAGRAM_IMAGES_DIR = DATA_DIR / "instagram_images"
+
 load_dotenv(ROOT / ".env")
 
 
@@ -53,6 +57,14 @@ class Settings:
     rakuten_affiliate_id: str
     # Amazon (任意)
     amazon_associate_tag: str
+    # Instagram
+    instagram_business_id: str
+    instagram_access_token: str
+    image_hosting: str
+    imgbb_api_key: str
+    github_repo_owner: str
+    github_repo_name: str
+    github_repo_branch: str
     # 運用
     max_posts_per_day: int
     max_blog_posts_per_day: int
@@ -82,6 +94,15 @@ class Settings:
             rakuten_application_id=_opt("RAKUTEN_APPLICATION_ID"),
             rakuten_affiliate_id=_opt("RAKUTEN_AFFILIATE_ID"),
             amazon_associate_tag=_opt("AMAZON_ASSOCIATE_TAG"),
+            instagram_business_id=_opt("INSTAGRAM_BUSINESS_ID"),
+            instagram_access_token=_opt("INSTAGRAM_ACCESS_TOKEN"),
+            image_hosting=_opt("IMAGE_HOSTING", "github_raw"),
+            imgbb_api_key=_opt("IMGBB_API_KEY"),
+            github_repo_owner=_opt("GITHUB_REPO_OWNER", "macsa2ki25-eng"),
+            github_repo_name=_opt("GITHUB_REPO_NAME", "SpecialAigent"),
+            github_repo_branch=_opt(
+                "GITHUB_REPO_BRANCH", "claude/x-revenue-automation-MegUY"
+            ),
             max_posts_per_day=int(_opt("MAX_POSTS_PER_DAY", "5")),
             max_blog_posts_per_day=int(_opt("MAX_BLOG_POSTS_PER_DAY", "2")),
             require_approval=_opt("REQUIRE_APPROVAL", "true").lower() == "true",
@@ -96,6 +117,11 @@ class Settings:
         return all(
             not _is_placeholder(v)
             for v in (self.hatena_user_id, self.hatena_blog_domain, self.hatena_api_key)
+        )
+
+    def has_instagram(self) -> bool:
+        return not _is_placeholder(self.instagram_business_id) and not _is_placeholder(
+            self.instagram_access_token
         )
 
 

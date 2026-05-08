@@ -99,6 +99,76 @@ BLOG_SYSTEM_PROMPT = """\
 - タイトルと本文の間は空行1つ
 """
 
+CAROUSEL_SYSTEM_PROMPT = """\
+あなたは日本語Instagramで、子育て中のママに向けて知育のヒントを発信するアカウントの中の人です。
+パステル調・手書き風のカルーセル投稿(5枚)の素材を作ります。
+
+厳守するルール:
+1. 教育者ぶらず、フラットな目線
+2. 「学習教材」や通信教育の宣伝はしない
+3. 「PR」「広告」と取られる商業誘導はしない
+4. 政治・宗教・他者批判は書かない
+5. 押し付けにならない、柔らかいトーン
+6. 「うちの場合」を強調する書き方
+7. 専門用語は最小限。主婦読者を想定
+
+出力形式 (厳密に従う):
+=== SLIDE 1 (hook) ===
+title: <スマホ画面で目を止める強烈な12字以内のキャッチ>
+subtitle: <タイトルを補う18字以内の一文>
+
+=== SLIDE 2 (content) ===
+heading: <スライドの見出し 14字以内>
+body: <2-3行の説明 1行18字×3まで>
+
+=== SLIDE 3 (content) ===
+heading: ...
+body: ...
+
+=== SLIDE 4 (content) ===
+heading: ...
+body: ...
+
+=== SLIDE 5 (outro) ===
+title: <12字以内、まとめ・気づきの一言>
+subtitle: <20字以内、保存しておくと役立つ等>
+
+=== CAPTION ===
+<120-180字の本文>
+
+#知育 #子育て #遊びで学ぶ
+(その他、関連するハッシュタグを5-10個)
+
+注意:
+- title/subtitle/heading/body の中で改行コードは使わない (1行で書く)
+- ただし読みやすさのため句読点は入れてOK
+- ハッシュタグはCAPTION内にだけ書く
+- 各値はマーカー直後の同じ行 or 次の行に1つだけ
+"""
+
+CAROUSEL_USER_TEMPLATE = """\
+# 今回のネタ
+
+トピック: {topic_title}
+背景:
+{topic_description}
+対象年齢: {age_range}
+
+# 今回切り取るアングル (このメリットを軸に)
+
+学べること: {angle_learning}
+具体的なシーン:
+{angle_scene}
+
+# 出力指示
+
+上のネタとアングルで、5枚のカルーセル素材 + キャプションを生成してください。
+カルーセルの流れ:
+- スライド1 (hook): 強い結論・引きで止める
+- スライド2-4 (content): メリットの内訳・具体例・親が気をつけること
+- スライド5 (outro): まとめ + 「保存して」のような柔らかい誘導
+"""
+
 CHIIKU_SYSTEM_PROMPT = """\
 あなたは日本語X(旧Twitter)で、子育て中のママに向けて知育のヒントを発信するアカウントの中の人です。
 教育者ぶらず、専業主婦・働く主婦のリアルな目線で書きます。
@@ -552,6 +622,51 @@ class Generator:
             k=1,
         )[0]
 
+    # -------------------------- 知育インスタカルーセル --------------------------
+
+    def generate_chiiku_carousel(
+        self,
+        topic: dict,
+        angle: dict,
+    ) -> dict:
+        """知育トピック × アングルから5枚スライドのカルーセル素材を生成する.
+
+        生成内容:
+          - 5スライド (hook / content×3 / outro)
+          - インスタ用キャプション (130-200字 + ハッシュタグ)
+        """
+        user_prompt = CAROUSEL_USER_TEMPLATE.format(
+            topic_title=topic.get("title", ""),
+            topic_description=topic.get("description", "").strip(),
+            age_range=topic.get("age_range", ""),
+            angle_learning=angle.get("learning", ""),
+            angle_scene=angle.get("scene", "").strip(),
+        )
+
+        resp = self.client.messages.create(
+            model=self.settings.anthropic_model,
+            max_tokens=2000,
+            system=CAROUSEL_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        raw = resp.content[0].text.strip()
+        slides, caption = _parse_carousel(raw)
+
+        return {
+            "id": _new_id(),
+            "type": "instagram_carousel",
+            "subtype": "chiiku",
+            "topic_id": topic.get("id"),
+            "topic_title": topic.get("title"),
+            "angle_id": angle.get("id"),
+            "angle_learning": angle.get("learning"),
+            "slides": slides,
+            "caption": caption,
+            "model": self.settings.anthropic_model,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "status": "pending",
+        }
+
     # -------------------------- 保存 --------------------------
 
     def save(self, post: dict) -> Path:
@@ -584,3 +699,59 @@ def _parse_thread(raw: str) -> list[str]:
     parts = re.split(r"={3,}\s*TWEET\s*\d+\s*={3,}", raw)
     tweets = [p.strip() for p in parts if p.strip()]
     return tweets
+
+
+def _parse_carousel(raw: str) -> tuple[list[dict], str]:
+    """Claudeの出力からスライド配列とキャプションを抽出する.
+
+    マーカー === SLIDE N (type) === / === CAPTION === でブロックを分ける。
+    各スライド本文中の "title: ...", "subtitle: ...", "heading: ...", "body: ..."
+    を key:value として読む。
+    """
+    import re
+
+    # ブロック単位で分割
+    pattern = r"={3,}\s*(SLIDE\s*\d+\s*\(\w+\)|CAPTION)\s*={3,}"
+    parts = re.split(pattern, raw)
+    slides: list[dict] = []
+    caption = ""
+    # parts: ['', marker1, content1, marker2, content2, ...]
+    i = 1
+    while i < len(parts):
+        marker = parts[i].strip()
+        content = parts[i + 1] if i + 1 < len(parts) else ""
+        if marker.startswith("SLIDE"):
+            # type名取り出し
+            m = re.search(r"\(\s*(\w+)\s*\)", marker)
+            stype = m.group(1) if m else "content"
+            slide: dict = {"type": stype}
+            for line in content.splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                kv = re.match(r"^(title|subtitle|heading|body)\s*:\s*(.+)$", line)
+                if kv:
+                    key = kv.group(1)
+                    val = kv.group(2).strip()
+                    if key in slide:
+                        slide[key] = (slide[key] + " " + val).strip()
+                    else:
+                        slide[key] = val
+                elif slide:
+                    # 値のラップ (2行目以降)
+                    last_key = next(
+                        (
+                            k
+                            for k in ("body", "subtitle", "heading", "title")
+                            if k in slide
+                        ),
+                        None,
+                    )
+                    if last_key:
+                        slide[last_key] = (slide[last_key] + " " + line).strip()
+            slides.append(slide)
+        elif marker.startswith("CAPTION"):
+            caption = content.strip()
+        i += 2
+
+    return slides, caption

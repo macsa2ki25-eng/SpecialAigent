@@ -1,0 +1,83 @@
+name: Auto post chiiku carousel to Instagram
+
+# 知育カルーセルを1日1回 Instagram に自動投稿。
+# 生成画像はrepoにcommitし、raw URLでIG Graph APIに渡す。
+
+on:
+  schedule:
+    - cron: "30 12 * * *"   # 21:30 JST (UTC 12:30) - ママのゴールデンタイム
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true で投稿せず画像生成までで停止"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # 画像 + posted_angles_count を commit するため
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run auto-post-instagram
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: claude-sonnet-4-6
+          INSTAGRAM_BUSINESS_ID: ${{ secrets.INSTAGRAM_BUSINESS_ID }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          IMAGE_HOSTING: github_raw
+          GITHUB_REPO_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO_NAME: ${{ github.event.repository.name }}
+          GITHUB_REPO_BRANCH: ${{ github.ref_name }}
+          # 知育投稿は X / 楽天 / はてな を使わないがダミー値で必須回避
+          X_API_KEY: dummy
+          X_API_SECRET: dummy
+          X_ACCESS_TOKEN: dummy
+          X_ACCESS_TOKEN_SECRET: dummy
+          X_USERNAME: dummy
+          HATENA_USER_ID: dummy
+          HATENA_BLOG_DOMAIN: dummy.hatenablog.com
+          HATENA_API_KEY: dummy
+          RAKUTEN_APPLICATION_ID: dummy
+          RAKUTEN_AFFILIATE_ID: dummy
+          REQUIRE_APPROVAL: "false"
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python -m src.cli auto-post-instagram --dry-run
+          else
+            python -m src.cli auto-post-instagram
+          fi
+
+      - name: Commit posted_angles_count update
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git add data/chiiku_topics.yaml data/posts/published/ data/instagram_images/ || true
+          if git diff --staged --quiet; then
+            echo "No state changes to commit."
+          else
+            git commit -m "chore(instagram): update post state [skip ci]"
+            git push
+          fi
