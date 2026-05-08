@@ -1,7 +1,11 @@
 # SpecialAigent
 
-実体験ベースの商品レビューを X (旧Twitter) と はてなブログ に半自動投稿し、
-楽天アフィリエイト/Amazonアソシエイトで収益化するエージェント。
+X (旧Twitter) ・ はてなブログ・Instagram(予定) を横断する半自動コンテンツ投稿エージェント。
+
+主な3つの運用モード:
+- **知育自動投稿**: 1日3回、子育て世帯向けの知育Tipsを完全自動でXに投稿 (cron運用)
+- **商品レビュー**: 妻が買った商品からX投稿+はてなブログ記事を半自動生成・投稿 (アフィリエイト導線)
+- **教育系スレッド**: お金や経済の概念を物語化したXスレッド投稿 (任意稼働)
 
 ## コンセプト
 
@@ -77,6 +81,11 @@ python -m src.cli publish --target all
 ## 主要コマンド
 
 ```bash
+# 知育 (1日3回 cron 自動投稿)
+python -m src.cli topics-chiiku                # ネタ・残アングル一覧
+python -m src.cli auto-post                    # 1件生成して即時投稿 (cron用)
+python -m src.cli auto-post --dry-run          # 投稿せず生成内容だけ確認
+
 # 商品一覧
 python -m src.cli products
 

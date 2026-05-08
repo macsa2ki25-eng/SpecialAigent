@@ -1,0 +1,79 @@
+name: Auto post chiiku to X
+
+# 知育投稿を1日3回、Xに自動投稿する。
+# 投稿後は data/chiiku_topics.yaml の posted_angles_count を更新して
+# 自動でリポジトリにcommit/pushする。
+
+on:
+  schedule:
+    # cronはUTC基準で書く必要がある
+    - cron: "30 22 * * *"   # 07:30 JST (UTC前日 22:30)
+    - cron: "30 3 * * *"    # 12:30 JST (UTC 03:30)
+    - cron: "30 12 * * *"   # 21:30 JST (UTC 12:30)
+  workflow_dispatch:
+    # 手動トリガー (スマホからでも回せる)
+    inputs:
+      dry_run:
+        description: "true で投稿せず内容だけ表示"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # YAMLの投稿カウントを更新してpushするため
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run auto-post
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: claude-sonnet-4-6
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          X_USERNAME: ${{ secrets.X_USERNAME }}
+          # 知育投稿は楽天/はてなを使わないが、config.py の Settings.load() が
+          # required で落ちないようダミー値を渡す
+          HATENA_USER_ID: dummy
+          HATENA_BLOG_DOMAIN: dummy.hatenablog.com
+          HATENA_API_KEY: dummy
+          RAKUTEN_APPLICATION_ID: dummy
+          RAKUTEN_AFFILIATE_ID: dummy
+          REQUIRE_APPROVAL: "false"
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python -m src.cli auto-post --dry-run
+          else
+            python -m src.cli auto-post
+          fi
+
+      - name: Commit and push posted_angles_count update
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/chiiku_topics.yaml data/posts/published/
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(auto-post): increment posted_angles_count [skip ci]"
+            git push
+          fi

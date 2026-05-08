@@ -32,8 +32,10 @@ from src.config import (
     REJECTED_DIR,
     Settings,
     ensure_dirs,
+    load_chiiku_topics,
     load_products,
     load_story_topics,
+    save_chiiku_topics,
 )
 
 console = Console()
@@ -48,6 +50,120 @@ def main() -> None:
 # ============================================================
 # products
 # ============================================================
+
+
+@main.command("topics-chiiku")
+def cmd_topics_chiiku() -> None:
+    """data/chiiku_topics.yaml に登録された知育トピック一覧."""
+    topics = load_chiiku_topics()
+    if not topics:
+        console.print("[yellow]知育トピックが未登録です。data/chiiku_topics.yaml に追記してください。[/yellow]")
+        return
+    table = Table(title="知育トピック")
+    table.add_column("ID")
+    table.add_column("タイトル")
+    table.add_column("対象年齢")
+    table.add_column("総アングル")
+    table.add_column("投稿済", justify="right")
+    table.add_column("残", justify="right")
+    for t in topics:
+        total = len(t.get("angles", []))
+        posted = t.get("posted_angles_count", 0)
+        table.add_row(
+            t.get("id", ""),
+            t.get("title", ""),
+            t.get("age_range", ""),
+            str(total),
+            str(posted),
+            str(total - posted),
+        )
+    console.print(table)
+
+
+def _pick_next_chiiku(topics: list[dict]) -> tuple[dict | None, dict | None, int]:
+    """まだ投稿していない (topic, angle, angle_index) を返す."""
+    for t in topics:
+        count = t.get("posted_angles_count", 0)
+        angles = t.get("angles", [])
+        if count < len(angles):
+            return t, angles[count], count
+    return None, None, -1
+
+
+@main.command("auto-post")
+@click.option("--dry-run", is_flag=True, help="実際には投稿しない (内容だけ表示)")
+@click.option("--retry", default=2, type=int, help="140字超過時の再生成リトライ回数")
+def cmd_auto_post(dry_run: bool, retry: int) -> None:
+    """知育ネタを1件生成して即座にXに投稿する (承認スキップ・cron用)."""
+    settings = Settings.load()
+    topics = load_chiiku_topics()
+    if not topics:
+        console.print("[red]知育トピックが未登録です。data/chiiku_topics.yaml に追記してください。[/red]")
+        sys.exit(1)
+
+    topic, angle, angle_index = _pick_next_chiiku(topics)
+    if not topic or not angle:
+        console.print(
+            "[yellow]全トピックの全アングルが投稿済みです。新ネタ・新アングルを追記してください。[/yellow]"
+        )
+        sys.exit(0)
+
+    console.print(
+        f"[cyan]ネタ: {topic['id']} / アングル: {angle.get('id', '?')} ({angle.get('learning', '')})[/cyan]"
+    )
+
+    from src.generator import Generator
+
+    gen = Generator(settings)
+
+    post = None
+    for attempt in range(retry + 1):
+        post = gen.generate_chiiku_post(topic, angle)
+        if not post["over_limit"]:
+            break
+        console.print(
+            f"[yellow]⚠️ 140字超過 ({post['char_count']}字) attempt={attempt+1}, 再生成[/yellow]"
+        )
+    if post["over_limit"]:
+        # それでも超過する場合は140字で切り詰める
+        post["text"] = post["text"][:140]
+        post["char_count"] = len(post["text"])
+        post["over_limit"] = False
+        post["truncated"] = True
+
+    console.rule(f"生成された投稿 ({post['pattern_name']}, {post['char_count']}字)")
+    console.print(post["text"])
+    console.rule()
+
+    if dry_run:
+        console.print("[dim](dry-run のため未送信。投稿カウントも増やしません)[/dim]")
+        return
+
+    from src.publisher import XPublisher
+
+    pub = XPublisher(settings)
+    try:
+        result = pub.post_text(post["text"])
+    except Exception as e:  # noqa: BLE001
+        console.print(f"[red]❌ 投稿失敗: {e}[/red]")
+        console.print("[yellow]投稿カウントは増やしません。次回同じアングルが再選ばれます。[/yellow]")
+        sys.exit(1)
+
+    post["main"] = result
+    post["status"] = "published"
+    post["published_at"] = result["posted_at"]
+    PUBLISHED_DIR.mkdir(parents=True, exist_ok=True)
+    out = PUBLISHED_DIR / f"{post['id']}.json"
+    out.write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 投稿カウント更新 → YAML書き戻し
+    topic["posted_angles_count"] = angle_index + 1
+    save_chiiku_topics(topics)
+
+    console.print(f"[green]✅ 投稿完了[/green] {result['url']}")
+    console.print(
+        f"[dim]残り {len(topic['angles']) - topic['posted_angles_count']} アングル / {topic['id']}[/dim]"
+    )
 
 
 @main.command("topics")

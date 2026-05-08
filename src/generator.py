@@ -21,6 +21,7 @@ from src.config import (
     PENDING_DIR,
     Settings,
     load_blog_patterns,
+    load_chiiku_patterns,
     load_thread_patterns,
     load_x_patterns,
 )
@@ -96,6 +97,59 @@ BLOG_SYSTEM_PROMPT = """\
 - 1行目: タイトル (h1にせず、はてなブログのタイトルフィールド用)
 - 2行目以降: 本文Markdown
 - タイトルと本文の間は空行1つ
+"""
+
+CHIIKU_SYSTEM_PROMPT = """\
+あなたは日本語X(旧Twitter)で、子育て中のママに向けて知育のヒントを発信するアカウントの中の人です。
+教育者ぶらず、専業主婦・働く主婦のリアルな目線で書きます。
+
+厳守するルール:
+1. 日本語で書く
+2. 本文は 140文字以内 (全角140 / 半角280) - これは絶対
+3. ハッシュタグは付けない
+4. URLは付けない
+5. 絵文字は使わない (信頼性を保つため)
+6. 「いいね」「フォロー」「リプ」誘導はしない
+7. 「PR」「広告」と取られる商業誘導はしない (商品を売り込まない)
+8. 学習教材・通信教育の宣伝はしない (タイプの違う投稿)
+9. 政治・宗教・他者批判は書かない
+10. 「子供を早期教育で…」のような押し付けにならない柔らかいトーン
+11. 自慢にならない (「うちの子天才」NG)
+12. 主語は「うちの子」「うちの息子/娘」「うちの場合」
+13. 改行を適切に入れて、3秒で読めるリズムを作る
+
+出力形式:
+- 投稿本文のテキストのみを出力。前置き・解説・引用符は付けない。
+"""
+
+CHIIKU_USER_TEMPLATE = """\
+# 今回のネタ
+
+トピック: {topic_title}
+背景:
+{topic_description}
+対象年齢: {age_range}
+
+# 今回切り取るアングル (このメリットを軸に書く)
+
+学べること: {angle_learning}
+具体的なシーン:
+{angle_scene}
+
+# 今回の型
+
+型ID: {pattern_id}
+型名: {pattern_name}
+構造:
+{pattern_structure}
+制約:
+{pattern_constraints}
+
+# 出力指示
+
+上の型・制約に厳密に従って、X投稿1つを書いてください。
+「うちの場合」のリアルな目線で、自慢にならず、押し付けにならないトーンで。
+本文140字以内、ハッシュタグ・絵文字・URLなし。
 """
 
 THREAD_SYSTEM_PROMPT = """\
@@ -238,6 +292,7 @@ class Generator:
         self.x_patterns = load_x_patterns()
         self.blog_patterns = load_blog_patterns()
         self.thread_patterns = load_thread_patterns()
+        self.chiiku_patterns = load_chiiku_patterns()
         self.researcher = Researcher(self.settings)
 
     # -------------------------- X投稿 --------------------------
@@ -435,6 +490,67 @@ class Generator:
         if pattern_id:
             return next(p for p in self.thread_patterns if p["id"] == pattern_id)
         return self.thread_patterns[0]  # デフォルトは dialogue_revelation
+
+    # -------------------------- 知育投稿 (単発、ママ層向け) --------------------------
+
+    def generate_chiiku_post(
+        self,
+        topic: dict,
+        angle: dict,
+        *,
+        pattern_id: str | None = None,
+    ) -> dict:
+        """知育トピック × アングルから単発X投稿を生成する."""
+        pattern = self._pick_chiiku_pattern(pattern_id)
+
+        user_prompt = CHIIKU_USER_TEMPLATE.format(
+            topic_title=topic.get("title", ""),
+            topic_description=topic.get("description", "").strip(),
+            age_range=topic.get("age_range", ""),
+            angle_learning=angle.get("learning", ""),
+            angle_scene=angle.get("scene", "").strip(),
+            pattern_id=pattern["id"],
+            pattern_name=pattern["name"],
+            pattern_structure=pattern.get("structure", "").strip(),
+            pattern_constraints=pattern.get("constraints", "").strip(),
+        )
+
+        resp = self.client.messages.create(
+            model=self.settings.anthropic_model,
+            max_tokens=600,
+            system=CHIIKU_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
+        text = resp.content[0].text.strip()
+
+        return {
+            "id": _new_id(),
+            "type": "x",
+            "subtype": "chiiku",
+            "topic_id": topic.get("id"),
+            "topic_title": topic.get("title"),
+            "angle_id": angle.get("id"),
+            "angle_learning": angle.get("learning"),
+            "pattern_id": pattern["id"],
+            "pattern_name": pattern["name"],
+            "text": text,
+            "char_count": len(text),
+            "over_limit": len(text) > 140,
+            "reply_text": None,
+            "model": self.settings.anthropic_model,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "status": "pending",
+        }
+
+    def _pick_chiiku_pattern(self, pattern_id: str | None) -> dict:
+        if pattern_id:
+            return next(p for p in self.chiiku_patterns if p["id"] == pattern_id)
+        # デフォルトは tip(メイン) を 2/3、experience(サブ) を 1/3 でランダム
+        return random.choices(
+            self.chiiku_patterns,
+            weights=[2 if p["id"] == "tip" else 1 for p in self.chiiku_patterns],
+            k=1,
+        )[0]
 
     # -------------------------- 保存 --------------------------
 

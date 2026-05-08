@@ -20,6 +20,7 @@ REJECTED_DIR = DATA_DIR / "posts" / "rejected"
 PRODUCTS_FILE = DATA_DIR / "products.yaml"
 BUZZ_EXAMPLES_FILE = DATA_DIR / "buzz_examples.yaml"
 STORY_TOPICS_FILE = DATA_DIR / "story_topics.yaml"
+CHIIKU_TOPICS_FILE = DATA_DIR / "chiiku_topics.yaml"
 
 load_dotenv(ROOT / ".env")
 
@@ -119,6 +120,31 @@ def load_story_topics() -> list[dict]:
     with STORY_TOPICS_FILE.open(encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
         return data.get("topics", [])
+
+
+def load_chiiku_topics() -> list[dict]:
+    if not CHIIKU_TOPICS_FILE.exists():
+        return []
+    with CHIIKU_TOPICS_FILE.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+        return data.get("topics", [])
+
+
+def save_chiiku_topics(topics: list[dict]) -> None:
+    CHIIKU_TOPICS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with CHIIKU_TOPICS_FILE.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(
+            {"topics": topics},
+            f,
+            allow_unicode=True,
+            sort_keys=False,
+            default_flow_style=False,
+        )
+
+
+def load_chiiku_patterns() -> list[dict]:
+    with (TEMPLATES_DIR / "chiiku_patterns.yaml").open(encoding="utf-8") as f:
+        return yaml.safe_load(f)["patterns"]
 
 
 def load_products() -> list[dict]:
