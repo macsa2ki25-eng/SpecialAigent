@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ゆびたんけん！タイピングのたび</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- タイトル画面 -->
+    <section id="screen-title" class="screen active">
+      <div class="title-wrap">
+        <h1 class="title">
+          <span class="t1">ゆびたんけん！</span>
+          <span class="t2">タイピングのたび</span>
+        </h1>
+        <p class="subtitle">ホームポジションから、ポケモンマスターへ！</p>
+        <button class="btn-big" id="btn-start">はじめる</button>
+        <div class="title-foot">
+          <label class="toggle">
+            <input type="checkbox" id="toggle-romaji" checked />
+            <span>ローマ字をひょうじする</span>
+          </label>
+          <button class="btn-link" id="btn-reset">きろくをリセット</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ステージ選択 -->
+    <section id="screen-stages" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-title">← もどる</button>
+        <h2>ステージをえらぶ</h2>
+        <div class="badges-count" id="badges-count">バッジ 0 / 7</div>
+      </header>
+      <div class="stage-list" id="stage-list"></div>
+    </section>
+
+    <!-- ゲーム画面 -->
+    <section id="screen-game" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-stages">← やめる</button>
+        <h2 id="game-stage-title"></h2>
+        <div class="stat-row">
+          <span class="stat" id="stat-correct">○ 0</span>
+          <span class="stat" id="stat-wrong">× 0</span>
+          <span class="stat" id="stat-time">⏱ 0</span>
+        </div>
+      </header>
+
+      <div class="game-main">
+        <div class="word-area">
+          <div class="pokemon-img-wrap" id="pokemon-img-wrap"></div>
+          <div class="kana-line" id="kana-line"></div>
+          <div class="romaji-line" id="romaji-line"></div>
+        </div>
+
+        <div class="keyboard-wrap">
+          <div class="hand left-hand" id="left-hand"></div>
+          <div class="keyboard" id="keyboard"></div>
+          <div class="hand right-hand" id="right-hand"></div>
+        </div>
+
+        <div class="hint-area">
+          <p class="hint-text" id="hint-text"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- リザルト画面 -->
+    <section id="screen-result" class="screen">
+      <div class="result-wrap">
+        <h2 id="result-title">ステージクリア！</h2>
+        <div class="result-badge" id="result-badge">🏅</div>
+        <div class="result-stats">
+          <div><span>せいかい</span><strong id="r-correct">0</strong></div>
+          <div><span>まちがい</span><strong id="r-wrong">0</strong></div>
+          <div><span>せいかいりつ</span><strong id="r-accuracy">0%</strong></div>
+          <div><span>1ぷんあたり</span><strong id="r-wpm">0</strong></div>
+        </div>
+        <p class="result-msg" id="result-msg"></p>
+        <div class="result-buttons">
+          <button class="btn-big" id="btn-retry">もういちど</button>
+          <button class="btn-big primary" id="btn-next">つぎへ</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/keyboard.js"></script>
+  <script src="js/words.js"></script>
+  <script src="js/stages.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/pokemon.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
