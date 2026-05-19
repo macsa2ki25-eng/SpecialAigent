@@ -224,6 +224,7 @@
       missThisChar: false,
     };
     setMessage(`${state.player.name}の ${move.kana}！`);
+    if (window.Analytics) Analytics.resetContext();
     const box = document.getElementById('action-box');
     box.innerHTML = `
       <div class="typing-zone">
@@ -274,6 +275,7 @@
     const pressed = e.key.toLowerCase();
     if (pressed === expected.toLowerCase()) {
       if (window.Sound) Sound.playKey(Keyboard.fingerOf(expected));
+      if (window.Analytics) Analytics.recordKeyEvent(expected.toLowerCase(), pressed, true, !t.missThisChar);
       t.pos++;
       t.missThisChar = false;
       if (t.pos >= t.move.romaji.length) {
@@ -285,6 +287,7 @@
       }
     } else {
       if (window.Sound) Sound.playMiss();
+      if (window.Analytics) Analytics.recordKeyEvent(expected.toLowerCase(), pressed, false, !t.missThisChar);
       if (!t.missThisChar) {
         t.misses++;
         t.missThisChar = true;

@@ -55,6 +55,11 @@
           <div class="mode-name">タイムアタック</div>
           <div class="mode-desc">60びょうで なんもん うてるかな？<br/>ハイスコアを めざせ！</div>
         </div>
+        <div class="mode-card" id="mode-analytics">
+          <div class="mode-emoji">🔍</div>
+          <div class="mode-name">にがてぶんせき</div>
+          <div class="mode-desc">きみの にがてな キーを みてみよう！<br/>にがてだけの れんしゅうも できるよ。</div>
+        </div>
       </div>
     </section>
 
@@ -158,6 +163,16 @@
       </div>
     </section>
 
+    <!-- 苦手分析画面 -->
+    <section id="screen-analytics" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-modes">← もどる</button>
+        <h2>にがて ぶんせき</h2>
+        <button class="btn-link" id="btn-reset-analytics">ぶんせきを リセット</button>
+      </header>
+      <div class="analytics-content" id="analytics-content"></div>
+    </section>
+
     <!-- タイムアタック リザルト -->
     <section id="screen-ta-result" class="screen">
       <div class="result-wrap">
@@ -184,6 +199,7 @@
   <script src="js/words.js"></script>
   <script src="js/stages.js"></script>
   <script src="js/progress.js"></script>
+  <script src="js/analytics.js"></script>
   <script src="js/pokemon.js"></script>
   <script src="js/game.js"></script>
   <script src="js/battle.js"></script>

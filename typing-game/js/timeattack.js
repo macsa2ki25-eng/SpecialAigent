@@ -42,6 +42,7 @@
     state.poolIdx++;
     state.pos = 0;
     state.missThisChar = false;
+    if (window.Analytics) Analytics.resetContext();
   }
 
   function shuffle(arr) {
@@ -123,6 +124,7 @@
     const pressed = e.key.toLowerCase();
     if (pressed === expected.toLowerCase()) {
       if (window.Sound) Sound.playKey(Keyboard.fingerOf(expected));
+      if (window.Analytics) Analytics.recordKeyEvent(expected.toLowerCase(), pressed, true, !state.missThisChar);
       if (!state.missThisChar) state.stats.correct++;
       state.pos++;
       state.missThisChar = false;
@@ -134,6 +136,7 @@
       updateStats();
     } else {
       if (window.Sound) Sound.playMiss();
+      if (window.Analytics) Analytics.recordKeyEvent(expected.toLowerCase(), pressed, false, !state.missThisChar);
       if (!state.missThisChar) {
         state.stats.miss++;
         state.missThisChar = true;

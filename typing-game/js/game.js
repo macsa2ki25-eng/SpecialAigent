@@ -89,6 +89,7 @@
     const q = state.questions[state.idx];
     state.pos = 0;
     state.missThisChar = false;
+    if (window.Analytics) Analytics.resetContext();
 
     // 画像
     const imgWrap = document.getElementById('pokemon-img-wrap');
@@ -189,6 +190,8 @@
       // 正解
       Keyboard.flashPressed(document.getElementById('keyboard'), pressed, true);
       if (window.Sound) Sound.playKey(Keyboard.fingerOf(expected));
+      const firstAttempt = !state.missThisChar;
+      if (window.Analytics) Analytics.recordKeyEvent(expected.toLowerCase(), pressed, true, firstAttempt);
       if (!state.missThisChar) {
         state.correct++;
         Progress.recordKey(expected.toLowerCase(), true);
@@ -217,6 +220,7 @@
       // 不正解
       Keyboard.flashPressed(document.getElementById('keyboard'), pressed, false);
       if (window.Sound) Sound.playMiss();
+      if (window.Analytics) Analytics.recordKeyEvent(expected.toLowerCase(), pressed, false, !state.missThisChar);
       if (!state.missThisChar) {
         state.wrong++;
         state.missThisChar = true;

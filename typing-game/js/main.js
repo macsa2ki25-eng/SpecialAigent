@@ -5,6 +5,7 @@
 (function () {
   let currentStageId = 1;
   let selectedPokeIdx = 0;
+  let resultMode = 'practice';  // 'practice' | 'drill'
 
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach((el) => el.classList.remove('active'));
@@ -49,6 +50,16 @@
     document.getElementById('mode-timeattack').addEventListener('click', () => {
       startTimeAttack();
     });
+    document.getElementById('mode-analytics').addEventListener('click', () => {
+      renderAnalytics();
+      showScreen('screen-analytics');
+    });
+    document.getElementById('btn-reset-analytics').addEventListener('click', () => {
+      if (confirm('ぶんせきの きろくを ぜんぶ けしますか？')) {
+        Analytics.reset();
+        renderAnalytics();
+      }
+    });
 
     // === 戻るボタン ===
     document.querySelectorAll('.btn-back').forEach((btn) => {
@@ -65,11 +76,17 @@
       });
     });
 
-    // === れんしゅうのリザルト ===
+    // === れんしゅう/ドリル のリザルト ===
     document.getElementById('btn-retry').addEventListener('click', () => {
-      startStage(currentStageId);
+      if (resultMode === 'drill') startDrill();
+      else startStage(currentStageId);
     });
     document.getElementById('btn-next').addEventListener('click', () => {
+      if (resultMode === 'drill') {
+        renderAnalytics();
+        showScreen('screen-analytics');
+        return;
+      }
       const next = currentStageId + 1;
       const p = Progress.load();
       const total = Stages.TOTAL_STAGES;
@@ -120,6 +137,7 @@
     const stage = Stages.getStage(id);
     if (!stage) return;
     currentStageId = id;
+    resultMode = 'practice';
     document.getElementById('game-stage-title').textContent = `ステージ${id}: ${stage.name}`;
     document.getElementById('stat-correct').textContent = '○ 0';
     document.getElementById('stat-wrong').textContent = '× 0';
@@ -248,6 +266,143 @@
     }
     document.getElementById('tar-msg').textContent = msg;
     showScreen('screen-ta-result');
+  }
+
+  // === 苦手分析画面 ===
+  function renderAnalytics() {
+    const root = document.getElementById('analytics-content');
+    const rep = Analytics.report(5);
+    const hm = Analytics.heatmap();
+
+    if (rep.totalAttempts < 20) {
+      root.innerHTML = `
+        <div class="analytics-empty">
+          <p>まだ ぶんせきする データが すくないです。</p>
+          <p>「れんしゅう」を 20かい ぐらい うつと、にがてが わかるよ！</p>
+          <p>いままでの だかすう: <strong>${rep.totalAttempts}</strong></p>
+        </div>`;
+      return;
+    }
+
+    root.innerHTML = `
+      <div class="analytics-grid">
+        <div class="ana-card">
+          <h3>🔥 にがてキー TOP${rep.weakKeys.length}</h3>
+          <div class="weak-key-list">
+            ${rep.weakKeys.map((e, i) => `
+              <div class="weak-key-item">
+                <span class="rank">#${i+1}</span>
+                <span class="key">${e.key.toUpperCase()}</span>
+                <span class="rate">${Math.round(e.missRate*100)}%</span>
+                <div class="bar"><div class="bar-fill" style="width:${Math.min(100, e.score*100)}%"></div></div>
+              </div>
+            `).join('') || '<p>にがてキーは ないみたい！すごい！</p>'}
+          </div>
+          ${rep.weakKeys.length ? `<button class="btn-big primary" id="btn-start-drill">にがてキーで れんしゅう</button>` : ''}
+        </div>
+
+        <div class="ana-card">
+          <h3>🐢 おそいキー TOP${rep.slowKeys.length}</h3>
+          <div class="slow-key-list">
+            ${rep.slowKeys.map((e, i) => `
+              <div class="slow-key-item">
+                <span class="rank">#${i+1}</span>
+                <span class="key">${e.key.toUpperCase()}</span>
+                <span class="ms">${Math.round(e.ms)}ms</span>
+              </div>
+            `).join('') || '<p>みんな はやく うてているよ！</p>'}
+          </div>
+        </div>
+
+        <div class="ana-card wide">
+          <h3>🗝️ キーボードヒートマップ</h3>
+          <p class="hint-small">あかいキーほど にがて。 あおいキーほど おそい。</p>
+          <div id="heatmap"></div>
+        </div>
+
+        <div class="ana-card wide">
+          <h3>🔀 まちがえやすい くみあわせ</h3>
+          <div class="confusion-list">
+            ${rep.confusedPairs.length === 0 ? '<p>とくに ないよ！</p>' :
+              rep.confusedPairs.map((c) => `
+                <div class="confusion-item">
+                  <span class="key">${c.expected.toUpperCase()}</span>
+                  <span class="arrow">→ おしてしまう →</span>
+                  <span class="key wrong">${c.pressed.toUpperCase()}</span>
+                  <span class="count">${c.count}かい</span>
+                </div>
+              `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    renderHeatmap(hm);
+    const drillBtn = document.getElementById('btn-start-drill');
+    if (drillBtn) drillBtn.addEventListener('click', startDrill);
+  }
+
+  function renderHeatmap(hm) {
+    const container = document.getElementById('heatmap');
+    Keyboard.render(container);
+    // 各キーに着色
+    container.querySelectorAll('.kb-key').forEach((el) => {
+      const k = el.dataset.key;
+      const stats = hm[k];
+      if (!stats || stats.attempts < 3) {
+        el.classList.add('heat-na');
+        return;
+      }
+      const miss = stats.missRate;            // 0..1
+      const ms = Math.min(1500, stats.avgMs); // 0..1500ms
+      // 赤系=ミス、青系=遅さ、両方なら紫っぽく
+      const r = Math.round(255 * miss);
+      const b = Math.round(255 * (ms / 1500));
+      const g = Math.round(120 * (1 - Math.max(miss, ms/1500)));
+      el.style.background = `rgb(${200 + r*0.2}, ${100 + g}, ${100 + b*0.5})`;
+      el.style.color = '#fff';
+      el.style.fontWeight = 'bold';
+      el.title = `${k}: ミス${Math.round(miss*100)}% / ${Math.round(stats.avgMs)}ms (${stats.attempts}回)`;
+    });
+  }
+
+  // === にがてキーだけのドリル ===
+  function startDrill() {
+    const drill = Analytics.generateDrill({ count: 10 });
+    if (!drill) { alert('ぶんせきデータが まだ たりません'); return; }
+    const drillStage = {
+      id: 'drill',
+      name: `にがて (${drill.targetKeys.map((k)=>k.toUpperCase()).join(' ')})`,
+      desc: '',
+      type: 'kana',
+      words: () => drill.items,
+      questionCount: drill.items.length,
+      clearAccuracy: 0.7,
+      badge: '🎯',
+      goal: '苦手キー',
+    };
+    document.getElementById('game-stage-title').textContent =
+      `にがてキー れんしゅう [ ${drill.targetKeys.map((k)=>k.toUpperCase()).join(' ')} ]`;
+    document.getElementById('stat-correct').textContent = '○ 0';
+    document.getElementById('stat-wrong').textContent = '× 0';
+    document.getElementById('stat-time').textContent = '⏱ 0';
+    if (window.Sound) Sound.stopBgm();
+    currentStageId = null;
+    resultMode = 'drill';
+    showScreen('screen-game');
+    Game.start(drillStage, (stats) => {
+      const ok = stats.accuracy >= 0.7;
+      document.getElementById('result-title').textContent = ok ? 'にがて こくふく！' : 'もうすこし！';
+      document.getElementById('result-badge').textContent = ok ? '🎯' : '💪';
+      document.getElementById('r-correct').textContent = stats.correct;
+      document.getElementById('r-wrong').textContent = stats.wrong;
+      document.getElementById('r-accuracy').textContent = `${Math.round(stats.accuracy * 100)}%`;
+      document.getElementById('r-wpm').textContent = stats.wpm;
+      document.getElementById('result-msg').textContent =
+        'もういちど ぶんせきして、にがてが かわったか みてみよう！';
+      document.getElementById('btn-next').textContent = 'ぶんせきへ もどる';
+      showScreen('screen-result');
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);
