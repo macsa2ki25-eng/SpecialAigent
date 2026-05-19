@@ -1,36 +1,42 @@
 /**
  * pokemon.js
- * PokeAPI からのスプライト取得。失敗時は images/pokemon/<slug>.png を試す。
- * 取得結果は sessionStorage にURLキャッシュする。
+ * PokeAPI からの画像・技データ取得。失敗時は ローカル images/pokemon/<slug>.png にフォールバック。
+ * 結果は sessionStorage にキャッシュする。
  */
 (function (global) {
-  const SS_KEY = 'pokemon-sprite-cache-v1';
+  const SS_SPRITE = 'pokemon-sprite-cache-v1';
+  const SS_MOVE   = 'pokemon-move-cache-v1';
 
-  function getCache() {
-    try { return JSON.parse(sessionStorage.getItem(SS_KEY) || '{}'); }
+  function getCache(key) {
+    try { return JSON.parse(sessionStorage.getItem(key) || '{}'); }
     catch (e) { return {}; }
   }
-  function setCache(c) {
-    try { sessionStorage.setItem(SS_KEY, JSON.stringify(c)); } catch (e) {}
+  function setCache(key, c) {
+    try { sessionStorage.setItem(key, JSON.stringify(c)); } catch (e) {}
   }
 
-  // pokeId と slug を受け取り、画像URLを返す（非同期）。
-  async function getSpriteUrl(pokeId, slug) {
-    const cache = getCache();
-    const cacheKey = `id:${pokeId}`;
+  // === スプライト ===
+  // front=true なら前向き、false なら後ろ姿
+  async function getSpriteUrl(pokeId, slug, opts = {}) {
+    const back = opts.back === true;
+    const cache = getCache(SS_SPRITE);
+    const cacheKey = `${pokeId}:${back ? 'b' : 'f'}`;
     if (cache[cacheKey]) return cache[cacheKey];
 
-    // 1. PokeAPI 公式スプライト（直接URL）
-    const officialArtwork = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeId}.png`;
-    const defaultSprite   = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokeId}.png`;
-    const localFallback   = slug ? `images/pokemon/${slug}.png` : null;
+    const base = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
+    const front = `${base}/other/official-artwork/${pokeId}.png`;
+    const def   = `${base}/${pokeId}.png`;
+    const backUrl = `${base}/back/${pokeId}.png`;
+    const local = slug ? `images/pokemon/${slug}${back ? '-back' : ''}.png` : null;
 
-    // 画像ロード可否確認
-    const tryUrls = [officialArtwork, defaultSprite, localFallback].filter(Boolean);
+    const tryUrls = back
+      ? [backUrl, def, front, local].filter(Boolean)
+      : [front, def, local].filter(Boolean);
+
     for (const url of tryUrls) {
       if (await canLoadImage(url)) {
         cache[cacheKey] = url;
-        setCache(cache);
+        setCache(SS_SPRITE, cache);
         return url;
       }
     }
@@ -47,5 +53,28 @@
     });
   }
 
-  global.Pokemon = { getSpriteUrl };
+  // === 技データ ===
+  // 戻り値: { name(日本語), power, damage_class } / 失敗時 null
+  async function getMove(moveSlug) {
+    const cache = getCache(SS_MOVE);
+    if (cache[moveSlug]) return cache[moveSlug];
+    try {
+      const res = await fetch(`https://pokeapi.co/api/v2/move/${moveSlug}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      const jaName = (data.names || []).find((n) => n.language && n.language.name === 'ja-Hrkt');
+      const result = {
+        name: jaName ? jaName.name : moveSlug,
+        power: data.power || 0,
+        damage_class: data.damage_class ? data.damage_class.name : 'physical',
+      };
+      cache[moveSlug] = result;
+      setCache(SS_MOVE, cache);
+      return result;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  global.Pokemon = { getSpriteUrl, getMove };
 })(window);

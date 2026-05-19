@@ -188,6 +188,7 @@
     if (expected && pressed === expected.toLowerCase()) {
       // 正解
       Keyboard.flashPressed(document.getElementById('keyboard'), pressed, true);
+      if (window.Sound) Sound.playKey(Keyboard.fingerOf(expected));
       if (!state.missThisChar) {
         state.correct++;
         Progress.recordKey(expected.toLowerCase(), true);
@@ -215,6 +216,7 @@
     } else {
       // 不正解
       Keyboard.flashPressed(document.getElementById('keyboard'), pressed, false);
+      if (window.Sound) Sound.playMiss();
       if (!state.missThisChar) {
         state.wrong++;
         state.missThisChar = true;
@@ -273,6 +275,10 @@
     };
     const stageId = state.stage.id;
     const newState = Progress.recordResult(stageId, stats);
+    if (window.Sound) {
+      if (stats.accuracy >= state.stage.clearAccuracy) Sound.playStageClear();
+      else Sound.playFail();
+    }
     unbindKeys();
     if (state.timerId) clearInterval(state.timerId);
     const cb = state.onFinish;

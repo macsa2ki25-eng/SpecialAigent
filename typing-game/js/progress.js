@@ -22,14 +22,17 @@
 
   function defaultState() {
     return {
-      unlockedStage: 1,    // 1〜7
-      badges: {},          // {1:true, 2:true, ...}
-      bestStats: {},       // {stageId: {accuracy, wpm, time}}
-      weakKeys: {},        // {key: missCount}
-      keyAttempts: {},     // {key: totalCount}
+      unlockedStage: 1,
+      badges: {},
+      bestStats: {},
+      weakKeys: {},
+      keyAttempts: {},
       showRomaji: true,
+      soundOn: true,
       totalCorrect: 0,
       totalWrong: 0,
+      battleWins: {},      // {trainerId: true}
+      bestTimeAttack: null,// {score, correct, miss, wordsClear}
     };
   }
 
@@ -39,9 +42,12 @@
 
   function recordResult(stageId, stats) {
     const s = load();
-    if (stats.accuracy >= 0.7) {
+    const total = (window.Stages && Stages.TOTAL_STAGES) || 14;
+    const stage = window.Stages ? Stages.getStage(stageId) : null;
+    const threshold = stage ? stage.clearAccuracy : 0.7;
+    if (stats.accuracy >= threshold) {
       s.badges[stageId] = true;
-      s.unlockedStage = Math.max(s.unlockedStage, Math.min(stageId + 1, 7));
+      s.unlockedStage = Math.max(s.unlockedStage, Math.min(stageId + 1, total));
     }
     const prev = s.bestStats[stageId];
     if (!prev || stats.accuracy > prev.accuracy ||
@@ -50,6 +56,28 @@
     }
     save(s);
     return s;
+  }
+
+  function recordBattleWin(trainerId) {
+    const s = load();
+    s.battleWins[trainerId] = true;
+    save(s);
+    return s;
+  }
+
+  function recordTimeAttack(score, stats) {
+    const s = load();
+    if (!s.bestTimeAttack || score > s.bestTimeAttack.score) {
+      s.bestTimeAttack = { score, ...stats };
+    }
+    save(s);
+    return s;
+  }
+
+  function setSoundOn(v) {
+    const s = load();
+    s.soundOn = v;
+    save(s);
   }
 
   function recordKey(key, ok) {
@@ -83,5 +111,9 @@
     save(s);
   }
 
-  global.Progress = { load, save, reset, recordResult, recordKey, getWeakKeys, setShowRomaji };
+  global.Progress = {
+    load, save, reset,
+    recordResult, recordKey, recordBattleWin, recordTimeAttack,
+    getWeakKeys, setShowRomaji, setSoundOn,
+  };
 })(window);

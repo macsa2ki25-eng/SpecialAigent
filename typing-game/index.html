@@ -8,6 +8,7 @@
 </head>
 <body>
   <div id="app">
+
     <!-- タイトル画面 -->
     <section id="screen-title" class="screen active">
       <div class="title-wrap">
@@ -22,7 +23,37 @@
             <input type="checkbox" id="toggle-romaji" checked />
             <span>ローマ字をひょうじする</span>
           </label>
+          <label class="toggle">
+            <input type="checkbox" id="toggle-sound" checked />
+            <span>おとを ならす</span>
+          </label>
           <button class="btn-link" id="btn-reset">きろくをリセット</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- モード選択画面 -->
+    <section id="screen-modes" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-title">← もどる</button>
+        <h2>モードを えらぼう</h2>
+        <div></div>
+      </header>
+      <div class="modes">
+        <div class="mode-card" id="mode-practice">
+          <div class="mode-emoji">📝</div>
+          <div class="mode-name">れんしゅう</div>
+          <div class="mode-desc">14ステージを じゅんばんに クリアしよう。<br/>バッジを あつめよう！</div>
+        </div>
+        <div class="mode-card" id="mode-battle">
+          <div class="mode-emoji">⚔️</div>
+          <div class="mode-name">ポケモンバトル</div>
+          <div class="mode-desc">ポケモンを えらんで、トレーナーと たたかおう！<br/>わざを タイプして こうげき！</div>
+        </div>
+        <div class="mode-card" id="mode-timeattack">
+          <div class="mode-emoji">⏱️</div>
+          <div class="mode-name">タイムアタック</div>
+          <div class="mode-desc">60びょうで なんもん うてるかな？<br/>ハイスコアを めざせ！</div>
         </div>
       </div>
     </section>
@@ -30,14 +61,14 @@
     <!-- ステージ選択 -->
     <section id="screen-stages" class="screen">
       <header class="topbar">
-        <button class="btn-back" data-back="screen-title">← もどる</button>
+        <button class="btn-back" data-back="screen-modes">← もどる</button>
         <h2>ステージをえらぶ</h2>
-        <div class="badges-count" id="badges-count">バッジ 0 / 7</div>
+        <div class="badges-count" id="badges-count">バッジ 0 / 14</div>
       </header>
       <div class="stage-list" id="stage-list"></div>
     </section>
 
-    <!-- ゲーム画面 -->
+    <!-- ゲーム画面（れんしゅう） -->
     <section id="screen-game" class="screen">
       <header class="topbar">
         <button class="btn-back" data-back="screen-stages">← やめる</button>
@@ -48,27 +79,24 @@
           <span class="stat" id="stat-time">⏱ 0</span>
         </div>
       </header>
-
       <div class="game-main">
         <div class="word-area">
           <div class="pokemon-img-wrap" id="pokemon-img-wrap"></div>
           <div class="kana-line" id="kana-line"></div>
           <div class="romaji-line" id="romaji-line"></div>
         </div>
-
         <div class="keyboard-wrap">
           <div class="hand left-hand" id="left-hand"></div>
           <div class="keyboard" id="keyboard"></div>
           <div class="hand right-hand" id="right-hand"></div>
         </div>
-
         <div class="hint-area">
           <p class="hint-text" id="hint-text"></p>
         </div>
       </div>
     </section>
 
-    <!-- リザルト画面 -->
+    <!-- れんしゅう リザルト -->
     <section id="screen-result" class="screen">
       <div class="result-wrap">
         <h2 id="result-title">ステージクリア！</h2>
@@ -86,14 +114,80 @@
         </div>
       </div>
     </section>
+
+    <!-- ポケモン選択 -->
+    <section id="screen-poke-select" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-modes">← もどる</button>
+        <h2>あいぼうを えらぼう</h2>
+        <div></div>
+      </header>
+      <div class="poke-list" id="poke-list"></div>
+    </section>
+
+    <!-- トレーナー選択 -->
+    <section id="screen-trainer-select" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-poke-select">← もどる</button>
+        <h2>あいてを えらぼう</h2>
+        <div></div>
+      </header>
+      <div class="trainer-list" id="trainer-list"></div>
+    </section>
+
+    <!-- バトル画面 -->
+    <section id="screen-battle" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-modes">← にげる</button>
+        <h2>ポケモンバトル！</h2>
+        <div></div>
+      </header>
+      <div id="battle-content" class="battle-root"></div>
+    </section>
+
+    <!-- タイムアタック -->
+    <section id="screen-ta" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-modes">← やめる</button>
+        <h2>タイムアタック</h2>
+        <div></div>
+      </header>
+      <div id="ta-content"></div>
+      <div class="keyboard-wrap small-kb">
+        <div class="keyboard" id="ta-keyboard"></div>
+      </div>
+    </section>
+
+    <!-- タイムアタック リザルト -->
+    <section id="screen-ta-result" class="screen">
+      <div class="result-wrap">
+        <h2>タイムアップ！</h2>
+        <div class="result-badge">⏱️</div>
+        <div class="result-stats">
+          <div><span>スコア</span><strong id="tar-score">0</strong></div>
+          <div><span>たんご</span><strong id="tar-words">0</strong></div>
+          <div><span>せいかい文字</span><strong id="tar-correct">0</strong></div>
+          <div><span>ミス</span><strong id="tar-miss">0</strong></div>
+        </div>
+        <p class="result-msg" id="tar-msg"></p>
+        <div class="result-buttons">
+          <button class="btn-big" id="btn-ta-retry">もういちど</button>
+          <button class="btn-big primary" id="btn-ta-menu">モードへ もどる</button>
+        </div>
+      </div>
+    </section>
+
   </div>
 
+  <script src="js/audio.js"></script>
   <script src="js/keyboard.js"></script>
   <script src="js/words.js"></script>
   <script src="js/stages.js"></script>
   <script src="js/progress.js"></script>
   <script src="js/pokemon.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/timeattack.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
