@@ -121,16 +121,55 @@
     { kana:'ぎんこう', romaji:'ginnkou' }, { kana:'おどり', romaji:'odori' },
   ];
 
-  // === ステージ11: 半濁音・拗音（ぱ・きゃ等）===
-  const HANDAKU_YOUON = [
+  // === ステージ11: 半濁音（ぱ・ぴ・ぷ・ぺ・ぽ）===
+  const HANDAKUON = [
+    // 単音
     { kana:'ぱ', romaji:'pa' }, { kana:'ぴ', romaji:'pi' },
     { kana:'ぷ', romaji:'pu' }, { kana:'ぺ', romaji:'pe' }, { kana:'ぽ', romaji:'po' },
+    // 2文字の短い単語
+    { kana:'ぱぱ',   romaji:'papa' },
+    { kana:'ぽち',   romaji:'poti' },
+    { kana:'ぺん',   romaji:'penn' },
+    // 3文字
+    { kana:'ぴあの', romaji:'piano' },
+    { kana:'ぷりん', romaji:'purinn' },
+    { kana:'ぱんだ', romaji:'pannda' },
+    { kana:'ぱりぱり', romaji:'paripari' },
+    // 「っ」を含む
+    { kana:'はっぱ', romaji:'happa' },
+    { kana:'しっぽ', romaji:'sippo' },
+    { kana:'きっぷ', romaji:'kippu' },
+    { kana:'こっぷ', romaji:'koppu' },
+    { kana:'らっぱ', romaji:'rappa' },
+    // 「ん」を含む
+    { kana:'えんぴつ',   romaji:'ennpitu' },
+    { kana:'しんぱい',   romaji:'sinnpai' },
+    { kana:'たんぽぽ',   romaji:'tannpopo' },
+    { kana:'ぴかぴか',   romaji:'pikapika' },
+    { kana:'ぽかぽか',   romaji:'pokapoka' },
+    { kana:'ぱそこん',   romaji:'pasokonn' },
+  ];
+
+  // === ステージ12: 拗音（きゃ・しゃ・ちゃなど）===
+  const YOUON = [
+    // 単音
     { kana:'きゃ', romaji:'kya' }, { kana:'きゅ', romaji:'kyu' }, { kana:'きょ', romaji:'kyo' },
     { kana:'しゃ', romaji:'sya' }, { kana:'しゅ', romaji:'syu' }, { kana:'しょ', romaji:'syo' },
     { kana:'ちゃ', romaji:'tya' }, { kana:'ちゅ', romaji:'tyu' }, { kana:'ちょ', romaji:'tyo' },
     { kana:'じゃ', romaji:'zya' }, { kana:'じゅ', romaji:'zyu' }, { kana:'じょ', romaji:'zyo' },
-    { kana:'ひゃく', romaji:'hyaku' }, { kana:'おちゃ', romaji:'otya' },
-    { kana:'しゃしん', romaji:'syasinn' }, { kana:'きょねん', romaji:'kyonenn' },
+    { kana:'にゃ', romaji:'nya' }, { kana:'ひゃ', romaji:'hya' }, { kana:'みゃ', romaji:'mya' },
+    { kana:'りゃ', romaji:'rya' }, { kana:'ぴゃ', romaji:'pya' }, { kana:'ぴゅ', romaji:'pyu' },
+    { kana:'びゃ', romaji:'bya' }, { kana:'ぎゃ', romaji:'gya' },
+    // 単語
+    { kana:'ひゃく',     romaji:'hyaku' },
+    { kana:'おちゃ',     romaji:'otya' },
+    { kana:'しゃしん',   romaji:'syasinn' },
+    { kana:'きょねん',   romaji:'kyonenn' },
+    { kana:'びょういん', romaji:'byouinn' },
+    { kana:'りょうり',   romaji:'ryouri' },
+    { kana:'じゅぎょう', romaji:'zyugyou' },
+    { kana:'おもちゃ',   romaji:'omotya' },
+    { kana:'きゅうり',   romaji:'kyuuri' },
   ];
 
   // === ステージ12: 単語（あ〜わ行全体）===
@@ -234,11 +273,18 @@
     { kana:'ともだち', romaji:'tomodati' },
     { kana:'がっこう', romaji:'gakkou' },
     { kana:'てんき', romaji:'tennki' },
+    { kana:'ぱん', romaji:'pann' },
+    { kana:'ぺん', romaji:'penn' },
+    { kana:'ぷりん', romaji:'purinn' },
+    { kana:'ぴあの', romaji:'piano' },
+    { kana:'はっぱ', romaji:'happa' },
+    { kana:'しっぽ', romaji:'sippo' },
+    { kana:'たんぽぽ', romaji:'tannpopo' },
   ];
 
   global.Words = {
     HOME, A, KA, SA, TA, NA, HA,
-    MA_YA, RA_WA_N, DAKUON, HANDAKU_YOUON,
+    MA_YA, RA_WA_N, DAKUON, HANDAKUON, YOUON,
     STAGE_WORDS, STAGE_POKEMON, STAGE_MOVES,
     TIME_ATTACK_WORDS,
   };

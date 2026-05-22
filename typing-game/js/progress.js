@@ -42,7 +42,7 @@
 
   function recordResult(stageId, stats) {
     const s = load();
-    const total = (window.Stages && Stages.TOTAL_STAGES) || 14;
+    const total = (window.Stages && Stages.TOTAL_STAGES) || 15;
     const stage = window.Stages ? Stages.getStage(stageId) : null;
     const threshold = stage ? stage.clearAccuracy : 0.7;
     if (stats.accuracy >= threshold) {

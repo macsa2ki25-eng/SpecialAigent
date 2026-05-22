@@ -168,7 +168,8 @@
     const W = global.Words;
     if (W) {
       const groups = [W.A, W.KA, W.SA, W.TA, W.NA, W.HA, W.MA_YA, W.RA_WA_N,
-                       W.DAKUON, W.HANDAKU_YOUON, W.STAGE_WORDS, W.TIME_ATTACK_WORDS];
+                       W.DAKUON, W.HANDAKUON, W.YOUON,
+                       W.STAGE_WORDS, W.TIME_ATTACK_WORDS];
       groups.forEach((g) => {
         if (!Array.isArray(g)) return;
         g.forEach((w) => { if (w.kana && w.romaji) pool.push(w); });
