@@ -74,6 +74,15 @@
     return s;
   }
 
+  function recordCountdown(score, stats) {
+    const s = load();
+    if (!s.bestCountdown || score > s.bestCountdown.score) {
+      s.bestCountdown = { score, ...stats };
+    }
+    save(s);
+    return s;
+  }
+
   function setSoundOn(v) {
     const s = load();
     s.soundOn = v;
@@ -113,7 +122,7 @@
 
   global.Progress = {
     load, save, reset,
-    recordResult, recordKey, recordBattleWin, recordTimeAttack,
+    recordResult, recordKey, recordBattleWin, recordTimeAttack, recordCountdown,
     getWeakKeys, setShowRomaji, setSoundOn,
   };
 })(window);

@@ -50,6 +50,9 @@
     document.getElementById('mode-timeattack').addEventListener('click', () => {
       startTimeAttack();
     });
+    document.getElementById('mode-countdown').addEventListener('click', () => {
+      startCountdown();
+    });
     document.getElementById('mode-analytics').addEventListener('click', () => {
       renderAnalytics();
       showScreen('screen-analytics');
@@ -67,6 +70,7 @@
         Game.stop();
         if (window.Battle) Battle.stop();
         if (window.TimeAttack) TimeAttack.stop();
+        if (window.Countdown) Countdown.stop();
         const dest = btn.dataset.back;
         showScreen(dest);
         if (dest === 'screen-stages') renderStageList();
@@ -97,6 +101,13 @@
     // === タイムアタックのリザルト ===
     document.getElementById('btn-ta-retry').addEventListener('click', () => startTimeAttack());
     document.getElementById('btn-ta-menu').addEventListener('click', () => {
+      if (window.Sound) Sound.playBgm('menu');
+      showScreen('screen-modes');
+    });
+
+    // === カウントダウンのリザルト ===
+    document.getElementById('btn-cd-retry').addEventListener('click', () => startCountdown());
+    document.getElementById('btn-cd-menu').addEventListener('click', () => {
       if (window.Sound) Sound.playBgm('menu');
       showScreen('screen-modes');
     });
@@ -266,6 +277,30 @@
     }
     document.getElementById('tar-msg').textContent = msg;
     showScreen('screen-ta-result');
+  }
+
+  // === カウントダウン ===
+  function startCountdown() {
+    showScreen('screen-countdown');
+    Countdown.start((result) => showCdResult(result));
+  }
+
+  function showCdResult(r) {
+    document.getElementById('cdr-correct').textContent = r.correct;
+    document.getElementById('cdr-miss').textContent = r.miss;
+    document.getElementById('cdr-timeout').textContent = r.timeout;
+    document.getElementById('cdr-score').textContent = r.score;
+    const best = Progress.load().bestCountdown;
+    let msg = '';
+    if (best && best.score === r.score && best.correct === r.correct) {
+      msg = '🎉 ベスト きろく こうしん！';
+    } else if (best) {
+      msg = `ベスト: ${best.score}点`;
+    } else {
+      msg = 'はじめての きろく！';
+    }
+    document.getElementById('cdr-msg').textContent = msg;
+    showScreen('screen-cd-result');
   }
 
   // === 苦手分析画面 ===

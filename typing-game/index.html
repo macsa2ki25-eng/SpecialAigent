@@ -55,6 +55,11 @@
           <div class="mode-name">タイムアタック</div>
           <div class="mode-desc">60びょうで なんもん うてるかな？<br/>ハイスコアを めざせ！</div>
         </div>
+        <div class="mode-card" id="mode-countdown">
+          <div class="mode-emoji">⏰</div>
+          <div class="mode-name">カウントダウン</div>
+          <div class="mode-desc">時間内に 打とう！<br/>短い 文字は 7秒、長いのは 15秒。</div>
+        </div>
         <div class="mode-card" id="mode-analytics">
           <div class="mode-emoji">🔍</div>
           <div class="mode-name">にがてぶんせき</div>
@@ -163,6 +168,53 @@
       </div>
     </section>
 
+    <!-- カウントダウン画面 -->
+    <section id="screen-countdown" class="screen">
+      <header class="topbar">
+        <button class="btn-back" data-back="screen-modes">← やめる</button>
+        <h2>カウントダウン</h2>
+        <div class="stat-row">
+          <span class="stat" id="cd-progress">1 / 10</span>
+          <span class="stat" id="cd-correct">○ 0</span>
+        </div>
+      </header>
+      <div class="cd-main">
+        <div class="cd-timer-wrap">
+          <div class="cd-timer-circle">
+            <div class="cd-timer" id="cd-timer">0</div>
+            <div class="cd-timer-unit">びょう</div>
+          </div>
+        </div>
+        <div class="cd-flash" id="cd-flash"></div>
+        <div class="cd-word-area">
+          <div class="cd-kana" id="cd-kana"></div>
+          <div class="cd-romaji" id="cd-romaji"></div>
+        </div>
+        <div class="keyboard-wrap small-kb">
+          <div class="keyboard" id="cd-keyboard"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- カウントダウン リザルト -->
+    <section id="screen-cd-result" class="screen">
+      <div class="result-wrap">
+        <h2>おわり！</h2>
+        <div class="result-badge">⏰</div>
+        <div class="result-stats">
+          <div><span>正解</span><strong id="cdr-correct">0</strong></div>
+          <div><span>ミス</span><strong id="cdr-miss">0</strong></div>
+          <div><span>時間切れ</span><strong id="cdr-timeout">0</strong></div>
+          <div><span>点数</span><strong id="cdr-score">0</strong></div>
+        </div>
+        <p class="result-msg" id="cdr-msg"></p>
+        <div class="result-buttons">
+          <button class="btn-big" id="btn-cd-retry">もう 一度</button>
+          <button class="btn-big primary" id="btn-cd-menu">モードへ もどる</button>
+        </div>
+      </div>
+    </section>
+
     <!-- 苦手分析画面 -->
     <section id="screen-analytics" class="screen">
       <header class="topbar">
@@ -204,6 +256,7 @@
   <script src="js/game.js"></script>
   <script src="js/battle.js"></script>
   <script src="js/timeattack.js"></script>
+  <script src="js/countdown.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

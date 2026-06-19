@@ -654,6 +654,68 @@ body {
 .small-kb .kb-key.wide { width: 60px; }
 .small-kb .kb-key.space { width: 200px; }
 
+/* ===== カウントダウン ===== */
+.cd-main {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.cd-timer-wrap { text-align: center; }
+.cd-timer-circle {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140px; height: 140px;
+  border: 6px solid #2a2a3a;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff, #fff7d1);
+  box-shadow: 0 4px 0 #2a2a3a;
+}
+.cd-timer { font-size: 60px; font-weight: bold; line-height: 1; color: #2a2a3a; }
+.cd-timer.warn { color: #ff4444; animation: pulse 0.5s infinite; }
+.cd-timer-unit { font-size: 14px; color: #666; }
+
+.cd-flash {
+  height: 40px;
+  font-size: 28px;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cd-flash.show { opacity: 1; }
+.cd-flash.ok { color: #7ed957; }
+.cd-flash.timeout { color: #ff4444; }
+
+.cd-word-area {
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  border-radius: 18px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  min-height: 140px;
+}
+.cd-kana {
+  font-size: 56px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  min-height: 70px;
+}
+.cd-romaji {
+  font-size: 38px;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+.cd-romaji .rch { display: inline-block; padding: 0 2px; }
+.cd-romaji .rch.done { color: #7ed957; }
+.cd-romaji .rch.current { color: #ff6b9d; background: #ffe1f0; border-radius: 4px; animation: pulse 0.8s infinite; }
+.cd-romaji .rch.wrong { color: #fff; background: #ff4444; border-radius: 4px; }
+
 /* ===== 苦手分析画面 ===== */
 .analytics-content {
   max-width: 1100px;
