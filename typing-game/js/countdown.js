@@ -38,10 +38,10 @@
   }
 
   function timeForProblem(q) {
-    if (!q.kana) return 8;             // ローマ字のみ
+    if (!q.kana) return 12;            // ローマ字のみ
     const len = q.kana.length;
-    if (len <= 4) return 7;
-    return 15;                         // 5文字以上
+    if (len <= 4) return 10;
+    return 20;                         // 5文字以上
   }
 
   function shuffle(arr) {
