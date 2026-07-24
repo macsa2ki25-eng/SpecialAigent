@@ -1,1560 +1,1355 @@
-// ===== アバター アイテムカタログ =====
-// 各アイテムは getSVG() で SVG パーツを返す
+// ===== アバターショップアイテム（ハンゲーム風リニューアル）=====
 window.AVATAR_ITEMS = [
-
-  // ========== HAIR ==========
-  {
-    id: 'hair_short_dark', name: 'ショートヘア', category: 'hair', price: 0, isDefault: true,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_short_dark-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#6D4C41"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_short_dark-g)"/>' +
-        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="#3E2723"/>' +
-        '<path d="M50,76 L50,90 Q52,95 58,94 L58,80 Z" fill="#4A2C17"/>' +
-        '<path d="M150,76 L150,90 Q148,95 142,94 L142,80 Z" fill="#4A2C17"/>' +
-        '<path d="M72,32 Q80,26 88,30" stroke="#8D6E63" stroke-width="1.2" fill="none" opacity="0.7" stroke-linecap="round"/>' +
-        '<path d="M110,28 Q118,24 126,30" stroke="#8D6E63" stroke-width="1.2" fill="none" opacity="0.7" stroke-linecap="round"/>';
-    }
-  },
-  {
-    id: 'hair_long_dark', name: 'ロングヘア', category: 'hair', price: 0, isDefault: true,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_long_dark-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#5D4037"/><stop offset="100%" stop-color="#2E1A0F"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_long_dark-g)"/>' +
-        '<path d="M50,80 Q42,150 46,210 L62,210 Q58,150 58,84 Z" fill="url(#hair_long_dark-g)"/>' +
-        '<path d="M150,80 Q158,150 154,210 L138,210 Q142,150 142,84 Z" fill="url(#hair_long_dark-g)"/>' +
-        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="#3E2723"/>' +
-        '<path d="M52,100 Q50,150 53,200" stroke="#6D4C41" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M148,100 Q150,150 147,200" stroke="#6D4C41" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M76,30 Q84,24 92,30" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>';
-    }
-  },
-  {
-    id: 'hair_bob', name: 'ボブヘア', category: 'hair', price: 25,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_bob-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#5D4037"/><stop offset="100%" stop-color="#1B0F0A"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_bob-g)"/>' +
-        '<path d="M50,80 L50,120 Q52,128 60,128 L60,84 Z" fill="#3E2723"/>' +
-        '<path d="M150,80 L150,120 Q148,128 140,128 L140,84 Z" fill="#3E2723"/>' +
-        '<path d="M60,122 Q100,132 140,122 L140,128 Q100,138 60,128 Z" fill="#2E1A0F"/>' +
-        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="#3E2723"/>' +
-        '<path d="M70,40 Q80,32 92,38" stroke="#8D6E63" stroke-width="1.2" fill="none" opacity="0.6" stroke-linecap="round"/>' +
-        '<path d="M108,38 Q120,32 130,40" stroke="#8D6E63" stroke-width="1.2" fill="none" opacity="0.6" stroke-linecap="round"/>';
-    }
-  },
-  {
-    id: 'hair_medium', name: 'ミディアムヘア', category: 'hair', price: 20,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_medium-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#795548"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_medium-g)"/>' +
-        '<path d="M50,80 Q44,130 48,158 L62,158 Q58,130 58,84 Z" fill="url(#hair_medium-g)"/>' +
-        '<path d="M150,80 Q156,130 152,158 L138,158 Q142,130 142,84 Z" fill="url(#hair_medium-g)"/>' +
-        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="#4E342E"/>' +
-        '<path d="M52,110 Q54,135 55,155" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M148,110 Q146,135 145,155" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M74,32 Q82,26 90,32" stroke="#A1887F" stroke-width="1.2" fill="none" opacity="0.7" stroke-linecap="round"/>';
-    }
-  },
-  {
-    id: 'hair_twin_dark', name: 'ツインテール', category: 'hair', price: 30,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_twin_dark-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#6D4C41"/><stop offset="100%" stop-color="#2E1A0F"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="hair_twin_dark-rib" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#F48FB1"/><stop offset="100%" stop-color="#C2185B"/>' +
-        '</radialGradient></defs>' +
-        '<path d="M52,78 Q52,26 100,22 Q148,26 148,78 Q146,66 100,62 Q54,66 52,78 Z" fill="url(#hair_twin_dark-g)"/>' +
-        '<path d="M62,74 Q72,54 100,52 Q128,54 138,74 L136,68 Q126,50 100,48 Q74,50 64,68 Z" fill="#4A2C17"/>' +
-        '<circle cx="58" cy="90" r="9" fill="url(#hair_twin_dark-g)"/>' +
-        '<circle cx="142" cy="90" r="9" fill="url(#hair_twin_dark-g)"/>' +
-        '<path d="M52,92 Q36,135 38,178 Q40,202 52,207 Q62,202 64,178 Q66,135 66,92 Z" fill="url(#hair_twin_dark-g)"/>' +
-        '<path d="M148,92 Q164,135 162,178 Q160,202 148,207 Q138,202 136,178 Q134,135 134,92 Z" fill="url(#hair_twin_dark-g)"/>' +
-        '<path d="M44,120 Q42,160 45,195" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M156,120 Q158,160 155,195" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<circle cx="58" cy="90" r="6" fill="url(#hair_twin_dark-rib)"/>' +
-        '<circle cx="142" cy="90" r="6" fill="url(#hair_twin_dark-rib)"/>' +
-        '<circle cx="56" cy="88" r="1.5" fill="#fff" opacity="0.7"/>' +
-        '<circle cx="140" cy="88" r="1.5" fill="#fff" opacity="0.7"/>';
-    }
-  },
-  {
-    id: 'hair_ponytail', name: 'ポニーテール', category: 'hair', price: 30,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_ponytail-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#795548"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M52,80 Q52,26 100,22 Q148,26 148,80 Q146,70 100,66 Q54,70 52,80 Z" fill="url(#hair_ponytail-g)"/>' +
-        '<path d="M90,26 Q88,10 100,6 Q112,10 110,26 Z" fill="url(#hair_ponytail-g)"/>' +
-        '<path d="M88,22 Q84,52 90,90 L110,90 Q116,52 112,22 Z" fill="#4A2C17"/>' +
-        '<ellipse cx="100" cy="90" rx="8" ry="5" fill="#FDD835"/>' +
-        '<ellipse cx="100" cy="88" rx="5" ry="2" fill="#FFEB3B" opacity="0.6"/>' +
-        '<path d="M52,80 L52,102 Q54,108 60,106 L60,86 Z" fill="url(#hair_ponytail-g)"/>' +
-        '<path d="M148,80 L148,102 Q146,108 140,106 L140,86 Z" fill="url(#hair_ponytail-g)"/>' +
-        '<path d="M62,74 Q74,56 100,54 Q126,56 138,74 L136,68 Q124,50 100,48 Q76,50 64,68 Z" fill="#5D4037"/>' +
-        '<path d="M94,40 Q100,34 106,40" stroke="#A1887F" stroke-width="1.2" fill="none" opacity="0.5" stroke-linecap="round"/>';
-    }
-  },
-  {
-    id: 'hair_short_blonde', name: '金髪ショート', category: 'hair', price: 50,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_short_blonde-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF176"/><stop offset="60%" stop-color="#FFCA28"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_short_blonde-g)"/>' +
-        '<path d="M60,74 Q72,54 100,52 Q128,54 140,74 L138,68 Q126,48 100,46 Q74,48 62,68 Z" fill="#FFB300"/>' +
-        '<path d="M50,76 L50,90 Q52,95 58,94 L58,80 Z" fill="#F9A825"/>' +
-        '<path d="M150,76 L150,90 Q148,95 142,94 L142,80 Z" fill="#F9A825"/>' +
-        '<path d="M68,32 Q78,22 90,30" stroke="#FFF9C4" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.9"/>' +
-        '<path d="M108,28 Q120,22 130,32" stroke="#FFF9C4" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.9"/>' +
-        '<polygon points="78,36 80,40 84,38 81,42 83,46 78,43 74,46 76,42 73,38 77,39" fill="#FFFDE7" opacity="0.85"/>' +
-        '<circle cx="124" cy="44" r="1.2" fill="#FFFDE7"/>';
-    }
-  },
-  {
-    id: 'hair_long_pink', name: 'ピンクロング', category: 'hair', price: 80,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_long_pink-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#F8BBD0"/><stop offset="50%" stop-color="#F06292"/><stop offset="100%" stop-color="#AD1457"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_long_pink-g)"/>' +
-        '<path d="M50,80 Q42,150 46,210 L62,210 Q58,150 58,84 Z" fill="url(#hair_long_pink-g)"/>' +
-        '<path d="M150,80 Q158,150 154,210 L138,210 Q142,150 142,84 Z" fill="url(#hair_long_pink-g)"/>' +
-        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="#EC407A"/>' +
-        '<path d="M52,100 Q52,160 54,205" stroke="#FCE4EC" stroke-width="1.5" fill="none" opacity="0.6"/>' +
-        '<path d="M148,100 Q148,160 146,205" stroke="#FCE4EC" stroke-width="1.5" fill="none" opacity="0.6"/>' +
-        '<path d="M72,30 Q78,26 82,32" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.85"/>' +
-        '<path d="M90,24 Q96,20 100,24" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.85"/>' +
-        '<polygon points="115,38 117,42 121,42 118,45 119,49 115,46 111,49 112,45 109,42 113,42" fill="#FCE4EC" opacity="0.9"/>';
-    }
-  },
-  {
-    id: 'hair_ponytail_silver', name: 'シルバーポニテ', category: 'hair', price: 70,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_ponytail_silver-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#ECEFF1"/><stop offset="50%" stop-color="#B0BEC5"/><stop offset="100%" stop-color="#546E7A"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M52,80 Q52,26 100,22 Q148,26 148,80 Q146,70 100,66 Q54,70 52,80 Z" fill="url(#hair_ponytail_silver-g)"/>' +
-        '<path d="M90,26 Q88,10 100,6 Q112,10 110,26 Z" fill="url(#hair_ponytail_silver-g)"/>' +
-        '<path d="M88,22 Q84,52 90,90 L110,90 Q116,52 112,22 Z" fill="url(#hair_ponytail_silver-g)"/>' +
-        '<ellipse cx="100" cy="90" rx="8" ry="5" fill="#E1F5FE"/>' +
-        '<ellipse cx="100" cy="88" rx="5" ry="2" fill="#ffffff" opacity="0.7"/>' +
-        '<path d="M52,80 L52,102 Q54,108 60,106 L60,86 Z" fill="url(#hair_ponytail_silver-g)"/>' +
-        '<path d="M148,80 L148,102 Q146,108 140,106 L140,86 Z" fill="url(#hair_ponytail_silver-g)"/>' +
-        '<path d="M62,74 Q74,56 100,54 Q126,56 138,74 L136,68 Q124,50 100,48 Q76,50 64,68 Z" fill="#90A4AE"/>' +
-        '<path d="M78,28 Q86,22 94,28" stroke="#FFFFFF" stroke-width="1.2" fill="none" opacity="0.9" stroke-linecap="round"/>' +
-        '<path d="M92,40 Q96,30 100,38" stroke="#FFFFFF" stroke-width="1" fill="none" opacity="0.8"/>';
-    }
-  },
-  {
-    id: 'hair_long_red', name: '赤ロング', category: 'hair', price: 90,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_long_red-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FF7043"/><stop offset="50%" stop-color="#E53935"/><stop offset="100%" stop-color="#880E4F"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_long_red-g)"/>' +
-        '<path d="M50,80 Q42,150 46,210 L62,210 Q58,150 58,84 Z" fill="url(#hair_long_red-g)"/>' +
-        '<path d="M150,80 Q158,150 154,210 L138,210 Q142,150 142,84 Z" fill="url(#hair_long_red-g)"/>' +
-        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="#C62828"/>' +
-        '<path d="M52,100 Q52,160 54,205" stroke="#FFAB91" stroke-width="1.3" fill="none" opacity="0.6"/>' +
-        '<path d="M148,100 Q148,160 146,205" stroke="#FFAB91" stroke-width="1.3" fill="none" opacity="0.6"/>' +
-        '<path d="M72,30 Q78,26 82,32" stroke="#FFCCBC" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.8"/>' +
-        '<path d="M90,28 Q96,22 104,30" stroke="#FFCCBC" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.8"/>';
-    }
-  },
-  {
-    id: 'hair_rainbow', name: '虹色ヘア', category: 'hair', price: 300,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hair_rainbow-g" x1="0" y1="0" x2="1" y2="0">' +
-          '<stop offset="0%" stop-color="#E53935"/>' +
-          '<stop offset="20%" stop-color="#FB8C00"/>' +
-          '<stop offset="40%" stop-color="#FDD835"/>' +
-          '<stop offset="60%" stop-color="#43A047"/>' +
-          '<stop offset="80%" stop-color="#1E88E5"/>' +
-          '<stop offset="100%" stop-color="#8E24AA"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q50,24 100,20 Q150,24 150,78 Q148,64 100,60 Q52,64 50,78 Z" fill="url(#hair_rainbow-g)"/>' +
-        '<path d="M50,80 Q42,140 46,200 L62,200 Q58,140 58,84 Z" fill="url(#hair_rainbow-g)"/>' +
-        '<path d="M150,80 Q158,140 154,200 L138,200 Q142,140 142,84 Z" fill="url(#hair_rainbow-g)"/>' +
-        '<path d="M58,76 Q70,52 100,50 Q130,52 142,76 L140,70 Q128,46 100,44 Q72,46 60,70 Z" fill="url(#hair_rainbow-g)" opacity="0.85"/>' +
-        '<polygon points="70,34 72,38 76,38 73,41 74,45 70,42 66,45 67,41 64,38 68,38" fill="#ffffff" opacity="0.9"/>' +
-        '<polygon points="128,30 130,34 134,34 131,37 132,41 128,38 124,41 125,37 122,34 126,34" fill="#ffffff" opacity="0.9"/>' +
-        '<circle cx="100" cy="32" r="2" fill="#ffffff" opacity="0.9"/>' +
-        '<circle cx="85" cy="45" r="1.5" fill="#FFF9C4" opacity="0.85"/>' +
-        '<circle cx="115" cy="47" r="1.5" fill="#FFF9C4" opacity="0.85"/>';
-    }
-  },
-
-  // ========== TOPS ==========
-  {
-    id: 'tshirt_white', name: '白Tシャツ', category: 'tops', price: 0, isDefault: true,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="tshirt_white-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#E0E0E0"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="68" y="140" width="64" height="52" rx="8" fill="url(#tshirt_white-g)" stroke="#bdbdbd" stroke-width="0.8"/>' +
-        '<rect x="52" y="144" width="20" height="32" rx="10" fill="url(#tshirt_white-g)" stroke="#bdbdbd" stroke-width="0.8"/>' +
-        '<rect x="128" y="144" width="20" height="32" rx="10" fill="url(#tshirt_white-g)" stroke="#bdbdbd" stroke-width="0.8"/>' +
-        '<path d="M82,140 Q100,150 118,140" stroke="#bdbdbd" stroke-width="1.2" fill="none"/>' +
-        '<path d="M84,143 Q100,150 116,143" stroke="#ffffff" stroke-width="0.6" fill="none" opacity="0.9"/>' +
-        '<path d="M74,152 L74,185" stroke="#eeeeee" stroke-width="1" fill="none" opacity="0.7"/>' +
-        '<path d="M126,152 L126,185" stroke="#eeeeee" stroke-width="1" fill="none" opacity="0.7"/>' +
-        '<path d="M78,170 Q100,175 122,170" stroke="#eeeeee" stroke-width="0.7" fill="none" opacity="0.6"/>';
-    }
-  },
-  {
-    id: 'tshirt_red', name: '赤Tシャツ', category: 'tops', price: 15, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="tshirt_red-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#B71C1C"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="68" y="140" width="64" height="52" rx="8" fill="url(#tshirt_red-g)"/>' +
-        '<rect x="52" y="144" width="20" height="32" rx="10" fill="url(#tshirt_red-g)"/>' +
-        '<rect x="128" y="144" width="20" height="32" rx="10" fill="url(#tshirt_red-g)"/>' +
-        '<path d="M74,148 L76,185" stroke="#FFCDD2" stroke-width="1.2" fill="none" opacity="0.45"/>' +
-        '<path d="M82,140 Q100,150 118,140" stroke="#7F0000" stroke-width="1.5" fill="none"/>' +
-        '<path d="M85,143 Q100,150 115,143" stroke="#FFCDD2" stroke-width="0.8" fill="none" opacity="0.7"/>' +
-        '<path d="M80,170 Q100,174 120,170" stroke="#7F0000" stroke-width="0.7" fill="none" opacity="0.4"/>';
-    }
-  },
-  {
-    id: 'tshirt_blue', name: '青Tシャツ', category: 'tops', price: 15, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="tshirt_blue-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#42A5F5"/><stop offset="100%" stop-color="#0D47A1"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="68" y="140" width="64" height="52" rx="8" fill="url(#tshirt_blue-g)"/>' +
-        '<rect x="52" y="144" width="20" height="32" rx="10" fill="url(#tshirt_blue-g)"/>' +
-        '<rect x="128" y="144" width="20" height="32" rx="10" fill="url(#tshirt_blue-g)"/>' +
-        '<path d="M74,148 L76,185" stroke="#BBDEFB" stroke-width="1.2" fill="none" opacity="0.45"/>' +
-        '<path d="M82,140 Q100,150 118,140" stroke="#002171" stroke-width="1.5" fill="none"/>' +
-        '<path d="M85,143 Q100,150 115,143" stroke="#BBDEFB" stroke-width="0.8" fill="none" opacity="0.7"/>' +
-        '<path d="M80,170 Q100,174 120,170" stroke="#002171" stroke-width="0.7" fill="none" opacity="0.4"/>';
-    }
-  },
-  {
-    id: 'hoodie_navy', name: 'ネイビーパーカー', category: 'tops', price: 80, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hoodie_navy-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#3949AB"/><stop offset="100%" stop-color="#0D1454"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="hoodie_navy-h" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#283593"/><stop offset="100%" stop-color="#1A237E"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="64" y="138" width="72" height="58" rx="10" fill="url(#hoodie_navy-g)"/>' +
-        '<rect x="48" y="142" width="24" height="42" rx="12" fill="url(#hoodie_navy-g)"/>' +
-        '<rect x="128" y="142" width="24" height="42" rx="12" fill="url(#hoodie_navy-g)"/>' +
-        '<path d="M76,138 Q100,126 124,138 Q130,124 100,116 Q70,124 76,138 Z" fill="url(#hoodie_navy-h)"/>' +
-        '<path d="M78,138 Q100,128 122,138" stroke="#5C6BC0" stroke-width="0.8" fill="none" opacity="0.7"/>' +
-        '<rect x="78" y="172" width="44" height="14" rx="4" fill="#1A237E"/>' +
-        '<path d="M80,174 L120,174" stroke="#5C6BC0" stroke-width="0.7" opacity="0.6"/>' +
-        '<line x1="94" y1="138" x2="92" y2="158" stroke="#FAFAFA" stroke-width="1.8" stroke-linecap="round"/>' +
-        '<line x1="106" y1="138" x2="108" y2="158" stroke="#FAFAFA" stroke-width="1.8" stroke-linecap="round"/>' +
-        '<circle cx="92" cy="158" r="1.8" fill="#FFEB3B"/>' +
-        '<circle cx="108" cy="158" r="1.8" fill="#FFEB3B"/>';
-    }
-  },
-  {
-    id: 'jacket_leather', name: 'レザージャケット', category: 'tops', price: 100, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="jacket_leather-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#6D4C41"/><stop offset="100%" stop-color="#1B0F0A"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="64" y="138" width="72" height="56" rx="8" fill="url(#jacket_leather-g)"/>' +
-        '<rect x="48" y="142" width="24" height="40" rx="12" fill="url(#jacket_leather-g)"/>' +
-        '<rect x="128" y="142" width="24" height="40" rx="12" fill="url(#jacket_leather-g)"/>' +
-        '<path d="M68,144 Q68,170 70,190" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.7"/>' +
-        '<path d="M132,144 Q132,170 130,190" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.7"/>' +
-        '<line x1="100" y1="140" x2="100" y2="192" stroke="#FFC107" stroke-width="2.2"/>' +
-        '<line x1="100" y1="140" x2="100" y2="192" stroke="#FFF59D" stroke-width="0.6" opacity="0.8"/>' +
-        '<path d="M82,138 L92,150 L100,142 L108,150 L118,138" fill="#3E2723" stroke="#1B0F0A" stroke-width="0.8"/>' +
-        '<path d="M85,140 L92,148" stroke="#8D6E63" stroke-width="0.6" opacity="0.5"/>' +
-        '<line x1="72" y1="168" x2="92" y2="168" stroke="#1B0F0A" stroke-width="1.8"/>' +
-        '<line x1="72" y1="170" x2="92" y2="170" stroke="#8D6E63" stroke-width="0.5" opacity="0.6"/>' +
-        '<line x1="108" y1="168" x2="128" y2="168" stroke="#1B0F0A" stroke-width="1.8"/>' +
-        '<line x1="108" y1="170" x2="128" y2="170" stroke="#8D6E63" stroke-width="0.5" opacity="0.6"/>' +
-        '<circle cx="96" cy="160" r="1.2" fill="#FFC107"/>' +
-        '<circle cx="104" cy="180" r="1.2" fill="#FFC107"/>';
-    }
-  },
-  {
-    id: 'sailor_top', name: 'セーラー服', category: 'tops', price: 100, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="sailor_top-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#E0E0E0"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="sailor_top-c" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#1976D2"/><stop offset="100%" stop-color="#0D47A1"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="68" y="140" width="64" height="52" rx="8" fill="url(#sailor_top-g)"/>' +
-        '<rect x="52" y="144" width="20" height="32" rx="10" fill="url(#sailor_top-g)"/>' +
-        '<rect x="128" y="144" width="20" height="32" rx="10" fill="url(#sailor_top-g)"/>' +
-        '<path d="M72,140 L100,165 L128,140 L130,145 L100,172 L70,145 Z" fill="url(#sailor_top-c)"/>' +
-        '<path d="M76,144 L100,166 L124,144" stroke="#ffffff" stroke-width="1.5" fill="none"/>' +
-        '<path d="M78,147 L100,169 L122,147" stroke="#ffffff" stroke-width="0.6" fill="none" opacity="0.7"/>' +
-        '<line x1="56" y1="168" x2="68" y2="168" stroke="url(#sailor_top-c)" stroke-width="2"/>' +
-        '<line x1="132" y1="168" x2="144" y2="168" stroke="url(#sailor_top-c)" stroke-width="2"/>' +
-        '<polygon points="96,152 100,160 104,152 100,147" fill="#E53935"/>' +
-        '<polygon points="97,150 100,156 103,150 100,148" fill="#FFCDD2" opacity="0.7"/>' +
-        '<circle cx="100" cy="153" r="1" fill="#B71C1C"/>';
-    }
-  },
-  {
-    id: 'robe_wizard', name: '魔法使いローブ', category: 'tops', price: 300, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="robe_wizard-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#AB47BC"/><stop offset="100%" stop-color="#4A148C"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="robe_wizard-star" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="100%" stop-color="#F9A825"/>' +
-        '</radialGradient></defs>' +
-        '<path d="M58,136 L58,210 Q58,215 64,215 L136,215 Q142,215 142,210 L142,136 Q130,128 100,126 Q70,128 58,136 Z" fill="url(#robe_wizard-g)"/>' +
-        '<rect x="44" y="140" width="24" height="52" rx="12" fill="url(#robe_wizard-g)"/>' +
-        '<rect x="132" y="140" width="24" height="52" rx="12" fill="url(#robe_wizard-g)"/>' +
-        '<path d="M66,140 Q68,170 72,205" stroke="#CE93D8" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M134,140 Q132,170 128,205" stroke="#CE93D8" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<polygon points="100,150 104,160 115,161 106,168 109,178 100,172 91,178 94,168 85,161 96,160" fill="url(#robe_wizard-star)" stroke="#F57F17" stroke-width="0.5"/>' +
-        '<circle cx="100" cy="163" r="2" fill="#FFFDE7"/>' +
-        '<circle cx="75" cy="190" r="1.5" fill="#FFF59D" opacity="0.85"/>' +
-        '<circle cx="125" cy="195" r="1.2" fill="#FFF59D" opacity="0.85"/>' +
-        '<polygon points="82,185 83,188 86,188 84,190 85,193 82,191 79,193 80,190 78,188 81,188" fill="#FFF59D" opacity="0.8"/>' +
-        '<polygon points="120,145 121,148 124,148 122,150 123,153 120,151 117,153 118,150 116,148 119,148" fill="#FFF59D" opacity="0.8"/>' +
-        '<path d="M58,136 Q70,128 100,126 Q130,128 142,136" stroke="#E1BEE7" stroke-width="2" fill="none"/>' +
-        '<line x1="58" y1="210" x2="142" y2="210" stroke="#E1BEE7" stroke-width="1.8"/>';
-    }
-  },
-  {
-    id: 'kimono_red', name: '着物', category: 'tops', price: 250, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="kimono_red-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#7F0000"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="kimono_red-obi" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFEE58"/><stop offset="100%" stop-color="#F9A825"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M62,136 L62,212 L138,212 L138,136 Q120,130 100,130 Q80,130 62,136 Z" fill="url(#kimono_red-g)"/>' +
-        '<rect x="48" y="140" width="22" height="46" rx="11" fill="url(#kimono_red-g)"/>' +
-        '<rect x="130" y="140" width="22" height="46" rx="11" fill="url(#kimono_red-g)"/>' +
-        '<path d="M90,136 L100,190 L110,136" fill="#FF8A65"/>' +
-        '<path d="M92,138 L100,186 L108,138" stroke="#FFCCBC" stroke-width="0.7" fill="none" opacity="0.7"/>' +
-        '<rect x="62" y="175" width="76" height="16" rx="3" fill="url(#kimono_red-obi)"/>' +
-        '<rect x="62" y="176" width="76" height="3" rx="1" fill="#FFF59D" opacity="0.8"/>' +
-        '<rect x="92" y="172" width="16" height="22" rx="4" fill="#FFB300"/>' +
-        '<rect x="94" y="174" width="12" height="3" rx="1" fill="#FFECB3"/>' +
-        '<g opacity="0.85">' +
-          '<circle cx="76" cy="155" r="4" fill="#FFCDD2"/>' +
-          '<circle cx="76" cy="155" r="1.5" fill="#FFF59D"/>' +
-          '<circle cx="124" cy="160" r="3" fill="#FFCDD2"/>' +
-          '<circle cx="124" cy="160" r="1.2" fill="#FFF59D"/>' +
-          '<circle cx="80" cy="200" r="3" fill="#FFCDD2"/>' +
-          '<circle cx="80" cy="200" r="1.2" fill="#FFF59D"/>' +
-          '<circle cx="120" cy="203" r="2.5" fill="#FFCDD2"/>' +
-        '</g>';
-    }
-  },
-  {
-    id: 'jersey_sports', name: 'ジャージ', category: 'tops', price: 40, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="jersey_sports-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#66BB6A"/><stop offset="100%" stop-color="#1B5E20"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="66" y="138" width="68" height="54" rx="8" fill="url(#jersey_sports-g)"/>' +
-        '<rect x="50" y="142" width="22" height="38" rx="11" fill="url(#jersey_sports-g)"/>' +
-        '<rect x="128" y="142" width="22" height="38" rx="11" fill="url(#jersey_sports-g)"/>' +
-        '<rect x="50" y="156" width="22" height="4" fill="#ffffff"/>' +
-        '<rect x="128" y="156" width="22" height="4" fill="#ffffff"/>' +
-        '<path d="M80,138 Q100,148 120,138" stroke="#ffffff" stroke-width="1.5" fill="none"/>' +
-        '<text x="100" y="175" font-family="Arial Black" font-size="22" font-weight="900" text-anchor="middle" fill="#ffffff" stroke="#1B5E20" stroke-width="0.6">7</text>';
-    }
-  },
-  {
-    id: 'cape_hero', name: '勇者マント', category: 'tops', price: 400, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="cape_hero-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#880E4F"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="cape_hero-gold" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF176"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M56,140 Q44,180 48,230 Q60,245 100,245 Q140,245 152,230 Q156,180 144,140 Q120,150 100,150 Q80,150 56,140 Z" fill="url(#cape_hero-g)"/>' +
-        '<path d="M60,150 Q54,190 58,225" stroke="#FFCDD2" stroke-width="0.8" fill="none" opacity="0.4"/>' +
-        '<path d="M140,150 Q146,190 142,225" stroke="#FFCDD2" stroke-width="0.8" fill="none" opacity="0.4"/>' +
-        '<path d="M80,165 Q78,200 82,230" stroke="#7F0000" stroke-width="0.8" fill="none" opacity="0.5"/>' +
-        '<path d="M120,165 Q122,200 118,230" stroke="#7F0000" stroke-width="0.8" fill="none" opacity="0.5"/>' +
-        '<rect x="68" y="140" width="64" height="52" rx="8" fill="url(#cape_hero-g)"/>' +
-        '<path d="M78,140 Q100,148 122,140" stroke="url(#cape_hero-gold)" stroke-width="3" fill="none"/>' +
-        '<circle cx="100" cy="144" r="4" fill="url(#cape_hero-gold)"/>' +
-        '<circle cx="100" cy="144" r="2" fill="#F57F17"/>' +
-        '<rect x="56" y="138" width="4" height="6" fill="url(#cape_hero-gold)"/>' +
-        '<rect x="140" y="138" width="4" height="6" fill="url(#cape_hero-gold)"/>';
-    }
-  },
-  {
-    id: 'tuxedo_black', name: '黒タキシード', category: 'tops', price: 500, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="tuxedo_black-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#424242"/><stop offset="100%" stop-color="#0A0A0A"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="tuxedo_black-satin" x1="0" y1="0" x2="1" y2="1">' +
-          '<stop offset="0%" stop-color="#212121"/><stop offset="50%" stop-color="#616161"/><stop offset="100%" stop-color="#212121"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="64" y="138" width="72" height="58" rx="6" fill="url(#tuxedo_black-g)"/>' +
-        '<rect x="48" y="142" width="24" height="44" rx="12" fill="url(#tuxedo_black-g)"/>' +
-        '<rect x="128" y="142" width="24" height="44" rx="12" fill="url(#tuxedo_black-g)"/>' +
-        '<path d="M72,138 L94,152 L100,192 L106,152 L128,138 L128,160 L108,170 L100,200 L92,170 L72,160 Z" fill="url(#tuxedo_black-satin)"/>' +
-        '<rect x="96" y="140" width="8" height="56" fill="#ffffff"/>' +
-        '<polygon points="92,142 100,150 108,142 104,148 100,154 96,148" fill="#212121"/>' +
-        '<circle cx="100" cy="160" r="1.5" fill="#212121"/>' +
-        '<circle cx="100" cy="175" r="1.5" fill="#212121"/>' +
-        '<circle cx="100" cy="188" r="1.5" fill="#212121"/>' +
-        '<rect x="75" y="172" width="14" height="2" rx="1" fill="#ffffff" opacity="0.3"/>' +
-        '<rect x="111" y="172" width="14" height="2" rx="1" fill="#ffffff" opacity="0.3"/>';
-    }
-  },
-  {
-    id: 'dress_princess', name: 'プリンセスドレス', category: 'tops', price: 800, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="dress_princess-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#F8BBD0"/><stop offset="60%" stop-color="#F06292"/><stop offset="100%" stop-color="#AD1457"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="dress_princess-sh" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.2"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M56,195 Q40,250 48,265 L152,265 Q160,250 144,195 Q120,205 100,205 Q80,205 56,195 Z" fill="url(#dress_princess-g)"/>' +
-        '<path d="M60,210 Q48,240 56,260 L144,260 Q152,240 140,210" stroke="#FCE4EC" stroke-width="0.8" fill="none" opacity="0.7"/>' +
-        '<path d="M64,225 Q52,250 60,262" stroke="#FCE4EC" stroke-width="0.6" fill="none" opacity="0.5"/>' +
-        '<path d="M136,225 Q148,250 140,262" stroke="#FCE4EC" stroke-width="0.6" fill="none" opacity="0.5"/>' +
-        '<rect x="66" y="138" width="68" height="58" rx="10" fill="url(#dress_princess-g)"/>' +
-        '<path d="M66,196 Q100,205 134,196" stroke="#FCE4EC" stroke-width="2" fill="none"/>' +
-        '<path d="M68,140 Q100,155 132,140" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.9"/>' +
-        '<path d="M66,138 Q70,160 68,192" fill="url(#dress_princess-sh)" opacity="0.5"/>' +
-        '<g fill="#FFFFFF">' +
-          '<polygon points="84,160 85,163 88,163 86,165 87,168 84,166 81,168 82,165 80,163 83,163" opacity="0.95"/>' +
-          '<polygon points="116,170 117,173 120,173 118,175 119,178 116,176 113,178 114,175 112,173 115,173" opacity="0.95"/>' +
-          '<polygon points="100,180 101,183 104,183 102,185 103,188 100,186 97,188 98,185 96,183 99,183" opacity="0.95"/>' +
-          '<circle cx="75" cy="175" r="1" opacity="0.9"/>' +
-          '<circle cx="125" cy="155" r="1" opacity="0.9"/>' +
-          '<circle cx="90" cy="150" r="0.8" opacity="0.9"/>' +
-        '</g>' +
-        '<rect x="50" y="142" width="20" height="32" rx="10" fill="url(#dress_princess-g)"/>' +
-        '<rect x="130" y="142" width="20" height="32" rx="10" fill="url(#dress_princess-g)"/>' +
-        '<path d="M50,174 Q60,178 70,174" stroke="#FCE4EC" stroke-width="1.5" fill="none"/>' +
-        '<path d="M130,174 Q140,178 150,174" stroke="#FCE4EC" stroke-width="1.5" fill="none"/>';
-    }
-  },
-  {
-    id: 'armor_knight', name: '騎士の鎧', category: 'tops', price: 1000, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="armor_knight-g" x1="0" y1="0" x2="1" y2="1">' +
-          '<stop offset="0%" stop-color="#FAFAFA"/><stop offset="40%" stop-color="#90A4AE"/><stop offset="100%" stop-color="#37474F"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="armor_knight-emb" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFEB3B"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="62" y="136" width="76" height="60" rx="6" fill="url(#armor_knight-g)"/>' +
-        '<rect x="46" y="142" width="26" height="42" rx="12" fill="url(#armor_knight-g)"/>' +
-        '<rect x="128" y="142" width="26" height="42" rx="12" fill="url(#armor_knight-g)"/>' +
-        '<path d="M62,136 L100,130 L138,136 L138,150 L62,150 Z" fill="#455A64"/>' +
-        '<rect x="66" y="150" width="68" height="3" fill="#263238"/>' +
-        '<rect x="66" y="170" width="68" height="3" fill="#263238"/>' +
-        '<path d="M70,140 L72,192" stroke="#FFFFFF" stroke-width="1.5" opacity="0.7"/>' +
-        '<path d="M130,140 L128,192" stroke="#FFFFFF" stroke-width="1.5" opacity="0.7"/>' +
-        '<circle cx="100" cy="175" r="14" fill="#263238"/>' +
-        '<path d="M100,163 L108,170 L106,185 L100,180 L94,185 L92,170 Z" fill="url(#armor_knight-emb)" stroke="#BF360C" stroke-width="0.6"/>' +
-        '<path d="M100,167 L100,178" stroke="#F57F17" stroke-width="0.8"/>' +
-        '<rect x="68" y="192" width="64" height="6" rx="1" fill="#263238"/>' +
-        '<circle cx="76" cy="195" r="1.5" fill="#B0BEC5"/>' +
-        '<circle cx="100" cy="195" r="1.5" fill="#B0BEC5"/>' +
-        '<circle cx="124" cy="195" r="1.5" fill="#B0BEC5"/>' +
-        '<circle cx="54" cy="148" r="2" fill="#263238"/>' +
-        '<circle cx="146" cy="148" r="2" fill="#263238"/>';
-    }
-  },
-
-  // ========== BOTTOMS ==========
-  {
-    id: 'shorts_blue', name: '青短パン', category: 'bottoms', price: 0, isDefault: true,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="shorts_blue-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#0D47A1"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M72,192 L72,226 Q72,230 78,230 L96,230 L96,192 Z" fill="url(#shorts_blue-g)"/>' +
-        '<path d="M128,192 L128,226 Q128,230 122,230 L104,230 L104,192 Z" fill="url(#shorts_blue-g)"/>' +
-        '<rect x="72" y="190" width="56" height="10" rx="2" fill="#1976D2"/>' +
-        '<rect x="72" y="191" width="56" height="2" fill="#42A5F5" opacity="0.8"/>' +
-        '<circle cx="100" cy="195" r="1.5" fill="#FFD54F"/>' +
-        '<line x1="80" y1="200" x2="80" y2="225" stroke="#0D47A1" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.6"/>' +
-        '<line x1="120" y1="200" x2="120" y2="225" stroke="#0D47A1" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.6"/>';
-    }
-  },
-  {
-    id: 'pants_black', name: '黒パンツ', category: 'bottoms', price: 20, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="pants_black-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#424242"/><stop offset="100%" stop-color="#0A0A0A"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M72,192 L74,255 Q74,258 80,258 L96,258 L98,192 Z" fill="url(#pants_black-g)"/>' +
-        '<path d="M128,192 L126,255 Q126,258 120,258 L104,258 L102,192 Z" fill="url(#pants_black-g)"/>' +
-        '<rect x="72" y="190" width="56" height="10" rx="2" fill="#212121"/>' +
-        '<rect x="72" y="191" width="56" height="1.5" fill="#616161" opacity="0.6"/>' +
-        '<circle cx="100" cy="195" r="1.2" fill="#9E9E9E"/>' +
-        '<line x1="87" y1="200" x2="87" y2="255" stroke="#616161" stroke-width="0.5" opacity="0.5"/>' +
-        '<line x1="113" y1="200" x2="113" y2="255" stroke="#616161" stroke-width="0.5" opacity="0.5"/>';
-    }
-  },
-  {
-    id: 'jeans_blue', name: 'ジーンズ', category: 'bottoms', price: 60, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="jeans_blue-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#0D47A1"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M72,192 L74,255 Q74,258 80,258 L96,258 L98,192 Z" fill="url(#jeans_blue-g)"/>' +
-        '<path d="M128,192 L126,255 Q126,258 120,258 L104,258 L102,192 Z" fill="url(#jeans_blue-g)"/>' +
-        '<rect x="72" y="190" width="56" height="10" rx="2" fill="#1565C0"/>' +
-        '<rect x="72" y="190.5" width="56" height="1.5" fill="#90CAF9" opacity="0.7"/>' +
-        '<rect x="95" y="192" width="10" height="7" rx="1" fill="#0D47A1"/>' +
-        '<rect x="96" y="193" width="8" height="5" rx="1" fill="#1565C0"/>' +
-        '<line x1="85" y1="200" x2="85" y2="250" stroke="#FFF59D" stroke-width="0.9" stroke-dasharray="3,2"/>' +
-        '<line x1="115" y1="200" x2="115" y2="250" stroke="#FFF59D" stroke-width="0.9" stroke-dasharray="3,2"/>' +
-        '<path d="M76,202 L90,210 L90,220 L76,215" fill="none" stroke="#FFF59D" stroke-width="0.8" stroke-dasharray="2,2"/>' +
-        '<path d="M124,202 L110,210 L110,220 L124,215" fill="none" stroke="#FFF59D" stroke-width="0.8" stroke-dasharray="2,2"/>' +
-        '<circle cx="82" cy="202" r="1" fill="#FDD835"/>' +
-        '<circle cx="118" cy="202" r="1" fill="#FDD835"/>' +
-        '<circle cx="90" cy="220" r="0.8" fill="#FDD835"/>' +
-        '<circle cx="110" cy="220" r="0.8" fill="#FDD835"/>';
-    }
-  },
-  {
-    id: 'skirt_pleats', name: 'プリーツスカート', category: 'bottoms', price: 50, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="skirt_pleats-g1" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#3949AB"/><stop offset="100%" stop-color="#0D1454"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="skirt_pleats-g2" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#5C6BC0"/><stop offset="100%" stop-color="#1A237E"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="70" y="190" width="60" height="10" rx="2" fill="#1A237E"/>' +
-        '<rect x="70" y="190.5" width="60" height="1.5" fill="#7986CB" opacity="0.7"/>' +
-        '<path d="M66,200 L72,240 L82,240 L86,200 Z" fill="url(#skirt_pleats-g1)"/>' +
-        '<path d="M86,200 L88,240 L98,240 L96,200 Z" fill="url(#skirt_pleats-g2)"/>' +
-        '<path d="M96,200 L98,240 L108,240 L106,200 Z" fill="url(#skirt_pleats-g1)"/>' +
-        '<path d="M106,200 L108,240 L118,240 L116,200 Z" fill="url(#skirt_pleats-g2)"/>' +
-        '<path d="M116,200 L118,240 L128,240 L134,200 Z" fill="url(#skirt_pleats-g1)"/>' +
-        '<path d="M86,200 L84,240" stroke="#0D1454" stroke-width="0.6" opacity="0.7"/>' +
-        '<path d="M96,200 L95,240" stroke="#0D1454" stroke-width="0.6" opacity="0.7"/>' +
-        '<path d="M106,200 L106,240" stroke="#0D1454" stroke-width="0.6" opacity="0.7"/>' +
-        '<path d="M116,200 L118,240" stroke="#0D1454" stroke-width="0.6" opacity="0.7"/>' +
-        '<circle cx="100" cy="195" r="1.2" fill="#FFD54F"/>';
-    }
-  },
-  {
-    id: 'cargo_pants', name: 'カーゴパンツ', category: 'bottoms', price: 80, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="cargo_pants-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#8D6E63"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M70,192 L72,258 Q72,260 78,260 L98,260 L100,192 Z" fill="url(#cargo_pants-g)"/>' +
-        '<path d="M130,192 L128,258 Q128,260 122,260 L102,260 L100,192 Z" fill="url(#cargo_pants-g)"/>' +
-        '<rect x="70" y="190" width="60" height="10" rx="2" fill="#6D4C41"/>' +
-        '<rect x="70" y="190.5" width="60" height="1.5" fill="#A1887F" opacity="0.7"/>' +
-        '<rect x="95" y="192" width="10" height="7" rx="1" fill="#3E2723"/>' +
-        '<rect x="74" y="218" width="18" height="16" rx="2" fill="#4E342E" stroke="#3E2723" stroke-width="0.5"/>' +
-        '<rect x="76" y="220" width="14" height="3" fill="#3E2723"/>' +
-        '<line x1="83" y1="218" x2="83" y2="234" stroke="#3E2723" stroke-width="0.6"/>' +
-        '<rect x="108" y="218" width="18" height="16" rx="2" fill="#4E342E" stroke="#3E2723" stroke-width="0.5"/>' +
-        '<rect x="110" y="220" width="14" height="3" fill="#3E2723"/>' +
-        '<line x1="117" y1="218" x2="117" y2="234" stroke="#3E2723" stroke-width="0.6"/>' +
-        '<rect x="78" y="245" width="12" height="5" rx="1" fill="#4E342E"/>' +
-        '<rect x="110" y="245" width="12" height="5" rx="1" fill="#4E342E"/>';
-    }
-  },
-  {
-    id: 'shorts_white', name: '白短パン', category: 'bottoms', price: 15, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="shorts_white-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#E0E0E0"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M72,192 L72,226 Q72,230 78,230 L96,230 L96,192 Z" fill="url(#shorts_white-g)" stroke="#BDBDBD" stroke-width="0.5"/>' +
-        '<path d="M128,192 L128,226 Q128,230 122,230 L104,230 L104,192 Z" fill="url(#shorts_white-g)" stroke="#BDBDBD" stroke-width="0.5"/>' +
-        '<rect x="72" y="190" width="56" height="10" rx="2" fill="#EEEEEE" stroke="#BDBDBD" stroke-width="0.5"/>' +
-        '<line x1="80" y1="202" x2="80" y2="226" stroke="#E0E0E0" stroke-width="0.6"/>' +
-        '<line x1="120" y1="202" x2="120" y2="226" stroke="#E0E0E0" stroke-width="0.6"/>' +
-        '<circle cx="100" cy="195" r="1.2" fill="#9E9E9E"/>';
-    }
-  },
-  {
-    id: 'skirt_long', name: 'ロングスカート', category: 'bottoms', price: 60, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="skirt_long-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#F48FB1"/><stop offset="100%" stop-color="#880E4F"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M68,192 L58,258 Q60,262 68,262 L132,262 Q140,262 142,258 L132,192 Q116,198 100,198 Q84,198 68,192 Z" fill="url(#skirt_long-g)"/>' +
-        '<rect x="68" y="190" width="64" height="10" rx="2" fill="#AD1457"/>' +
-        '<rect x="68" y="190.5" width="64" height="1.5" fill="#F8BBD0" opacity="0.7"/>' +
-        '<path d="M70,210 L64,250" stroke="#FCE4EC" stroke-width="0.5" opacity="0.6"/>' +
-        '<path d="M85,212 L80,255" stroke="#FCE4EC" stroke-width="0.5" opacity="0.6"/>' +
-        '<path d="M100,214 L100,258" stroke="#FCE4EC" stroke-width="0.5" opacity="0.6"/>' +
-        '<path d="M115,212 L120,255" stroke="#FCE4EC" stroke-width="0.5" opacity="0.6"/>' +
-        '<path d="M130,210 L136,250" stroke="#FCE4EC" stroke-width="0.5" opacity="0.6"/>' +
-        '<path d="M60,255 Q100,265 140,255" stroke="#880E4F" stroke-width="1" fill="none"/>' +
-        '<circle cx="100" cy="195" r="1.5" fill="#FFD54F"/>';
-    }
-  },
-  {
-    id: 'hakama_blue', name: '袴', category: 'bottoms', price: 200, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hakama_blue-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#303F9F"/><stop offset="100%" stop-color="#0D1454"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M66,192 L58,262 Q60,265 68,265 L98,265 L100,192 Z" fill="url(#hakama_blue-g)"/>' +
-        '<path d="M134,192 L142,262 Q140,265 132,265 L102,265 L100,192 Z" fill="url(#hakama_blue-g)"/>' +
-        '<rect x="66" y="188" width="68" height="12" rx="2" fill="#283593"/>' +
-        '<rect x="66" y="189" width="68" height="2" fill="#5C6BC0" opacity="0.7"/>' +
-        '<rect x="66" y="197" width="68" height="1" fill="#000000" opacity="0.3"/>' +
-        '<line x1="75" y1="200" x2="68" y2="262" stroke="#1A237E" stroke-width="0.6" opacity="0.6"/>' +
-        '<line x1="85" y1="200" x2="82" y2="263" stroke="#1A237E" stroke-width="0.6" opacity="0.6"/>' +
-        '<line x1="100" y1="200" x2="100" y2="264" stroke="#1A237E" stroke-width="0.6" opacity="0.6"/>' +
-        '<line x1="115" y1="200" x2="118" y2="263" stroke="#1A237E" stroke-width="0.6" opacity="0.6"/>' +
-        '<line x1="125" y1="200" x2="132" y2="262" stroke="#1A237E" stroke-width="0.6" opacity="0.6"/>' +
-        '<rect x="92" y="188" width="16" height="18" rx="2" fill="#1A237E"/>' +
-        '<rect x="95" y="192" width="10" height="3" fill="#FFEB3B"/>' +
-        '<rect x="95" y="198" width="10" height="3" fill="#FFEB3B"/>';
-    }
-  },
-
-  // ========== HEADWEAR ==========
-  {
-    id: 'cap_basic', name: 'キャップ', category: 'headwear', price: 20, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="cap_basic-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#B71C1C"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="100" cy="42" rx="48" ry="14" fill="url(#cap_basic-g)"/>' +
-        '<path d="M52,42 Q52,30 100,28 Q148,30 148,42 Z" fill="url(#cap_basic-g)"/>' +
-        '<ellipse cx="118" cy="44" rx="36" ry="8" fill="#880E4F"/>' +
-        '<ellipse cx="118" cy="43" rx="30" ry="3" fill="#E53935" opacity="0.4"/>' +
-        '<circle cx="100" cy="28" r="3" fill="#7F0000"/>' +
-        '<circle cx="100" cy="27" r="1.5" fill="#EF5350" opacity="0.6"/>' +
-        '<path d="M70,32 Q100,25 130,32" stroke="#FFCDD2" stroke-width="1" fill="none" opacity="0.3"/>' +
-        '<path d="M86,40 L114,40" stroke="#7F0000" stroke-width="0.6" opacity="0.5"/>';
-    }
-  },
-  {
-    id: 'beret_red', name: 'ベレー帽', category: 'headwear', price: 50, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<radialGradient id="beret_red-g" cx="50%" cy="40%" r="60%">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#880E4F"/>' +
-        '</radialGradient></defs>' +
-        '<ellipse cx="100" cy="40" rx="44" ry="10" fill="#7F0000"/>' +
-        '<path d="M56,40 Q56,18 100,14 Q144,18 144,40 Z" fill="url(#beret_red-g)"/>' +
-        '<ellipse cx="100" cy="40" rx="42" ry="3" fill="#B71C1C" opacity="0.5"/>' +
-        '<path d="M66,30 Q100,20 134,30" stroke="#FFCDD2" stroke-width="1" fill="none" opacity="0.4"/>' +
-        '<circle cx="100" cy="16" r="4" fill="#7F0000"/>' +
-        '<circle cx="99" cy="15" r="2" fill="#EF5350" opacity="0.5"/>';
-    }
-  },
-  {
-    id: 'crown_gold', name: '王冠', category: 'headwear', price: 200, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="crown_gold-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#E65100"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="crown_gold-jewel1" cx="40%" cy="30%" r="60%">' +
-          '<stop offset="0%" stop-color="#FFCDD2"/><stop offset="100%" stop-color="#B71C1C"/>' +
-        '</radialGradient>' +
-        '<radialGradient id="crown_gold-jewel2" cx="40%" cy="30%" r="60%">' +
-          '<stop offset="0%" stop-color="#BBDEFB"/><stop offset="100%" stop-color="#0D47A1"/>' +
-        '</radialGradient>' +
-        '<radialGradient id="crown_gold-jewel3" cx="40%" cy="30%" r="60%">' +
-          '<stop offset="0%" stop-color="#C8E6C9"/><stop offset="100%" stop-color="#1B5E20"/>' +
-        '</radialGradient></defs>' +
-        '<rect x="72" y="32" width="56" height="18" rx="2" fill="url(#crown_gold-g)"/>' +
-        '<polygon points="72,32 66,12 82,26" fill="url(#crown_gold-g)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<polygon points="100,32 94,6 106,6 100,32" fill="url(#crown_gold-g)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<polygon points="128,32 134,12 118,26" fill="url(#crown_gold-g)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<circle cx="66" cy="11" r="2.5" fill="#FFF59D"/>' +
-        '<circle cx="100" cy="5" r="2.5" fill="#FFF59D"/>' +
-        '<circle cx="134" cy="11" r="2.5" fill="#FFF59D"/>' +
-        '<circle cx="66" cy="11" r="1" fill="#FFFDE7"/>' +
-        '<circle cx="100" cy="5" r="1" fill="#FFFDE7"/>' +
-        '<circle cx="134" cy="11" r="1" fill="#FFFDE7"/>' +
-        '<circle cx="82" cy="40" r="4" fill="url(#crown_gold-jewel1)" stroke="#FFD54F" stroke-width="0.7"/>' +
-        '<circle cx="100" cy="40" r="4" fill="url(#crown_gold-jewel2)" stroke="#FFD54F" stroke-width="0.7"/>' +
-        '<circle cx="118" cy="40" r="4" fill="url(#crown_gold-jewel3)" stroke="#FFD54F" stroke-width="0.7"/>' +
-        '<circle cx="81" cy="38" r="1.2" fill="#ffffff" opacity="0.9"/>' +
-        '<circle cx="99" cy="38" r="1.2" fill="#ffffff" opacity="0.9"/>' +
-        '<circle cx="117" cy="38" r="1.2" fill="#ffffff" opacity="0.9"/>' +
-        '<rect x="70" y="48" width="60" height="4" rx="2" fill="#F57F17"/>' +
-        '<rect x="70" y="48" width="60" height="1" rx="0.5" fill="#FFF59D" opacity="0.7"/>';
-    }
-  },
-  {
-    id: 'hat_wizard', name: '魔法使い帽子', category: 'headwear', price: 250, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="hat_wizard-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#7B1FA2"/><stop offset="100%" stop-color="#4A148C"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="hat_wizard-band" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFEE58"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="100" cy="42" rx="50" ry="12" fill="#4A148C"/>' +
-        '<ellipse cx="100" cy="40" rx="46" ry="4" fill="#9C27B0" opacity="0.5"/>' +
-        '<path d="M60,42 Q70,10 100,-20 Q130,10 140,42 Z" fill="url(#hat_wizard-g)"/>' +
-        '<path d="M80,20 Q90,-5 100,-15" stroke="#CE93D8" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M62,40 Q100,50 138,40 Q100,54 62,40 Z" fill="url(#hat_wizard-band)"/>' +
-        '<path d="M64,42 Q100,50 136,42" stroke="#F57F17" stroke-width="0.6" fill="none"/>' +
-        '<polygon points="115,6 117,12 123,12 118,16 120,22 115,18 110,22 112,16 107,12 113,12" fill="#FFF59D" stroke="#F57F17" stroke-width="0.5"/>' +
-        '<circle cx="115" cy="14" r="1" fill="#FFFDE7"/>' +
-        '<circle cx="90" cy="24" r="1" fill="#FFF59D" opacity="0.85"/>' +
-        '<circle cx="100" cy="14" r="0.8" fill="#FFF59D" opacity="0.85"/>' +
-        '<polygon points="75,30 76,32 79,32 77,34 78,36 75,35 72,36 73,34 71,32 74,32" fill="#FFF59D" opacity="0.8"/>';
-    }
-  },
-  {
-    id: 'ribbon_cute', name: 'リボン', category: 'headwear', price: 25, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<radialGradient id="ribbon_cute-g" cx="40%" cy="30%" r="60%">' +
-          '<stop offset="0%" stop-color="#F8BBD0"/><stop offset="100%" stop-color="#C2185B"/>' +
-        '</radialGradient></defs>' +
-        '<polygon points="46,34 36,24 36,44" fill="url(#ribbon_cute-g)"/>' +
-        '<polygon points="46,34 60,28 60,40" fill="url(#ribbon_cute-g)"/>' +
-        '<ellipse cx="52" cy="34" rx="4" ry="5" fill="#880E4F"/>' +
-        '<ellipse cx="51" cy="33" rx="2" ry="3" fill="#F06292" opacity="0.6"/>' +
-        '<path d="M40,30 L40,40" stroke="#880E4F" stroke-width="0.6" opacity="0.6"/>' +
-        '<path d="M56,30 L56,40" stroke="#880E4F" stroke-width="0.6" opacity="0.6"/>' +
-        '<circle cx="52" cy="32" r="0.8" fill="#ffffff" opacity="0.9"/>';
-    }
-  },
-  {
-    id: 'halo_angel', name: '天使の輪', category: 'headwear', price: 150, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<radialGradient id="halo_angel-g" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#FFFDE7"/><stop offset="60%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</radialGradient></defs>' +
-        '<ellipse cx="100" cy="10" rx="36" ry="8" fill="none" stroke="url(#halo_angel-g)" stroke-width="5" filter="url(#av-glow)"/>' +
-        '<ellipse cx="100" cy="10" rx="36" ry="8" fill="none" stroke="#FFEE58" stroke-width="2.5"/>' +
-        '<ellipse cx="100" cy="10" rx="34" ry="7" fill="none" stroke="#FFFFFF" stroke-width="0.8" opacity="0.9"/>' +
-        '<circle cx="136" cy="10" r="2.5" fill="#FFFFFF"/>' +
-        '<circle cx="64" cy="10" r="2" fill="#FFFFFF"/>' +
-        '<circle cx="100" cy="3" r="1.5" fill="#FFFFFF" opacity="0.9"/>';
-    }
-  },
-  {
-    id: 'helmet_knight', name: '騎士ヘルメット', category: 'headwear', price: 600, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="helmet_knight-g" x1="0" y1="0" x2="1" y2="1">' +
-          '<stop offset="0%" stop-color="#FAFAFA"/><stop offset="40%" stop-color="#B0BEC5"/><stop offset="100%" stop-color="#37474F"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="helmet_knight-plume" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#7F0000"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M50,78 Q48,28 100,20 Q152,28 150,78 Q148,88 100,92 Q52,88 50,78 Z" fill="url(#helmet_knight-g)"/>' +
-        '<rect x="58" y="60" width="84" height="8" rx="1" fill="#263238"/>' +
-        '<rect x="62" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<rect x="74" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<rect x="86" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<rect x="98" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<rect x="110" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<rect x="122" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<rect x="134" y="62" width="6" height="4" fill="#0A0A0A"/>' +
-        '<path d="M55,40 Q60,25 70,22" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.7"/>' +
-        '<path d="M100,8 Q96,16 98,22" stroke="#0A0A0A" stroke-width="2"/>' +
-        '<path d="M96,4 Q95,0 96,-10 Q92,-8 88,0 Q85,12 92,18 Q92,8 96,4 Z" fill="url(#helmet_knight-plume)"/>' +
-        '<path d="M104,4 Q105,0 104,-10 Q108,-8 112,0 Q115,12 108,18 Q108,8 104,4 Z" fill="url(#helmet_knight-plume)"/>' +
-        '<path d="M100,8 L100,-12" stroke="#7F0000" stroke-width="0.7"/>' +
-        '<circle cx="58" cy="78" r="2" fill="#263238"/>' +
-        '<circle cx="142" cy="78" r="2" fill="#263238"/>';
-    }
-  },
-  {
-    id: 'tiara_diamond', name: 'ダイヤティアラ', category: 'headwear', price: 800, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="tiara_diamond-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFFDE7"/><stop offset="50%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#F9A825"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="tiara_diamond-jewel" cx="40%" cy="30%" r="60%">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="50%" stop-color="#E1F5FE"/><stop offset="100%" stop-color="#01579B"/>' +
-        '</radialGradient></defs>' +
-        '<path d="M62,38 Q100,20 138,38 L134,44 Q100,30 66,44 Z" fill="url(#tiara_diamond-g)"/>' +
-        '<path d="M62,38 Q100,20 138,38" stroke="#F57F17" stroke-width="0.6" fill="none"/>' +
-        '<path d="M80,28 L85,22 L90,28" fill="url(#tiara_diamond-g)" stroke="#F57F17" stroke-width="0.5"/>' +
-        '<path d="M120,28 L115,22 L110,28" fill="url(#tiara_diamond-g)" stroke="#F57F17" stroke-width="0.5"/>' +
-        '<polygon points="100,6 96,18 104,18" fill="url(#tiara_diamond-g)" stroke="#F57F17" stroke-width="0.5"/>' +
-        '<polygon points="100,8 97,18 103,18 100,22 97,18" fill="url(#tiara_diamond-jewel)" stroke="#0288D1" stroke-width="0.4"/>' +
-        '<polygon points="85,24 82,30 88,30" fill="url(#tiara_diamond-jewel)" stroke="#0288D1" stroke-width="0.4"/>' +
-        '<polygon points="115,24 118,30 112,30" fill="url(#tiara_diamond-jewel)" stroke="#0288D1" stroke-width="0.4"/>' +
-        '<circle cx="72" cy="40" r="2" fill="url(#tiara_diamond-jewel)"/>' +
-        '<circle cx="128" cy="40" r="2" fill="url(#tiara_diamond-jewel)"/>' +
-        '<circle cx="100" cy="15" r="1" fill="#FFFFFF"/>' +
-        '<circle cx="85" cy="26" r="0.7" fill="#FFFFFF"/>' +
-        '<circle cx="115" cy="26" r="0.7" fill="#FFFFFF"/>' +
-        '<polygon points="75,18 76,20 78,20 76,22 77,24 75,23 73,24 74,22 72,20 74,20" fill="#FFFFFF" opacity="0.9"/>' +
-        '<polygon points="125,18 126,20 128,20 126,22 127,24 125,23 123,24 124,22 122,20 124,20" fill="#FFFFFF" opacity="0.9"/>';
-    }
-  },
-
-  // ========== ACCESSORY ==========
-  {
-    id: 'sunglasses', name: 'サングラス', category: 'accessory', price: 30, isDefault: false, layer: 'front',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="sunglasses-lens" x1="0" y1="0" x2="1" y2="1">' +
-          '<stop offset="0%" stop-color="#263238"/><stop offset="50%" stop-color="#1A1A1A"/><stop offset="100%" stop-color="#0A0A0A"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="66" y="76" width="26" height="18" rx="6" fill="url(#sunglasses-lens)" stroke="#0A0A0A" stroke-width="1.2"/>' +
-        '<rect x="108" y="76" width="26" height="18" rx="6" fill="url(#sunglasses-lens)" stroke="#0A0A0A" stroke-width="1.2"/>' +
-        '<path d="M69,79 Q72,77 85,78" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>' +
-        '<path d="M111,79 Q114,77 127,78" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>' +
-        '<circle cx="72" cy="82" r="1.5" fill="#ffffff" opacity="0.7"/>' +
-        '<circle cx="114" cy="82" r="1.5" fill="#ffffff" opacity="0.7"/>' +
-        '<line x1="92" y1="82" x2="108" y2="82" stroke="#0A0A0A" stroke-width="2.5"/>' +
-        '<line x1="66" y1="82" x2="56" y2="78" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round"/>' +
-        '<line x1="134" y1="82" x2="144" y2="78" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round"/>';
-    }
-  },
-  {
-    id: 'bowtie_red', name: '蝶ネクタイ', category: 'accessory', price: 40, isDefault: false, layer: 'front',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bowtie_red-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#7F0000"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M82,138 Q76,142 76,146 Q76,150 82,154 L100,146 Z" fill="url(#bowtie_red-g)"/>' +
-        '<path d="M118,138 Q124,142 124,146 Q124,150 118,154 L100,146 Z" fill="url(#bowtie_red-g)"/>' +
-        '<path d="M84,141 Q80,145 84,151" stroke="#B71C1C" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M116,141 Q120,145 116,151" stroke="#B71C1C" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<ellipse cx="100" cy="146" rx="5" ry="6" fill="#7F0000"/>' +
-        '<ellipse cx="99" cy="144" rx="2" ry="3" fill="#EF5350" opacity="0.6"/>' +
-        '<circle cx="100" cy="146" r="1" fill="#FFEB3B"/>';
-    }
-  },
-  {
-    id: 'scarf_warm', name: 'マフラー', category: 'accessory', price: 60, isDefault: false, layer: 'front',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="scarf_warm-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFAB91"/><stop offset="100%" stop-color="#BF360C"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M70,126 Q100,142 130,126 Q134,132 130,136 Q100,150 70,136 Q66,132 70,126 Z" fill="url(#scarf_warm-g)"/>' +
-        '<path d="M72,130 Q100,145 128,130" stroke="#FFCCBC" stroke-width="0.7" fill="none" opacity="0.7"/>' +
-        '<path d="M72,132 L130,132" stroke="#BF360C" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>' +
-        '<rect x="120" y="130" width="14" height="42" rx="3" fill="url(#scarf_warm-g)"/>' +
-        '<line x1="122" y1="140" x2="132" y2="140" stroke="#BF360C" stroke-width="0.5" stroke-dasharray="2,1"/>' +
-        '<line x1="122" y1="150" x2="132" y2="150" stroke="#BF360C" stroke-width="0.5" stroke-dasharray="2,1"/>' +
-        '<line x1="122" y1="160" x2="132" y2="160" stroke="#BF360C" stroke-width="0.5" stroke-dasharray="2,1"/>' +
-        '<line x1="120" y1="172" x2="120" y2="178" stroke="#BF360C" stroke-width="1"/>' +
-        '<line x1="124" y1="172" x2="124" y2="180" stroke="#BF360C" stroke-width="1"/>' +
-        '<line x1="128" y1="172" x2="128" y2="178" stroke="#BF360C" stroke-width="1"/>' +
-        '<line x1="132" y1="172" x2="132" y2="180" stroke="#BF360C" stroke-width="1"/>';
-    }
-  },
-  {
-    id: 'wings_angel', name: '天使の翼', category: 'accessory', price: 300, isDefault: false, layer: 'back',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="wings_angel-g" x1="0" y1="0" x2="1" y2="0">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#BBDEFB"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="wings_angel-g2" x1="1" y1="0" x2="0" y2="0">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#BBDEFB"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M68,150 Q28,115 24,160 Q28,195 68,188 Z" fill="url(#wings_angel-g)" stroke="#90CAF9" stroke-width="0.8"/>' +
-        '<path d="M60,158 Q34,140 32,158 Q34,175 60,170 Z" fill="#FFFFFF" opacity="0.6"/>' +
-        '<path d="M66,150 Q50,130 40,140" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M66,160 Q46,150 34,158" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M66,170 Q48,168 34,175" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M66,180 Q50,180 40,182" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M132,150 Q172,115 176,160 Q172,195 132,188 Z" fill="url(#wings_angel-g2)" stroke="#90CAF9" stroke-width="0.8"/>' +
-        '<path d="M140,158 Q166,140 168,158 Q166,175 140,170 Z" fill="#FFFFFF" opacity="0.6"/>' +
-        '<path d="M134,150 Q150,130 160,140" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M134,160 Q154,150 166,158" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M134,170 Q152,168 166,175" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>' +
-        '<path d="M134,180 Q150,180 160,182" stroke="#90CAF9" stroke-width="0.6" fill="none" opacity="0.6"/>';
-    }
-  },
-  {
-    id: 'watch_gold', name: '金時計', category: 'accessory', price: 150, isDefault: false, layer: 'front',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="watch_gold-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="58" y="198" width="16" height="5" rx="1" fill="url(#watch_gold-g)"/>' +
-        '<rect x="58" y="197" width="16" height="1" fill="#FFFDE7" opacity="0.8"/>' +
-        '<circle cx="66" cy="200" r="6" fill="url(#watch_gold-g)" stroke="#E65100" stroke-width="0.6"/>' +
-        '<circle cx="66" cy="200" r="4" fill="#FFFDE7"/>' +
-        '<line x1="66" y1="200" x2="66" y2="197" stroke="#0A0A0A" stroke-width="0.8"/>' +
-        '<line x1="66" y1="200" x2="68.5" y2="200" stroke="#0A0A0A" stroke-width="0.6"/>' +
-        '<circle cx="66" cy="200" r="0.7" fill="#E65100"/>';
-    }
-  },
-  {
-    id: 'medal_gold', name: '金メダル', category: 'accessory', price: 200, isDefault: false, layer: 'front',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="medal_gold-rb" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#7F0000"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="medal_gold-g" cx="40%" cy="30%" r="70%">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="60%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#E65100"/>' +
-        '</radialGradient></defs>' +
-        '<path d="M90,130 L86,158 L94,158 L98,156 Z" fill="url(#medal_gold-rb)"/>' +
-        '<path d="M110,130 L114,158 L106,158 L102,156 Z" fill="url(#medal_gold-rb)"/>' +
-        '<path d="M94,158 L96,165 L104,165 L106,158 Z" fill="#B71C1C"/>' +
-        '<circle cx="100" cy="178" r="13" fill="url(#medal_gold-g)" stroke="#E65100" stroke-width="1.2"/>' +
-        '<circle cx="100" cy="178" r="9" fill="none" stroke="#E65100" stroke-width="0.5" opacity="0.6"/>' +
-        '<text x="100" y="183" font-family="Arial" font-size="13" font-weight="900" text-anchor="middle" fill="#E65100">1</text>' +
-        '<circle cx="96" cy="173" r="2" fill="#FFFDE7" opacity="0.7"/>';
-    }
-  },
-  {
-    id: 'necklace_diamond', name: 'ダイヤネックレス', category: 'accessory', price: 500, isDefault: false, layer: 'front',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="necklace_diamond-c" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="necklace_diamond-j" cx="40%" cy="30%" r="60%">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="50%" stop-color="#E1F5FE"/><stop offset="100%" stop-color="#01579B"/>' +
-        '</radialGradient></defs>' +
-        '<path d="M76,130 Q100,145 124,130" stroke="url(#necklace_diamond-c)" stroke-width="1.8" fill="none"/>' +
-        '<path d="M76,130 Q100,146 124,130" stroke="#FFFDE7" stroke-width="0.6" fill="none" opacity="0.7"/>' +
-        '<circle cx="82" cy="134" r="1" fill="url(#necklace_diamond-c)"/>' +
-        '<circle cx="90" cy="140" r="1" fill="url(#necklace_diamond-c)"/>' +
-        '<circle cx="110" cy="140" r="1" fill="url(#necklace_diamond-c)"/>' +
-        '<circle cx="118" cy="134" r="1" fill="url(#necklace_diamond-c)"/>' +
-        '<polygon points="100,141 94,146 100,158 106,146" fill="url(#necklace_diamond-j)" stroke="#0288D1" stroke-width="0.6"/>' +
-        '<path d="M94,146 L106,146" stroke="#0288D1" stroke-width="0.4"/>' +
-        '<path d="M97,143 L100,155" stroke="#ffffff" stroke-width="0.5" opacity="0.8"/>' +
-        '<circle cx="98" cy="145" r="1.2" fill="#ffffff" opacity="0.9"/>' +
-        '<polygon points="100,138 101,140 103,140 101,141 102,143 100,142 98,143 99,141 97,140 99,140" fill="#ffffff" opacity="0.85"/>';
-    }
-  },
-  {
-    id: 'cape_vampire', name: 'ヴァンパイアマント', category: 'accessory', price: 350, isDefault: false, layer: 'back',
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="cape_vampire-outer" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#424242"/><stop offset="100%" stop-color="#0A0A0A"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="cape_vampire-inner" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#D32F2F"/><stop offset="100%" stop-color="#7F0000"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M58,140 Q40,200 48,250 Q60,260 100,260 Q140,260 152,250 Q160,200 142,140 Q120,152 100,152 Q80,152 58,140 Z" fill="url(#cape_vampire-outer)"/>' +
-        '<path d="M64,146 Q56,200 62,248" stroke="#7F0000" stroke-width="0.7" fill="none" opacity="0.5"/>' +
-        '<path d="M136,146 Q144,200 138,248" stroke="#7F0000" stroke-width="0.7" fill="none" opacity="0.5"/>' +
-        '<path d="M84,152 Q82,210 86,252" stroke="#212121" stroke-width="0.5" fill="none" opacity="0.5"/>' +
-        '<path d="M116,152 Q118,210 114,252" stroke="#212121" stroke-width="0.5" fill="none" opacity="0.5"/>' +
-        '<path d="M60,138 L58,145 Q80,152 100,152 Q120,152 142,145 L140,138 Q120,148 100,148 Q80,148 60,138 Z" fill="url(#cape_vampire-inner)"/>' +
-        '<path d="M60,138 L140,138" stroke="#212121" stroke-width="1.5"/>' +
-        '<polygon points="56,134 60,138 52,138" fill="url(#cape_vampire-outer)"/>' +
-        '<polygon points="144,134 148,138 140,138" fill="url(#cape_vampire-outer)"/>' +
-        '<circle cx="58" cy="140" r="2" fill="url(#cape_vampire-inner)"/>' +
-        '<circle cx="142" cy="140" r="2" fill="url(#cape_vampire-inner)"/>';
-    }
-  },
-
-  // ========== SHOES ==========
-  {
-    id: 'sneakers_white', name: 'スニーカー', category: 'shoes', price: 0, isDefault: true,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="sneakers_white-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#BDBDBD"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="87" cy="266" rx="17" ry="4" fill="#757575" opacity="0.3"/>' +
-        '<ellipse cx="113" cy="266" rx="17" ry="4" fill="#757575" opacity="0.3"/>' +
-        '<ellipse cx="87" cy="264" rx="16" ry="7" fill="url(#sneakers_white-g)" stroke="#9E9E9E" stroke-width="0.6"/>' +
-        '<ellipse cx="113" cy="264" rx="16" ry="7" fill="url(#sneakers_white-g)" stroke="#9E9E9E" stroke-width="0.6"/>' +
-        '<rect x="75" y="258" width="24" height="8" rx="4" fill="url(#sneakers_white-g)" stroke="#9E9E9E" stroke-width="0.6"/>' +
-        '<rect x="101" y="258" width="24" height="8" rx="4" fill="url(#sneakers_white-g)" stroke="#9E9E9E" stroke-width="0.6"/>' +
-        '<rect x="75" y="266" width="24" height="3" rx="1" fill="#F5F5F5"/>' +
-        '<rect x="101" y="266" width="24" height="3" rx="1" fill="#F5F5F5"/>' +
-        '<path d="M78,262 Q87,260 96,262" stroke="#1E88E5" stroke-width="1.5" fill="none"/>' +
-        '<path d="M104,262 Q113,260 122,262" stroke="#1E88E5" stroke-width="1.5" fill="none"/>' +
-        '<line x1="82" y1="260" x2="84" y2="263" stroke="#9E9E9E" stroke-width="0.5"/>' +
-        '<line x1="90" y1="260" x2="92" y2="263" stroke="#9E9E9E" stroke-width="0.5"/>' +
-        '<line x1="108" y1="260" x2="110" y2="263" stroke="#9E9E9E" stroke-width="0.5"/>' +
-        '<line x1="116" y1="260" x2="118" y2="263" stroke="#9E9E9E" stroke-width="0.5"/>';
-    }
-  },
-  {
-    id: 'sneakers_red', name: '赤スニーカー', category: 'shoes', price: 15, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="sneakers_red-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#EF5350"/><stop offset="100%" stop-color="#7F0000"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="87" cy="266" rx="17" ry="4" fill="#7F0000" opacity="0.3"/>' +
-        '<ellipse cx="113" cy="266" rx="17" ry="4" fill="#7F0000" opacity="0.3"/>' +
-        '<ellipse cx="87" cy="264" rx="16" ry="7" fill="url(#sneakers_red-g)"/>' +
-        '<ellipse cx="113" cy="264" rx="16" ry="7" fill="url(#sneakers_red-g)"/>' +
-        '<rect x="75" y="258" width="24" height="8" rx="4" fill="url(#sneakers_red-g)"/>' +
-        '<rect x="101" y="258" width="24" height="8" rx="4" fill="url(#sneakers_red-g)"/>' +
-        '<rect x="75" y="266" width="24" height="3" rx="1" fill="#FFFFFF"/>' +
-        '<rect x="101" y="266" width="24" height="3" rx="1" fill="#FFFFFF"/>' +
-        '<path d="M78,262 Q87,260 96,262" stroke="#FFFFFF" stroke-width="1.5" fill="none"/>' +
-        '<path d="M104,262 Q113,260 122,262" stroke="#FFFFFF" stroke-width="1.5" fill="none"/>' +
-        '<path d="M77,260 Q80,256 86,258" stroke="#FFCDD2" stroke-width="1" fill="none" opacity="0.6"/>' +
-        '<path d="M103,260 Q106,256 112,258" stroke="#FFCDD2" stroke-width="1" fill="none" opacity="0.6"/>';
-    }
-  },
-  {
-    id: 'boots_brown', name: 'ブーツ', category: 'shoes', price: 70, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="boots_brown-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#8D6E63"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="boots_brown-gold" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFEE58"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="74" y="240" width="22" height="24" rx="4" fill="url(#boots_brown-g)"/>' +
-        '<rect x="104" y="240" width="22" height="24" rx="4" fill="url(#boots_brown-g)"/>' +
-        '<rect x="74" y="240" width="22" height="3" rx="1" fill="#A1887F" opacity="0.7"/>' +
-        '<rect x="104" y="240" width="22" height="3" rx="1" fill="#A1887F" opacity="0.7"/>' +
-        '<ellipse cx="85" cy="266" rx="16" ry="6" fill="#1B0F0A"/>' +
-        '<ellipse cx="115" cy="266" rx="16" ry="6" fill="#1B0F0A"/>' +
-        '<rect x="78" y="246" width="14" height="4" rx="1" fill="url(#boots_brown-gold)" stroke="#E65100" stroke-width="0.4"/>' +
-        '<rect x="108" y="246" width="14" height="4" rx="1" fill="url(#boots_brown-gold)" stroke="#E65100" stroke-width="0.4"/>' +
-        '<rect x="83" y="247" width="4" height="2" fill="#E65100"/>' +
-        '<rect x="113" y="247" width="4" height="2" fill="#E65100"/>' +
-        '<path d="M75,255 Q85,253 95,255" stroke="#3E2723" stroke-width="0.5" fill="none"/>' +
-        '<path d="M105,255 Q115,253 125,255" stroke="#3E2723" stroke-width="0.5" fill="none"/>';
-    }
-  },
-  {
-    id: 'loafers_brown', name: 'ローファー', category: 'shoes', price: 50, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="loafers_brown-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#A1887F"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="87" cy="264" rx="16" ry="7" fill="url(#loafers_brown-g)"/>' +
-        '<ellipse cx="113" cy="264" rx="16" ry="7" fill="url(#loafers_brown-g)"/>' +
-        '<rect x="77" y="258" width="20" height="8" rx="4" fill="#5D4037"/>' +
-        '<rect x="103" y="258" width="20" height="8" rx="4" fill="#5D4037"/>' +
-        '<path d="M77,260 Q87,256 97,260" stroke="#3E2723" stroke-width="0.6" fill="none"/>' +
-        '<path d="M103,260 Q113,256 123,260" stroke="#3E2723" stroke-width="0.6" fill="none"/>' +
-        '<rect x="82" y="258" width="10" height="2" rx="1" fill="#6D4C41"/>' +
-        '<rect x="108" y="258" width="10" height="2" rx="1" fill="#6D4C41"/>' +
-        '<circle cx="87" cy="259" r="1" fill="#FFD54F"/>' +
-        '<circle cx="113" cy="259" r="1" fill="#FFD54F"/>' +
-        '<ellipse cx="87" cy="268" rx="16" ry="2" fill="#1B0F0A" opacity="0.7"/>' +
-        '<ellipse cx="113" cy="268" rx="16" ry="2" fill="#1B0F0A" opacity="0.7"/>';
-    }
-  },
-  {
-    id: 'sandals_beach', name: 'ビーチサンダル', category: 'shoes', price: 25, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="sandals_beach-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFEB3B"/><stop offset="100%" stop-color="#F9A825"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="87" cy="264" rx="15" ry="5" fill="url(#sandals_beach-g)"/>' +
-        '<ellipse cx="113" cy="264" rx="15" ry="5" fill="url(#sandals_beach-g)"/>' +
-        '<path d="M80,258 L87,262 L94,258" stroke="#C62828" stroke-width="2" fill="none" stroke-linecap="round"/>' +
-        '<path d="M106,258 L113,262 L120,258" stroke="#C62828" stroke-width="2" fill="none" stroke-linecap="round"/>' +
-        '<circle cx="87" cy="262" r="1.5" fill="#B71C1C"/>' +
-        '<circle cx="113" cy="262" r="1.5" fill="#B71C1C"/>';
-    }
-  },
-  {
-    id: 'sneakers_gold', name: '金スニーカー', category: 'shoes', price: 400, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="sneakers_gold-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#E65100"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="87" cy="266" rx="17" ry="4" fill="#E65100" opacity="0.3"/>' +
-        '<ellipse cx="113" cy="266" rx="17" ry="4" fill="#E65100" opacity="0.3"/>' +
-        '<ellipse cx="87" cy="264" rx="16" ry="7" fill="url(#sneakers_gold-g)" stroke="#E65100" stroke-width="0.6"/>' +
-        '<ellipse cx="113" cy="264" rx="16" ry="7" fill="url(#sneakers_gold-g)" stroke="#E65100" stroke-width="0.6"/>' +
-        '<rect x="75" y="258" width="24" height="8" rx="4" fill="url(#sneakers_gold-g)" stroke="#E65100" stroke-width="0.6"/>' +
-        '<rect x="101" y="258" width="24" height="8" rx="4" fill="url(#sneakers_gold-g)" stroke="#E65100" stroke-width="0.6"/>' +
-        '<rect x="75" y="266" width="24" height="3" rx="1" fill="#F57F17"/>' +
-        '<rect x="101" y="266" width="24" height="3" rx="1" fill="#F57F17"/>' +
-        '<path d="M78,262 Q87,260 96,262" stroke="#F57F17" stroke-width="1.5" fill="none"/>' +
-        '<path d="M104,262 Q113,260 122,262" stroke="#F57F17" stroke-width="1.5" fill="none"/>' +
-        '<path d="M77,259 Q85,255 95,259" stroke="#FFFDE7" stroke-width="1" fill="none" opacity="0.8"/>' +
-        '<path d="M103,259 Q111,255 121,259" stroke="#FFFDE7" stroke-width="1" fill="none" opacity="0.8"/>' +
-        '<circle cx="85" cy="263" r="0.8" fill="#FFFFFF" opacity="0.9"/>' +
-        '<circle cx="111" cy="263" r="0.8" fill="#FFFFFF" opacity="0.9"/>';
-    }
-  },
-  {
-    id: 'shoes_glass', name: 'ガラスの靴', category: 'shoes', price: 600, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="shoes_glass-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#E1F5FE"/><stop offset="100%" stop-color="#81D4FA"/>' +
-        '</linearGradient></defs>' +
-        '<ellipse cx="87" cy="266" rx="16" ry="3" fill="#81D4FA" opacity="0.3"/>' +
-        '<ellipse cx="113" cy="266" rx="16" ry="3" fill="#81D4FA" opacity="0.3"/>' +
-        '<ellipse cx="87" cy="264" rx="16" ry="7" fill="url(#shoes_glass-g)" stroke="#4FC3F7" stroke-width="0.8" opacity="0.7"/>' +
-        '<ellipse cx="113" cy="264" rx="16" ry="7" fill="url(#shoes_glass-g)" stroke="#4FC3F7" stroke-width="0.8" opacity="0.7"/>' +
-        '<path d="M77,257 Q87,246 97,257 Q95,263 87,263 Q79,263 77,257 Z" fill="url(#shoes_glass-g)" stroke="#4FC3F7" stroke-width="0.8" opacity="0.75"/>' +
-        '<path d="M103,257 Q113,246 123,257 Q121,263 113,263 Q105,263 103,257 Z" fill="url(#shoes_glass-g)" stroke="#4FC3F7" stroke-width="0.8" opacity="0.75"/>' +
-        '<path d="M80,252 Q85,250 90,252" stroke="#FFFFFF" stroke-width="1.2" fill="none" opacity="0.9"/>' +
-        '<path d="M106,252 Q111,250 116,252" stroke="#FFFFFF" stroke-width="1.2" fill="none" opacity="0.9"/>' +
-        '<circle cx="83" cy="260" r="1" fill="#FFFFFF" opacity="0.85"/>' +
-        '<circle cx="109" cy="260" r="1" fill="#FFFFFF" opacity="0.85"/>' +
-        '<polygon points="95,260 96,262 98,262 96,263 97,265 95,264 93,265 94,263 92,262 94,262" fill="#FFFFFF" opacity="0.95"/>' +
-        '<polygon points="121,260 122,262 124,262 122,263 123,265 121,264 119,265 120,263 118,262 120,262" fill="#FFFFFF" opacity="0.95"/>';
-    }
-  },
-
-  // ========== BACKGROUND ==========
-  {
-    id: 'bg_classroom', name: '教室', category: 'background', price: 50, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_classroom-wall" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF8E1"/><stop offset="100%" stop-color="#F5E6B8"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_classroom-floor" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#A1887F"/><stop offset="100%" stop-color="#5D4037"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_classroom-board" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#2E7D32"/><stop offset="100%" stop-color="#1B5E20"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="230" fill="url(#bg_classroom-wall)"/>' +
-        '<rect x="0" y="230" width="200" height="70" fill="url(#bg_classroom-floor)"/>' +
-        '<line x1="0" y1="240" x2="200" y2="240" stroke="#3E2723" stroke-width="0.5"/>' +
-        '<line x1="0" y1="260" x2="200" y2="260" stroke="#3E2723" stroke-width="0.5"/>' +
-        '<line x1="0" y1="280" x2="200" y2="280" stroke="#3E2723" stroke-width="0.5"/>' +
-        '<rect x="14" y="30" width="56" height="40" rx="2" fill="url(#bg_classroom-board)" stroke="#8D6E63" stroke-width="2"/>' +
-        '<text x="42" y="50" font-family="sans-serif" font-size="9" fill="#FFFFFF" text-anchor="middle">英単語</text>' +
-        '<text x="42" y="62" font-family="sans-serif" font-size="7" fill="#FFEB3B" text-anchor="middle">やったんぞ</text>' +
-        '<rect x="130" y="40" width="50" height="40" rx="1" fill="#B3E5FC" stroke="#8D6E63" stroke-width="1.5"/>' +
-        '<line x1="155" y1="40" x2="155" y2="80" stroke="#8D6E63" stroke-width="1"/>' +
-        '<line x1="130" y1="60" x2="180" y2="60" stroke="#8D6E63" stroke-width="1"/>' +
-        '<circle cx="168" cy="50" r="4" fill="#FFEB3B" opacity="0.7"/>' +
-        '<path d="M0,210 L200,210" stroke="#E0C088" stroke-width="0.8"/>';
-    }
-  },
-  {
-    id: 'bg_sakura', name: '桜', category: 'background', price: 100, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_sakura-sky" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#E1F5FE"/><stop offset="100%" stop-color="#FFCDD2"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_sakura-ground" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#C8E6C9"/><stop offset="100%" stop-color="#66BB6A"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="260" fill="url(#bg_sakura-sky)"/>' +
-        '<rect x="0" y="260" width="200" height="40" fill="url(#bg_sakura-ground)"/>' +
-        '<rect x="15" y="90" width="8" height="175" fill="#5D4037"/>' +
-        '<path d="M19,120 Q5,100 2,80" stroke="#5D4037" stroke-width="4" fill="none"/>' +
-        '<path d="M19,150 Q10,140 4,150" stroke="#5D4037" stroke-width="3" fill="none"/>' +
-        '<circle cx="4" cy="75" r="18" fill="#F8BBD0" opacity="0.85"/>' +
-        '<circle cx="20" cy="60" r="22" fill="#F8BBD0" opacity="0.85"/>' +
-        '<circle cx="40" cy="75" r="15" fill="#F8BBD0" opacity="0.85"/>' +
-        '<circle cx="8" cy="140" r="12" fill="#F8BBD0" opacity="0.85"/>' +
-        '<circle cx="0" cy="155" r="10" fill="#F8BBD0" opacity="0.85"/>' +
-        '<rect x="180" y="100" width="7" height="160" fill="#5D4037"/>' +
-        '<circle cx="183" cy="90" r="16" fill="#F8BBD0" opacity="0.85"/>' +
-        '<circle cx="195" cy="75" r="14" fill="#F8BBD0" opacity="0.85"/>' +
-        '<g fill="#F48FB1" opacity="0.85">' +
-          '<circle cx="70" cy="50" r="3"/><circle cx="100" cy="80" r="2.5"/>' +
-          '<circle cx="130" cy="40" r="2.5"/><circle cx="160" cy="100" r="3"/>' +
-          '<circle cx="85" cy="180" r="2"/><circle cx="150" cy="160" r="2.5"/>' +
-          '<circle cx="55" cy="220" r="2"/><circle cx="175" cy="200" r="2.5"/>' +
-          '<circle cx="120" cy="230" r="2"/><circle cx="90" cy="120" r="2"/>' +
-        '</g>' +
-        '<circle cx="150" cy="50" r="18" fill="#FFFDE7" opacity="0.85"/>';
-    }
-  },
-  {
-    id: 'bg_sunset', name: '夕焼け', category: 'background', price: 150, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_sunset-sky" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#4A148C"/>' +
-          '<stop offset="30%" stop-color="#D81B60"/>' +
-          '<stop offset="60%" stop-color="#F9A825"/>' +
-          '<stop offset="100%" stop-color="#FFEB3B"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="bg_sunset-sun" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#FFFDE7"/><stop offset="70%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#E65100"/>' +
-        '</radialGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="260" fill="url(#bg_sunset-sky)"/>' +
-        '<rect x="0" y="260" width="200" height="40" fill="#1A237E" opacity="0.6"/>' +
-        '<circle cx="100" cy="215" r="28" fill="url(#bg_sunset-sun)" filter="url(#av-glow)"/>' +
-        '<path d="M0,260 Q30,230 60,250 Q100,210 140,250 Q170,230 200,260 L200,300 L0,300 Z" fill="#1A237E"/>' +
-        '<path d="M0,245 L200,245" stroke="#FFAB91" stroke-width="0.5" opacity="0.7"/>' +
-        '<path d="M0,235 L200,235" stroke="#FFCDD2" stroke-width="0.4" opacity="0.5"/>' +
-        '<g fill="#1A237E" opacity="0.8">' +
-          '<path d="M10,280 L14,270 L18,280 Z"/>' +
-          '<path d="M30,285 L35,272 L40,285 Z"/>' +
-          '<path d="M160,283 L164,272 L168,283 Z"/>' +
-          '<path d="M180,280 L184,268 L188,280 Z"/>' +
-        '</g>' +
-        '<circle cx="50" cy="30" r="1" fill="#FFFFFF" opacity="0.8"/>' +
-        '<circle cx="150" cy="50" r="1" fill="#FFFFFF" opacity="0.8"/>' +
-        '<circle cx="20" cy="60" r="0.8" fill="#FFFFFF" opacity="0.7"/>';
-    }
-  },
-  {
-    id: 'bg_starry', name: '星空', category: 'background', price: 200, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_starry-sky" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#0D1454"/><stop offset="100%" stop-color="#1A237E"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="bg_starry-moon" cx="40%" cy="35%" r="60%">' +
-          '<stop offset="0%" stop-color="#FFFDE7"/><stop offset="100%" stop-color="#FFE082"/>' +
-        '</radialGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="300" fill="url(#bg_starry-sky)"/>' +
-        '<circle cx="40" cy="50" r="20" fill="url(#bg_starry-moon)" filter="url(#av-glow)"/>' +
-        '<circle cx="44" cy="46" r="2" fill="#E0E0E0" opacity="0.5"/>' +
-        '<circle cx="35" cy="55" r="1.5" fill="#E0E0E0" opacity="0.5"/>' +
-        '<g fill="#FFFFFF">' +
-          '<circle cx="80" cy="20" r="1.2"/><circle cx="120" cy="35" r="1.5"/>' +
-          '<circle cx="150" cy="15" r="1"/><circle cx="180" cy="50" r="1.2"/>' +
-          '<circle cx="170" cy="80" r="1"/><circle cx="130" cy="70" r="0.8"/>' +
-          '<circle cx="100" cy="100" r="1.2"/><circle cx="70" cy="120" r="1"/>' +
-          '<circle cx="40" cy="140" r="0.8"/><circle cx="20" cy="100" r="1"/>' +
-          '<circle cx="160" cy="120" r="1.3"/><circle cx="185" cy="150" r="1"/>' +
-          '<circle cx="110" cy="160" r="0.8"/><circle cx="150" cy="180" r="1"/>' +
-          '<circle cx="80" cy="200" r="0.8"/><circle cx="30" cy="200" r="1"/>' +
-          '<circle cx="170" cy="220" r="1.2"/><circle cx="60" cy="240" r="0.8"/>' +
-          '<circle cx="120" cy="250" r="1"/><circle cx="190" cy="270" r="1"/>' +
-          '<circle cx="50" cy="280" r="0.8"/><circle cx="140" cy="290" r="1"/>' +
-        '</g>' +
-        '<g fill="#FFFDE7" opacity="0.9">' +
-          '<polygon points="100,30 102,36 108,36 103,40 105,46 100,42 95,46 97,40 92,36 98,36"/>' +
-          '<polygon points="175,100 176,104 180,104 177,107 178,111 175,108 172,111 173,107 170,104 174,104"/>' +
-          '<polygon points="60,170 61,174 65,174 62,177 63,181 60,178 57,181 58,177 55,174 59,174"/>' +
-        '</g>';
-    }
-  },
-  {
-    id: 'bg_ocean', name: '海', category: 'background', price: 150, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_ocean-sky" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#81D4FA"/><stop offset="100%" stop-color="#E1F5FE"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_ocean-sea" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#0288D1"/><stop offset="100%" stop-color="#01579B"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_ocean-sand" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF176"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="150" fill="url(#bg_ocean-sky)"/>' +
-        '<rect x="0" y="150" width="200" height="100" fill="url(#bg_ocean-sea)"/>' +
-        '<rect x="0" y="250" width="200" height="50" fill="url(#bg_ocean-sand)"/>' +
-        '<circle cx="160" cy="40" r="22" fill="#FFF59D" filter="url(#av-glow)" opacity="0.95"/>' +
-        '<circle cx="160" cy="40" r="14" fill="#FFEB3B"/>' +
-        '<path d="M0,160 Q50,155 100,160 Q150,165 200,160" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.7"/>' +
-        '<path d="M0,175 Q50,170 100,175 Q150,180 200,175" stroke="#FFFFFF" stroke-width="1.2" fill="none" opacity="0.6"/>' +
-        '<path d="M0,195 Q40,190 80,195 Q120,200 160,195 Q180,193 200,195" stroke="#FFFFFF" stroke-width="1" fill="none" opacity="0.5"/>' +
-        '<path d="M0,215 Q50,213 100,215 Q150,218 200,215" stroke="#FFFFFF" stroke-width="0.8" fill="none" opacity="0.4"/>' +
-        '<g fill="#FFFFFF" opacity="0.7">' +
-          '<ellipse cx="30" cy="35" rx="15" ry="5"/>' +
-          '<ellipse cx="90" cy="25" rx="20" ry="6"/>' +
-          '<ellipse cx="190" cy="80" rx="12" ry="4"/>' +
-        '</g>' +
-        '<path d="M20,280 L25,275 L30,280" stroke="#3E2723" stroke-width="0.8" fill="none"/>' +
-        '<circle cx="170" cy="275" r="2" fill="#FFCCBC"/>' +
-        '<path d="M140,285 Q145,280 150,285 Q155,280 160,285" stroke="#4E342E" stroke-width="0.5" fill="none" opacity="0.5"/>';
-    }
-  },
-  {
-    id: 'bg_galaxy', name: '銀河', category: 'background', price: 500, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<radialGradient id="bg_galaxy-bg" cx="50%" cy="50%" r="70%">' +
-          '<stop offset="0%" stop-color="#4A148C"/><stop offset="50%" stop-color="#1A237E"/><stop offset="100%" stop-color="#0A0A3C"/>' +
-        '</radialGradient>' +
-        '<radialGradient id="bg_galaxy-nebula" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#F48FB1" stop-opacity="0.6"/><stop offset="100%" stop-color="#F48FB1" stop-opacity="0"/>' +
-        '</radialGradient>' +
-        '<radialGradient id="bg_galaxy-nebula2" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.6"/><stop offset="100%" stop-color="#4FC3F7" stop-opacity="0"/>' +
-        '</radialGradient>' +
-        '<radialGradient id="bg_galaxy-core" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#FFFDE7"/><stop offset="40%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#E65100" stop-opacity="0"/>' +
-        '</radialGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="300" fill="url(#bg_galaxy-bg)"/>' +
-        '<ellipse cx="60" cy="100" rx="70" ry="50" fill="url(#bg_galaxy-nebula)"/>' +
-        '<ellipse cx="150" cy="200" rx="70" ry="50" fill="url(#bg_galaxy-nebula2)"/>' +
-        '<ellipse cx="100" cy="150" rx="80" ry="20" fill="url(#bg_galaxy-core)" transform="rotate(25 100 150)"/>' +
-        '<circle cx="100" cy="150" r="8" fill="#FFFDE7"/>' +
-        '<g fill="#FFFFFF">' +
-          '<circle cx="20" cy="30" r="1"/><circle cx="50" cy="20" r="0.8"/>' +
-          '<circle cx="80" cy="45" r="1.2"/><circle cx="120" cy="25" r="1"/>' +
-          '<circle cx="150" cy="55" r="0.8"/><circle cx="180" cy="35" r="1.2"/>' +
-          '<circle cx="15" cy="80" r="0.8"/><circle cx="190" cy="95" r="1"/>' +
-          '<circle cx="40" cy="180" r="1"/><circle cx="170" cy="250" r="1.2"/>' +
-          '<circle cx="85" cy="270" r="0.8"/><circle cx="130" cy="285" r="1"/>' +
-          '<circle cx="25" cy="250" r="0.8"/><circle cx="190" cy="270" r="1"/>' +
-          '<circle cx="60" cy="230" r="0.8"/><circle cx="110" cy="215" r="0.8"/>' +
-        '</g>' +
-        '<g fill="#FFFDE7" opacity="0.95">' +
-          '<polygon points="170,80 172,86 178,86 173,90 175,96 170,92 165,96 167,90 162,86 168,86"/>' +
-          '<polygon points="40,250 41,254 45,254 42,257 43,261 40,258 37,261 38,257 35,254 39,254"/>' +
-        '</g>';
-    }
-  },
-  {
-    id: 'bg_castle', name: '城', category: 'background', price: 400, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_castle-sky" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#5E35B1"/><stop offset="100%" stop-color="#F06292"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_castle-w" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#616161"/><stop offset="100%" stop-color="#212121"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="260" fill="url(#bg_castle-sky)"/>' +
-        '<rect x="0" y="260" width="200" height="40" fill="#1B5E20"/>' +
-        '<path d="M0,230 L30,200 L60,220 L90,180 L130,210 L160,190 L200,230 L200,260 L0,260 Z" fill="#1B5E20" opacity="0.6"/>' +
-        '<rect x="30" y="100" width="15" height="160" fill="url(#bg_castle-w)"/>' +
-        '<polygon points="30,100 37,82 45,100" fill="#212121"/>' +
-        '<rect x="50" y="140" width="70" height="120" fill="url(#bg_castle-w)"/>' +
-        '<rect x="68" y="100" width="34" height="40" fill="url(#bg_castle-w)"/>' +
-        '<polygon points="68,100 85,70 102,100" fill="#212121"/>' +
-        '<rect x="125" y="120" width="20" height="140" fill="url(#bg_castle-w)"/>' +
-        '<polygon points="125,120 135,95 145,120" fill="#212121"/>' +
-        '<rect x="150" y="150" width="25" height="110" fill="url(#bg_castle-w)"/>' +
-        '<polygon points="150,150 162,125 175,150" fill="#212121"/>' +
-        '<rect x="32" y="130" width="4" height="6" fill="#FFEB3B"/>' +
-        '<rect x="39" y="130" width="4" height="6" fill="#FFEB3B"/>' +
-        '<rect x="80" y="170" width="12" height="18" rx="6" fill="#0A0A0A"/>' +
-        '<rect x="60" y="165" width="5" height="7" fill="#FFEB3B"/>' +
-        '<rect x="70" y="165" width="5" height="7" fill="#FFEB3B"/>' +
-        '<rect x="100" y="165" width="5" height="7" fill="#FFEB3B"/>' +
-        '<rect x="110" y="165" width="5" height="7" fill="#FFEB3B"/>' +
-        '<rect x="60" y="200" width="5" height="7" fill="#FFEB3B"/>' +
-        '<rect x="100" y="200" width="5" height="7" fill="#FFEB3B"/>' +
-        '<rect x="85" y="115" width="5" height="8" fill="#FFEB3B"/>' +
-        '<rect x="132" y="150" width="5" height="8" fill="#FFEB3B"/>' +
-        '<rect x="158" y="180" width="5" height="8" fill="#FFEB3B"/>' +
-        '<rect x="165" y="180" width="5" height="8" fill="#FFEB3B"/>' +
-        '<circle cx="170" cy="40" r="14" fill="#FFFDE7" opacity="0.9"/>' +
-        '<circle cx="166" cy="37" r="3" fill="#E0E0E0" opacity="0.5"/>';
-    }
-  },
-  {
-    id: 'bg_rainbow', name: '虹', category: 'background', price: 300, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="bg_rainbow-sky" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#81D4FA"/><stop offset="100%" stop-color="#E1F5FE"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="bg_rainbow-ground" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#81C784"/><stop offset="100%" stop-color="#2E7D32"/>' +
-        '</linearGradient></defs>' +
-        '<rect x="0" y="0" width="200" height="260" fill="url(#bg_rainbow-sky)"/>' +
-        '<rect x="0" y="260" width="200" height="40" fill="url(#bg_rainbow-ground)"/>' +
-        '<path d="M -30,260 A 130,130 0 0 1 230,260" stroke="#E53935" stroke-width="10" fill="none"/>' +
-        '<path d="M -20,260 A 120,120 0 0 1 220,260" stroke="#FB8C00" stroke-width="10" fill="none"/>' +
-        '<path d="M -10,260 A 110,110 0 0 1 210,260" stroke="#FDD835" stroke-width="10" fill="none"/>' +
-        '<path d="M 0,260 A 100,100 0 0 1 200,260" stroke="#43A047" stroke-width="10" fill="none"/>' +
-        '<path d="M 10,260 A 90,90 0 0 1 190,260" stroke="#1E88E5" stroke-width="10" fill="none"/>' +
-        '<path d="M 20,260 A 80,80 0 0 1 180,260" stroke="#8E24AA" stroke-width="10" fill="none"/>' +
-        '<g fill="#FFFFFF">' +
-          '<ellipse cx="30" cy="40" rx="22" ry="8"/>' +
-          '<ellipse cx="45" cy="35" rx="18" ry="7"/>' +
-          '<ellipse cx="170" cy="60" rx="25" ry="9"/>' +
-          '<ellipse cx="185" cy="55" rx="16" ry="7"/>' +
-          '<ellipse cx="110" cy="25" rx="20" ry="6"/>' +
-        '</g>' +
-        '<circle cx="30" cy="40" r="5" fill="#E1F5FE"/>' +
-        '<circle cx="170" cy="60" r="6" fill="#E1F5FE"/>';
-    }
-  },
-
-  // ========== HANDHELD ==========
-  {
-    id: 'held_book', name: '本', category: 'handheld', price: 30, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_book-c" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#8D6E63"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M118,198 L148,196 L150,214 L120,216 Z" fill="url(#held_book-c)"/>' +
-        '<path d="M118,198 L120,216 L118,216 Q115,207 118,198 Z" fill="#3E2723"/>' +
-        '<path d="M120,200 L148,198 L148,212 L120,214 Z" fill="#FFFDE7"/>' +
-        '<line x1="122" y1="203" x2="146" y2="201" stroke="#BDBDBD" stroke-width="0.4"/>' +
-        '<line x1="122" y1="206" x2="146" y2="204" stroke="#BDBDBD" stroke-width="0.4"/>' +
-        '<line x1="122" y1="209" x2="146" y2="207" stroke="#BDBDBD" stroke-width="0.4"/>' +
-        '<line x1="122" y1="212" x2="146" y2="210" stroke="#BDBDBD" stroke-width="0.4"/>' +
-        '<line x1="134" y1="197" x2="134" y2="215" stroke="#6D4C41" stroke-width="0.7"/>' +
-        '<rect x="140" y="199" width="1.5" height="15" fill="#EF5350"/>';
-    }
-  },
-  {
-    id: 'held_bag', name: '鞄', category: 'handheld', price: 50, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_bag-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#6D4C41"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M130,202 Q134,192 138,202" stroke="#3E2723" stroke-width="1.5" fill="none"/>' +
-        '<rect x="124" y="202" width="22" height="22" rx="3" fill="url(#held_bag-g)" stroke="#1B0F0A" stroke-width="0.6"/>' +
-        '<rect x="124" y="204" width="22" height="2" fill="#5D4037"/>' +
-        '<rect x="130" y="212" width="10" height="6" rx="1" fill="#1B0F0A"/>' +
-        '<circle cx="135" cy="215" r="1.2" fill="#FFD54F"/>' +
-        '<circle cx="135" cy="215" r="0.5" fill="#F57F17"/>' +
-        '<path d="M126,219 L144,219" stroke="#3E2723" stroke-width="0.5"/>' +
-        '<circle cx="128" cy="221" r="0.7" fill="#FFD54F"/>' +
-        '<circle cx="142" cy="221" r="0.7" fill="#FFD54F"/>';
-    }
-  },
-  {
-    id: 'held_backpack', name: 'リュック', category: 'handheld', price: 40, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_backpack-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#0D47A1"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M66,148 Q62,148 60,152 L60,198 Q62,202 66,202 L78,202 L78,146 L66,146 Z" fill="url(#held_backpack-g)" stroke="#0D1454" stroke-width="0.7"/>' +
-        '<path d="M122,146 L134,146 Q138,148 140,152 L140,198 Q138,202 134,202 L122,202 Z" fill="url(#held_backpack-g)" stroke="#0D1454" stroke-width="0.7"/>' +
-        '<path d="M60,170 L78,170" stroke="#0D1454" stroke-width="0.5"/>' +
-        '<path d="M122,170 L140,170" stroke="#0D1454" stroke-width="0.5"/>' +
-        '<rect x="63" y="155" width="12" height="10" rx="2" fill="#0D47A1" stroke="#0D1454" stroke-width="0.4"/>' +
-        '<rect x="125" y="155" width="12" height="10" rx="2" fill="#0D47A1" stroke="#0D1454" stroke-width="0.4"/>' +
-        '<circle cx="69" cy="160" r="1" fill="#FFD54F"/>' +
-        '<circle cx="131" cy="160" r="1" fill="#FFD54F"/>' +
-        '<path d="M62,178 Q65,180 68,178" stroke="#FFFFFF" stroke-width="0.8" fill="none" opacity="0.5"/>' +
-        '<path d="M132,178 Q135,180 138,178" stroke="#FFFFFF" stroke-width="0.8" fill="none" opacity="0.5"/>';
-    }
-  },
-  {
-    id: 'held_wand', name: '魔法の杖', category: 'handheld', price: 300, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_wand-stick" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#8D6E63"/><stop offset="100%" stop-color="#3E2723"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="held_wand-star" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#FFFDE7"/><stop offset="60%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#F57F17"/>' +
-        '</radialGradient></defs>' +
-        '<rect x="133" y="150" width="3" height="54" rx="1" fill="url(#held_wand-stick)" transform="rotate(25 134 200)"/>' +
-        '<circle cx="158" cy="140" r="14" fill="url(#held_wand-star)" filter="url(#av-glow)" opacity="0.5"/>' +
-        '<polygon points="158,125 162,136 174,136 164,143 168,154 158,147 148,154 152,143 142,136 154,136" fill="url(#held_wand-star)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<circle cx="158" cy="140" r="3" fill="#FFFDE7"/>' +
-        '<circle cx="157" cy="138" r="1" fill="#FFFFFF"/>' +
-        '<circle cx="170" cy="155" r="1" fill="#FFF59D" opacity="0.9"/>' +
-        '<circle cx="148" cy="160" r="0.8" fill="#FFF59D" opacity="0.9"/>' +
-        '<polygon points="175,130 176,132 178,132 176,133 177,135 175,134 173,135 174,133 172,132 174,132" fill="#FFFFFF" opacity="0.9"/>';
-    }
-  },
-  {
-    id: 'held_sword', name: '勇者の剣', category: 'handheld', price: 500, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_sword-blade" x1="0" y1="0" x2="1" y2="0">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="50%" stop-color="#ECEFF1"/><stop offset="100%" stop-color="#78909C"/>' +
-        '</linearGradient>' +
-        '<linearGradient id="held_sword-hilt" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="100%" stop-color="#E65100"/>' +
-        '</linearGradient></defs>' +
-        '<polygon points="130,200 138,200 138,140 134,130 130,140" fill="url(#held_sword-blade)" stroke="#546E7A" stroke-width="0.6"/>' +
-        '<line x1="134" y1="135" x2="134" y2="198" stroke="#90A4AE" stroke-width="0.6" opacity="0.8"/>' +
-        '<polygon points="132,134 134,128 136,134" fill="#ECEFF1"/>' +
-        '<rect x="120" y="198" width="28" height="6" rx="1" fill="url(#held_sword-hilt)" stroke="#BF360C" stroke-width="0.6"/>' +
-        '<rect x="121" y="199" width="26" height="1.5" fill="#FFFDE7" opacity="0.7"/>' +
-        '<rect x="130" y="204" width="8" height="14" rx="2" fill="#4E342E"/>' +
-        '<line x1="130" y1="207" x2="138" y2="207" stroke="#1B0F0A" stroke-width="0.4"/>' +
-        '<line x1="130" y1="211" x2="138" y2="211" stroke="#1B0F0A" stroke-width="0.4"/>' +
-        '<line x1="130" y1="215" x2="138" y2="215" stroke="#1B0F0A" stroke-width="0.4"/>' +
-        '<circle cx="134" cy="220" r="3.5" fill="url(#held_sword-hilt)" stroke="#BF360C" stroke-width="0.5"/>' +
-        '<circle cx="134" cy="220" r="1.5" fill="#C62828"/>';
-    }
-  },
-  {
-    id: 'held_lightsaber', name: 'ライトセーバー', category: 'handheld', price: 600, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_lightsaber-hilt" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#B0BEC5"/><stop offset="100%" stop-color="#37474F"/>' +
-        '</linearGradient>' +
-        '<radialGradient id="held_lightsaber-glow" cx="50%" cy="50%" r="50%">' +
-          '<stop offset="0%" stop-color="#FFFFFF"/><stop offset="40%" stop-color="#4FC3F7"/><stop offset="100%" stop-color="#01579B" stop-opacity="0"/>' +
-        '</radialGradient></defs>' +
-        '<rect x="126" y="125" width="16" height="80" rx="7" fill="url(#held_lightsaber-glow)" filter="url(#av-glow)"/>' +
-        '<rect x="131" y="125" width="6" height="80" rx="3" fill="#FFFFFF"/>' +
-        '<rect x="132" y="125" width="4" height="80" fill="#4FC3F7" opacity="0.9"/>' +
-        '<circle cx="134" cy="125" r="2" fill="#FFFFFF"/>' +
-        '<rect x="128" y="202" width="12" height="20" rx="2" fill="url(#held_lightsaber-hilt)" stroke="#263238" stroke-width="0.6"/>' +
-        '<rect x="128" y="205" width="12" height="1.5" fill="#78909C"/>' +
-        '<rect x="128" y="210" width="12" height="1.5" fill="#78909C"/>' +
-        '<rect x="128" y="215" width="12" height="1.5" fill="#78909C"/>' +
-        '<circle cx="134" cy="207" r="1" fill="#F44336"/>' +
-        '<rect x="126" y="200" width="16" height="3" rx="0.5" fill="#263238"/>';
-    }
-  },
-  {
-    id: 'held_trophy', name: 'トロフィー', category: 'handheld', price: 400, isDefault: false,
-    getSVG: function() {
-      return '<defs>' +
-        '<linearGradient id="held_trophy-g" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="#FFF59D"/><stop offset="50%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#E65100"/>' +
-        '</linearGradient></defs>' +
-        '<path d="M122,150 Q115,155 115,165 Q115,175 122,178 L122,168 Z" fill="url(#held_trophy-g)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<path d="M146,150 Q153,155 153,165 Q153,175 146,178 L146,168 Z" fill="url(#held_trophy-g)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<path d="M122,145 L146,145 L148,180 Q134,190 120,180 Z" fill="url(#held_trophy-g)" stroke="#E65100" stroke-width="0.8"/>' +
-        '<path d="M124,148 L144,148" stroke="#FFFDE7" stroke-width="1" opacity="0.8"/>' +
-        '<path d="M125,155 Q134,160 143,155" stroke="#E65100" stroke-width="0.5" fill="none" opacity="0.7"/>' +
-        '<text x="134" y="168" font-family="Arial" font-size="8" font-weight="900" text-anchor="middle" fill="#E65100">1</text>' +
-        '<rect x="130" y="186" width="8" height="8" fill="url(#held_trophy-g)"/>' +
-        '<rect x="125" y="194" width="18" height="6" rx="1" fill="url(#held_trophy-g)" stroke="#E65100" stroke-width="0.5"/>' +
-        '<rect x="125" y="194" width="18" height="1.5" fill="#FFFDE7" opacity="0.7"/>' +
-        '<circle cx="130" cy="165" r="1" fill="#FFFFFF" opacity="0.8"/>' +
-        '<polygon points="120,140 121,142 123,142 121,143 122,145 120,144 118,145 119,143 117,142 119,142" fill="#FFF59D"/>' +
-        '<polygon points="148,142 149,144 151,144 149,145 150,147 148,146 146,147 147,145 145,144 147,144" fill="#FFF59D"/>';
-    }
-  }
+// ===== hair =====
+{ id:'hair_short_dark', category:'hair', name:'ショートヘア', price:0, isDefault:true,
+  getSVG:function(){ return '' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q155,99 148,97 L148,80 Q149,60 138,48 L62,48 Q51,60 52,80 L52,97 Q45,99 45,90 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#423026" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 L58,90 L54,108 Q50,100 50,88 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2"/>' +
+    '<path d="M150,88 L142,90 L146,108 Q150,100 150,88 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#5A4030" opacity="0.9"/>';
+  } },
+{ id:'hair_long_dark', category:'hair', name:'ロングヘア', price:0, isDefault:true,
+  getSVG:function(){ return '' +
+    '<path d="M47,66 C40,96 39,136 48,172 Q53,181 60,173 C55,140 56,104 61,76 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M153,66 C160,96 161,136 152,172 Q147,181 140,173 C145,140 144,104 139,76 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M45,88 C42,46 68,23 100,23 C132,23 158,46 155,88 Q155,97 148,95 L148,78 Q149,58 138,47 L62,47 Q51,58 52,78 L52,95 Q45,97 45,88 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,86 C48,50 70,26 100,26 C130,26 152,50 150,86 L145,88 Q143,68 138,62 Q134,80 127,84 Q122,62 115,58 Q111,78 103,82 Q100,62 95,82 Q88,78 85,58 Q78,62 73,84 Q66,80 62,62 Q57,68 55,88 Z" fill="#423026" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M66,42 Q82,29 102,30 Q84,35 72,46 Z" fill="#5A4030" opacity="0.9"/>' +
+    '<path d="M46,110 Q45,140 50,162 L45,152 Q42,130 46,110 Z" fill="#241711" opacity="0.5"/>';
+  } },
+{ id:'hair_bob', category:'hair', name:'ボブヘア', price:25,
+  getSVG:function(){ return '' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q156,112 150,120 Q147,124 143,120 L142,96 L141,78 Q140,60 130,50 L70,50 Q60,60 59,78 L58,96 L57,120 Q53,124 50,120 Q44,112 45,90 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#423026" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M58,96 L59,120 Q57,124 53,121 L52,98 Z" fill="#2E2019" opacity="0.7"/>' +
+    '<path d="M142,96 L141,120 Q143,124 147,121 L148,98 Z" fill="#2E2019" opacity="0.7"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#5A4030" opacity="0.9"/>';
+  } },
+{ id:'hair_medium', category:'hair', name:'ミディアムヘア', price:20,
+  getSVG:function(){ return '' +
+    '<path d="M46,68 C41,96 41,128 47,150 Q51,157 57,151 C53,128 53,102 58,78 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M154,68 C159,96 159,128 153,150 Q149,157 143,151 C147,128 147,102 142,78 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q155,99 148,97 L148,80 Q149,60 138,48 L62,48 Q51,60 52,80 L52,97 Q45,99 45,90 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#423026" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#5A4030" opacity="0.9"/>' +
+    '<path d="M48,100 Q46,124 51,144 L47,138 Q44,118 47,100 Z" fill="#241711" opacity="0.5"/>';
+  } },
+{ id:'hair_twin_dark', category:'hair', name:'ツインテール', price:30,
+  getSVG:function(){ return '' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q155,99 148,97 L148,80 Q149,60 138,48 L62,48 Q51,60 52,80 L52,97 Q45,99 45,90 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#423026" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#5A4030" opacity="0.9"/>' +
+    '<path d="M43,78 Q38,86 41,94 Q47,98 52,93 Q54,85 51,78 Q47,74 43,78 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<ellipse cx="46" cy="86" rx="6" ry="5.5" fill="#E86FA0" stroke="#1D120C" stroke-width="1.8"/>' +
+    '<path d="M40,88 C30,104 27,126 33,146 Q37,153 43,147 C39,128 40,108 46,92 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M35,104 Q33,124 38,140" stroke="#241711" stroke-width="1.6" opacity="0.5" fill="none" stroke-linecap="round"/>' +
+    '<path d="M157,78 Q162,86 159,94 Q153,98 148,93 Q146,85 149,78 Q153,74 157,78 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<ellipse cx="154" cy="86" rx="6" ry="5.5" fill="#E86FA0" stroke="#1D120C" stroke-width="1.8"/>' +
+    '<path d="M160,88 C170,104 173,126 167,146 Q163,153 157,147 C161,128 160,108 154,92 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M165,104 Q167,124 162,140" stroke="#241711" stroke-width="1.6" opacity="0.5" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'hair_ponytail', category:'hair', name:'ポニーテール', price:30,
+  getSVG:function(){ return '' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q155,99 148,97 L148,80 Q149,60 138,48 L62,48 Q51,60 52,80 L52,97 Q45,99 45,90 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#423026" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#5A4030" opacity="0.9"/>' +
+    '<path d="M148,72 Q158,74 160,84 Q158,92 149,90 Q146,80 148,72 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<ellipse cx="154" cy="80" rx="6.5" ry="6" fill="#E84B4B" stroke="#1D120C" stroke-width="1.8"/>' +
+    '<path d="M152,84 C168,96 176,118 170,144 Q166,153 159,148 C165,126 160,104 148,90 Z" fill="#3A2820" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M156,100 Q160,120 154,140" stroke="#241711" stroke-width="1.6" opacity="0.5" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'hair_short_blonde', category:'hair', name:'金髪ショート', price:50,
+  getSVG:function(){ return '' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q155,99 148,97 L148,80 Q149,60 138,48 L62,48 Q51,60 52,80 L52,97 Q45,99 45,90 Z" fill="#F2C94C" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#F6D96A" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 L58,90 L54,108 Q50,100 50,88 Z" fill="#E8B93E" stroke="#1D120C" stroke-width="2"/>' +
+    '<path d="M150,88 L142,90 L146,108 Q150,100 150,88 Z" fill="#E8B93E" stroke="#1D120C" stroke-width="2"/>' +
+    '<path d="M130,50 Q142,64 140,84 L136,84 Q138,64 127,52 Z" fill="#D9A62E" opacity="0.6"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#FFF0B8" opacity="0.95"/>';
+  } },
+{ id:'hair_long_pink', category:'hair', name:'ピンクロング', price:80,
+  getSVG:function(){ return '' +
+    '<path d="M47,66 C40,96 39,136 48,172 Q53,181 60,173 C55,140 56,104 61,76 Z" fill="#F48FB1" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M153,66 C160,96 161,136 152,172 Q147,181 140,173 C145,140 144,104 139,76 Z" fill="#F48FB1" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M45,88 C42,46 68,23 100,23 C132,23 158,46 155,88 Q155,97 148,95 L148,78 Q149,58 138,47 L62,47 Q51,58 52,78 L52,95 Q45,97 45,88 Z" fill="#F48FB1" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,86 C48,50 70,26 100,26 C130,26 152,50 150,86 L145,88 Q143,68 138,62 Q134,80 127,84 Q122,62 115,58 Q111,78 103,82 Q100,62 95,82 Q88,78 85,58 Q78,62 73,84 Q66,80 62,62 Q57,68 55,88 Z" fill="#F9B3CC" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M135,52 Q146,66 144,86 L140,86 Q142,66 132,54 Z" fill="#E06A96" opacity="0.55"/>' +
+    '<path d="M46,110 Q45,140 50,162 L45,152 Q42,130 46,110 Z" fill="#E06A96" opacity="0.5"/>' +
+    '<path d="M66,42 Q82,29 102,30 Q84,35 72,46 Z" fill="#FFE1EC" opacity="0.95"/>';
+  } },
+{ id:'hair_ponytail_silver', category:'hair', name:'シルバーポニテ', price:70,
+  getSVG:function(){ return '' +
+    '<path d="M45,90 C42,46 68,23 100,23 C132,23 158,46 155,90 Q155,99 148,97 L148,80 Q149,60 138,48 L62,48 Q51,60 52,80 L52,97 Q45,99 45,90 Z" fill="#C8CDD6" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,88 C48,52 68,26 100,26 C132,26 152,52 150,88 L146,90 L142,66 L134,84 L127,60 L118,80 L108,58 L100,78 L90,58 L80,80 L71,60 L64,84 L58,66 L54,90 Z" fill="#DEE2E8" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M68,40 Q84,29 103,30 Q86,34 74,44 Z" fill="#F4F6F9" opacity="0.95"/>' +
+    '<path d="M148,72 Q158,74 160,84 Q158,92 149,90 Q146,80 148,72 Z" fill="#C8CDD6" stroke="#1D120C" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<ellipse cx="154" cy="80" rx="6.5" ry="6" fill="#8FA3C4" stroke="#1D120C" stroke-width="1.8"/>' +
+    '<path d="M152,84 C168,96 176,118 170,144 Q166,153 159,148 C165,126 160,104 148,90 Z" fill="#C8CDD6" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M156,100 Q160,120 154,140" stroke="#9AA1AC" stroke-width="1.6" opacity="0.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M160,90 Q165,110 162,132" stroke="#F4F6F9" stroke-width="1.4" opacity="0.7" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'hair_long_red', category:'hair', name:'赤ロング', price:90,
+  getSVG:function(){ return '' +
+    '<path d="M47,66 C40,96 39,136 48,172 Q53,181 60,173 C55,140 56,104 61,76 Z" fill="#C0392B" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M153,66 C160,96 161,136 152,172 Q147,181 140,173 C145,140 144,104 139,76 Z" fill="#C0392B" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M45,88 C42,46 68,23 100,23 C132,23 158,46 155,88 Q155,97 148,95 L148,78 Q149,58 138,47 L62,47 Q51,58 52,78 L52,95 Q45,97 45,88 Z" fill="#C0392B" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,86 C48,50 70,26 100,26 C130,26 152,50 150,86 L145,88 Q143,68 138,62 Q134,80 127,84 Q122,62 115,58 Q111,78 103,82 Q100,62 95,82 Q88,78 85,58 Q78,62 73,84 Q66,80 62,62 Q57,68 55,88 Z" fill="#D14A3B" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M135,52 Q146,66 144,86 L140,86 Q142,66 132,54 Z" fill="#8E2A1F" opacity="0.6"/>' +
+    '<path d="M46,110 Q45,140 50,162 L45,152 Q42,130 46,110 Z" fill="#8E2A1F" opacity="0.55"/>' +
+    '<path d="M66,42 Q82,29 102,30 Q84,35 72,46 Z" fill="#F0A090" opacity="0.9"/>';
+  } },
+{ id:'hair_rainbow', category:'hair', name:'虹色ヘア', price:300,
+  getSVG:function(){ return '' +
+    '<defs>' +
+    '<linearGradient id="hair_rainbow-g1" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#F76C6C"/>' +
+    '<stop offset="20%" stop-color="#F5B942"/>' +
+    '<stop offset="40%" stop-color="#7ED957"/>' +
+    '<stop offset="60%" stop-color="#4FB6E8"/>' +
+    '<stop offset="80%" stop-color="#8B7CE8"/>' +
+    '<stop offset="100%" stop-color="#E86FC0"/>' +
+    '</linearGradient>' +
+    '</defs>' +
+    '<path d="M47,66 C40,96 39,136 48,172 Q53,181 60,173 C55,140 56,104 61,76 Z" fill="url(#hair_rainbow-g1)" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M153,66 C160,96 161,136 152,172 Q147,181 140,173 C145,140 144,104 139,76 Z" fill="url(#hair_rainbow-g1)" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M45,88 C42,46 68,23 100,23 C132,23 158,46 155,88 Q155,97 148,95 L148,78 Q149,58 138,47 L62,47 Q51,58 52,78 L52,95 Q45,97 45,88 Z" fill="url(#hair_rainbow-g1)" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M50,86 C48,50 70,26 100,26 C130,26 152,50 150,86 L145,88 Q143,68 138,62 Q134,80 127,84 Q122,62 115,58 Q111,78 103,82 Q100,62 95,82 Q88,78 85,58 Q78,62 73,84 Q66,80 62,62 Q57,68 55,88 Z" fill="url(#hair_rainbow-g1)" stroke="#1D120C" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M66,42 Q82,29 102,30 Q84,35 72,46 Z" fill="#FFFFFF" opacity="0.5"/>' +
+    '<path d="M135,52 Q146,66 144,86 L140,86 Q142,66 132,54 Z" fill="#1D120C" opacity="0.15"/>' +
+    '<path d="M46,110 Q45,140 50,162 L45,152 Q42,130 46,110 Z" fill="#1D120C" opacity="0.12"/>';
+  } },
+// ===== tops =====
+{ id:'tshirt_white', category:'tops', name:'白Tシャツ', price:0, isDefault:true,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,179 59,179 L76,177 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,179 141,179 L124,177 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#E7E3DC"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#E7E3DC" opacity="0.85"/>' +
+    '<path d="M87,138 Q100,150 113,138 Q100,144 87,138 Z" fill="#E7E3DC" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M78,202 Q82,205 86,202" stroke="#D8D3CC" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M92,204 Q96,207 100,204" stroke="#D8D3CC" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'tshirt_red', category:'tops', name:'赤Tシャツ', price:15,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,179 59,179 L76,177 Z" fill="#E23B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,179 141,179 L124,177 Z" fill="#E23B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#B32F2F" opacity="0.85"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#E23B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#B32F2F" opacity="0.85"/>' +
+    '<path d="M87,138 Q100,150 113,138 Q100,144 87,138 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M80,159 L92,159 L92,171 L80,171 Z" fill="none" stroke="#B32F2F" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M78,202 Q82,205 86,202" stroke="#F08080" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M92,204 Q96,207 100,204" stroke="#F08080" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'tshirt_blue', category:'tops', name:'青Tシャツ', price:15,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,179 59,179 L76,177 Z" fill="#4A90E2" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,179 141,179 L124,177 Z" fill="#4A90E2" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#33689F" opacity="0.85"/>' +
+    '<defs><clipPath id="tshirt_blue-clip"><path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z"/></clipPath></defs>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#4A90E2" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<g clip-path="url(#tshirt_blue-clip)">' +
+    '<rect x="69" y="158" width="62" height="7" fill="#FFFFFF"/>' +
+    '<rect x="69" y="174" width="62" height="7" fill="#FFFFFF"/>' +
+    '<rect x="69" y="190" width="62" height="7" fill="#FFFFFF"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#33689F" opacity="0.3"/>' +
+    '</g>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="none" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M87,138 Q100,150 113,138 Q100,144 87,138 Z" fill="#EAF2FC" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>';
+  } },
+{ id:'hoodie_navy', category:'tops', name:'ネイビーパーカー', price:80,
+  getSVG:function(){ return '' +
+    '<path d="M79,143 Q75,126 87,121 Q84,132 83,143 Z" fill="#22314F" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M121,143 Q125,126 113,121 Q116,132 117,143 Z" fill="#22314F" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M75,140 Q56,143 51,158 Q48,169 51,177 Q52,182 58,181 L76,178 Z" fill="#2C3E63" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M125,140 Q144,143 149,158 Q152,169 149,177 Q148,182 142,181 L124,178 Z" fill="#2C3E63" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M142,147 Q148,162 145,177 L140,176 Q144,160 137,148 Z" fill="#1D2C48" opacity="0.85"/>' +
+    '<path d="M69,178 Q68,183 74,184 L76,178 Z" fill="#18233A" stroke="#4a3428" stroke-width="1.8"/>' +
+    '<path d="M131,178 Q132,183 126,184 L124,178 Z" fill="#18233A" stroke="#4a3428" stroke-width="1.8"/>' +
+    '<path d="M82,138 L118,138 Q132,139 133,154 L132,200 Q131,213 118,213 L82,213 Q69,213 68,200 L67,154 Q68,139 82,138 Z" fill="#2C3E63" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M118,143 Q129,174 122,209 L110,209 Q121,175 107,143 Z" fill="#1D2C48" opacity="0.85"/>' +
+    '<path d="M84,141 Q100,150 116,141 Q100,146 84,141 Z" fill="#1D2C48" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M79,187 Q100,182 121,187 L121,209 Q100,215 79,209 Z" fill="#22314F" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M100,185 L100,212" stroke="#151F33" stroke-width="1.6"/>' +
+    '<path d="M96,144 Q95,151 96,158" stroke="#E8D9B0" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="96" cy="159" r="1.6" fill="#E8D9B0" stroke="#4a3428" stroke-width="0.8"/>' +
+    '<path d="M104,144 Q105,151 104,158" stroke="#E8D9B0" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="104" cy="159" r="1.6" fill="#E8D9B0" stroke="#4a3428" stroke-width="0.8"/>';
+  } },
+{ id:'jacket_leather', category:'tops', name:'レザージャケット', price:100,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,180 60,180 L76,178 Z" fill="#3B2A24" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,180 140,180 L124,178 Z" fill="#3B2A24" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#2A1D18" opacity="0.85"/>' +
+    '<path d="M69,172 L76,172 L76,180 L69,180 Z" fill="#2A1D18" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M124,172 L131,172 L131,180 L124,180 Z" fill="#2A1D18" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#3B2A24" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#2A1D18" opacity="0.85"/>' +
+    '<path d="M100,148 L100,209" stroke="#1A110D" stroke-width="1.8"/>' +
+    '<circle cx="100" cy="150" r="1.6" fill="#C9A227"/>' +
+    '<path d="M100,138 L83,138 Q80,148 88,159 L100,148 Z" fill="#2A1D18" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M100,138 L117,138 Q120,148 112,159 L100,148 Z" fill="#2A1D18" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M100,138 L83,138 Q80,148 88,159 L100,148 Z" fill="#55403A" opacity="0.5"/>' +
+    '<path d="M74,190 L82,190 L82,197 L74,197 Z" fill="none" stroke="#2A1D18" stroke-width="1.6"/>' +
+    '<path d="M118,190 L126,190 L126,197 L118,197 Z" fill="none" stroke="#2A1D18" stroke-width="1.6"/>';
+  } },
+{ id:'sailor_top', category:'tops', name:'セーラー服', price:100,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,179 59,179 L76,177 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,179 141,179 L124,177 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#E7E3DC"/>' +
+    '<path d="M71,169 L77,167 L77,175 L71,177 Z" fill="#1F3B73" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M129,169 L123,167 L123,175 L129,177 Z" fill="#1F3B73" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#E7E3DC" opacity="0.85"/>' +
+    '<path d="M84,138 L100,152 L69,152 Q70,142 82,138 Z" fill="#1F3B73" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M116,138 L100,152 L131,152 Q130,142 118,138 Z" fill="#1F3B73" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M87,142 L100,153 L96,155 L84,144 Z" fill="#FFFFFF"/>' +
+    '<path d="M113,142 L100,153 L104,155 L116,144 Z" fill="#FFFFFF"/>' +
+    '<path d="M100,152 L93,166 L100,172 L107,166 Z" fill="#D3333F" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<circle cx="100" cy="159" r="2" fill="#B32332"/>';
+  } },
+{ id:'robe_wizard', category:'tops', name:'魔法使いローブ', price:300,
+  getSVG:function(){ return '' +
+    '<path d="M78,140 Q56,145 50,166 Q47,180 52,188 Q56,193 63,190 L77,182 Z" fill="#4B3B7C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M122,140 Q144,145 150,166 Q153,180 148,188 Q144,193 137,190 L123,182 Z" fill="#4B3B7C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M144,152 Q151,170 146,187 L140,185 Q145,168 138,153 Z" fill="#382C5E" opacity="0.85"/>' +
+    '<path d="M80,138 L120,138 Q135,140 137,158 L143,222 Q144,229 136,229 L64,229 Q56,229 57,222 L63,158 Q65,140 80,138 Z" fill="#4B3B7C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M118,142 Q131,178 128,224 L114,224 Q120,180 106,142 Z" fill="#382C5E" opacity="0.85"/>' +
+    '<path d="M85,140 Q100,152 115,140 Q100,146 85,140 Z" fill="#382C5E" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M57,222 L143,222 L144,229 Q144,229 136,229 L64,229 Q56,229 57,222 Z" fill="#D4AF37" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M80,138 L120,138 Q121,142 118,144 L82,144 Q79,142 80,138 Z" fill="#D4AF37" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M69,196 L131,196 L129,205 Q100,210 71,205 Z" fill="#D9B65C" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M93,196 L107,196 L106,207 L94,207 Z" fill="#B3922E" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M92,207 L88,219 M108,207 L112,219" stroke="#B3922E" stroke-width="2" stroke-linecap="round"/>' +
+    '<path d="M75,163 L79,167 L75,171 L71,167 Z" fill="#E8CE6B" opacity="0.9"/>' +
+    '<path d="M124,175 L128,179 L124,183 L120,179 Z" fill="#E8CE6B" opacity="0.9"/>' +
+    '<path d="M86,205 L89,209 L86,213 L83,209 Z" fill="#E8CE6B" opacity="0.9"/>';
+  } },
+{ id:'kimono_red', category:'tops', name:'着物', price:250,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q56,144 51,162 Q48,175 52,183 Q56,188 63,185 L76,178 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q144,144 149,162 Q152,175 148,183 Q144,188 137,185 L124,178 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M143,148 Q150,166 146,182 L140,180 Q145,164 137,150 Z" fill="#962B2B" opacity="0.85"/>' +
+    '<path d="M52,180 Q50,190 54,197 Q62,199 76,192 L76,175 Q64,180 52,180 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M148,180 Q150,190 146,197 Q138,199 124,192 L124,175 Q136,180 148,180 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M67,168 L76,166 L76,182 L67,184 Z" fill="#F4E9D8" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M133,168 L124,166 L124,182 L133,184 Z" fill="#F4E9D8" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M79,138 L121,138 Q134,140 136,158 L141,224 Q142,230 134,230 L66,230 Q58,230 59,224 L64,158 Q66,140 79,138 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q129,180 126,226 L112,226 Q118,182 104,142 Z" fill="#962B2B" opacity="0.85"/>' +
+    '<path d="M100,148 L92,142 L84,196 L96,224 Z" fill="#F4E9D8" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M84,142 Q100,153 100,148 L92,142 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M116,142 Q100,153 100,148 L108,142 Z" fill="#C23B3B" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M69,192 L131,192 L131,207 L69,207 Z" fill="#D9B65C" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M91,192 L109,192 L109,207 L91,207 Z" fill="#B3922E" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M69,192 L131,192" stroke="#F0DFA0" stroke-width="1.4"/>';
+  } },
+{ id:'jersey_sports', category:'tops', name:'ジャージ', price:40,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,179 59,179 L76,177 Z" fill="#DD3B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,179 141,179 L124,177 Z" fill="#DD3B3B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#A82A2A" opacity="0.85"/>' +
+    '<path d="M76,143 L69,152 L74,177 L79,177 Z" fill="#FFFFFF"/>' +
+    '<path d="M124,143 L131,152 L126,177 L121,177 Z" fill="#FFFFFF"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M69,152 L69,212 L76,212 L76,144 Z" fill="#DD3B3B"/>' +
+    '<path d="M131,152 L131,212 L124,212 L124,144 Z" fill="#DD3B3B"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#E7E3DC" opacity="0.7"/>' +
+    '<path d="M87,138 Q100,150 113,138 Q100,144 87,138 Z" fill="#DD3B3B" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M90,160 L102,160 L92,184" stroke="#DD3B3B" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+  } },
+{ id:'cape_hero', category:'tops', name:'勇者マント', price:400,
+  getSVG:function(){ return '' +
+    '<path d="M74,138 Q40,148 32,180 Q26,204 34,222 Q40,232 50,224 Q46,196 52,172 Q56,152 74,144 Z" fill="#C6302E" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M126,138 Q160,148 168,180 Q174,204 166,222 Q160,232 150,224 Q154,196 148,172 Q144,152 126,144 Z" fill="#C6302E" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M126,138 Q160,148 168,180 Q174,204 166,222 Q160,232 150,224 Q154,196 148,172 Q144,152 126,144 Z" fill="#9C2220" opacity="0.55"/>' +
+    '<path d="M40,178 Q36,200 42,218" stroke="#D9B65C" stroke-width="2" fill="none" opacity="0.8"/>' +
+    '<path d="M76,140 Q60,142 55,155 Q52,164 54,171 Q55,175 60,175 L76,173 Z" fill="#E8D2A0" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q140,142 145,155 Q148,164 146,171 Q145,175 140,175 L124,173 Z" fill="#E8D2A0" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M139,145 Q144,158 142,171 L137,170 Q141,157 135,146 Z" fill="#C7AD78" opacity="0.85"/>' +
+    '<path d="M82,138 L118,138 Q129,138 129,150 L129,205 Q129,213 118,213 L82,213 Q71,213 71,205 L71,150 Q71,138 82,138 Z" fill="#E8D2A0" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M116,142 Q125,172 120,209 L110,209 Q118,174 106,142 Z" fill="#C7AD78" opacity="0.85"/>' +
+    '<path d="M85,140 Q100,150 115,140 Q100,145 85,140 Z" fill="#C7AD78" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<circle cx="100" cy="156" r="8" fill="#D4AF37" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M100,150 L103,155 L100,160 L97,155 Z" fill="#5FC7E8" stroke="#4a3428" stroke-width="1.2" stroke-linejoin="round"/>' +
+    '<circle cx="100" cy="156" r="8" fill="none" stroke="#F4E2A0" stroke-width="1" opacity="0.7"/>';
+  } },
+{ id:'tuxedo_black', category:'tops', name:'黒タキシード', price:500,
+  getSVG:function(){ return '' +
+    '<path d="M76,140 Q58,142 53,156 Q50,166 52,174 Q53,179 59,179 L76,177 Z" fill="#181818" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M124,140 Q142,142 147,156 Q150,166 148,174 Q147,179 141,179 L124,177 Z" fill="#181818" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M141,146 Q146,160 144,174 L139,174 Q143,158 137,146 Z" fill="#000000" opacity="0.7"/>' +
+    '<path d="M75,175 L76,180 L69,182 L68,176 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M125,175 L124,180 L131,182 L132,176 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L131,199 Q131,212 118,212 L82,212 Q69,212 69,199 L69,152 Q69,138 82,138 Z" fill="#181818" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q127,172 121,208 L110,208 Q121,174 108,142 Z" fill="#000000" opacity="0.6"/>' +
+    '<path d="M89,138 L100,150 L92,208 L82,205 L86,150 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M100,138 L89,138 Q84,146 90,156 L100,148 Z" fill="#181818" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M100,138 L112,138 Q118,146 111,156 L100,148 Z" fill="#181818" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M94,150 L90,155 L94,161 L98,155 Z" fill="#181818" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<circle cx="92" cy="168" r="1.6" fill="#181818" stroke="#4a3428" stroke-width="1"/>' +
+    '<circle cx="90" cy="182" r="1.6" fill="#181818" stroke="#4a3428" stroke-width="1"/>' +
+    '<circle cx="88" cy="196" r="1.6" fill="#181818" stroke="#4a3428" stroke-width="1"/>';
+  } },
+{ id:'dress_princess', category:'tops', name:'プリンセスドレス', price:800,
+  getSVG:function(){ return '' +
+    '<path d="M74,142 Q58,144 55,156 Q53,166 58,171 Q64,175 72,171 L74,150 Z" fill="#F1B8D6" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M126,142 Q142,144 145,156 Q147,166 142,171 Q136,175 128,171 L126,150 Z" fill="#F1B8D6" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M140,148 Q145,159 142,170 L137,168 Q141,158 135,150 Z" fill="#D98CBB" opacity="0.85"/>' +
+    '<path d="M80,138 L120,138 Q127,140 126,150 L118,166 L82,166 L74,150 Q73,140 80,138 Z" fill="#F1B8D6" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M116,142 Q123,155 118,166 L109,166 Q114,155 105,142 Z" fill="#D98CBB" opacity="0.8"/>' +
+    '<path d="M84,138 Q100,150 116,138 Q100,145 84,138 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M78,166 L122,166 Q136,190 140,220 Q141,229 132,229 L68,229 Q59,229 60,220 Q64,190 78,166 Z" fill="#F6CBE0" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M116,170 Q132,196 136,224 L122,226 Q120,198 106,170 Z" fill="#D98CBB" opacity="0.75"/>' +
+    '<path d="M64,204 Q100,212 136,204" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.8" stroke-linecap="round"/>' +
+    '<path d="M60,220 Q100,229 140,220" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.8" stroke-linecap="round"/>' +
+    '<circle cx="100" cy="152" r="5" fill="#E85FA0" stroke="#4a3428" stroke-width="1.8"/>' +
+    '<path d="M100,148 L101.6,151.4 L105,152 L101.6,152.6 L100,156 L98.4,152.6 L95,152 L98.4,151.4 Z" fill="#FFF3F9" opacity="0.9"/>';
+  } },
+{ id:'armor_knight', category:'tops', name:'騎士の鎧', price:1000,
+  getSVG:function(){ return '' +
+    '<defs>' +
+    '<linearGradient id="armor_knight-g1" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="#F0F3F7"/><stop offset="0.5" stop-color="#B9C3D0"/><stop offset="1" stop-color="#7C8798"/>' +
+    '</linearGradient>' +
+    '<linearGradient id="armor_knight-g2" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0" stop-color="#E4E9EF"/><stop offset="1" stop-color="#98A3B4"/>' +
+    '</linearGradient>' +
+    '</defs>' +
+    '<path d="M73,140 Q54,143 49,160 Q46,174 51,182 Q56,188 65,183 L76,176 L74,148 Z" fill="url(#armor_knight-g2)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M127,140 Q146,143 151,160 Q154,174 149,182 Q144,188 135,183 L124,176 L126,148 Z" fill="url(#armor_knight-g2)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M127,140 Q146,143 151,160 Q154,174 149,182 Q144,188 135,183 L124,176 L126,148 Z" fill="#5D6779" opacity="0.4"/>' +
+    '<path d="M76,148 Q60,152 56,166 Q53,178 58,186 L64,181 Q62,170 65,158 Q68,151 76,150 Z" fill="#8891A0" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M124,148 Q140,152 144,166 Q147,178 142,186 L136,181 Q138,170 135,158 Q132,151 124,150 Z" fill="#8891A0" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M82,138 L118,138 Q131,138 131,152 L130,199 Q129,212 118,212 L82,212 Q71,212 70,199 L69,152 Q69,138 82,138 Z" fill="url(#armor_knight-g1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M117,142 Q127,172 121,208 L111,208 Q120,174 107,142 Z" fill="#6B7686" opacity="0.55"/>' +
+    '<path d="M85,140 Q100,151 115,140 Q100,146 85,140 Z" fill="#7C8798" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M84,158 L116,158 L112,168 L100,172 L88,168 Z" fill="#9AA5B5" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<circle cx="100" cy="163" r="5.5" fill="#3E7BD6" stroke="#4a3428" stroke-width="1.8"/>' +
+    '<path d="M98,160 L100,162 L104,158" stroke="#DCEBFF" stroke-width="1.3" fill="none" stroke-linecap="round"/>' +
+    '<path d="M75,190 L125,190 L125,197 L75,197 Z" fill="#8891A0" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<circle cx="79" cy="148" r="1.6" fill="#DCE2EA"/>' +
+    '<circle cx="121" cy="148" r="1.6" fill="#DCE2EA"/>' +
+    '<circle cx="79" cy="204" r="1.6" fill="#5A6472"/>' +
+    '<circle cx="121" cy="204" r="1.6" fill="#5A6472"/>';
+  } },
+// ===== bottoms =====
+{ id:'shorts_blue', category:'bottoms', name:'青短パン', price:0, isDefault:true,
+  getSVG:function(){ return '' +
+    '<path d="M74,204 L126,204 L127,226 Q127,240 120,240 L106,240 Q102,240 100,232 Q98,240 94,240 L80,240 Q73,240 73,226 Z" fill="#3E7BD6" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M118,208 Q124,222 121,236 L112,236 Q118,222 110,208 Z" fill="#2D5FA8" opacity="0.8"/>' +
+    '<path d="M74,204 L126,204 L126,211 L74,211 Z" fill="#2D5FA8" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M74,233 L96,233 L95,240 L80,240 Q74,240 74,233 Z" fill="#5B93E0"/>' +
+    '<path d="M104,233 L126,233 Q126,240 120,240 L105,240 Z" fill="#5B93E0"/>' +
+    '<path d="M99,212 L100,228" stroke="#2D5FA8" stroke-width="1.5"/>';
+  } },
+{ id:'pants_black', category:'bottoms', name:'黒パンツ', price:20,
+  getSVG:function(){ return '' +
+    '<path d="M73,204 L127,204 L127,226 Q127,230 122,230 L78,230 Q73,230 73,226 Z" fill="#2B2B30" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M74,204 L126,204 L126,211 L74,211 Z" fill="#1E1E22" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M116,207 Q124,216 121,228 L110,228 Q116,216 106,207 Z" fill="#1A1A1E" opacity="0.75"/>' +
+    '<path d="M75,222 L99,222 L97,256 Q96,258 93,258 L81,258 Q78,258 77,256 Z" fill="#2B2B30" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M101,222 L125,222 L123,256 Q122,258 119,258 L107,258 Q104,258 103,256 Z" fill="#2B2B30" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M112,224 Q120,240 117,256 L109,256 Q114,240 105,224 Z" fill="#1A1A1E" opacity="0.7"/>' +
+    '<path d="M100,206 L100,224" stroke="#1A1A1E" stroke-width="1.6"/>' +
+    '<path d="M85,224 L83,254" stroke="#45454C" stroke-width="1.3"/>' +
+    '<path d="M115,224 L113,254" stroke="#45454C" stroke-width="1.3"/>';
+  } },
+{ id:'jeans_blue', category:'bottoms', name:'ジーンズ', price:60,
+  getSVG:function(){ return '' +
+    '<path d="M73,204 L127,204 L127,226 Q127,230 122,230 L78,230 Q73,230 73,226 Z" fill="#4A72B8" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M74,204 L126,204 L126,211 L74,211 Z" fill="#33518A" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M116,207 Q124,216 121,228 L110,228 Q116,216 106,207 Z" fill="#263F6B" opacity="0.75"/>' +
+    '<path d="M75,222 L99,222 L97,256 Q96,258 93,258 L81,258 Q78,258 77,256 Z" fill="#4A72B8" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M101,222 L125,222 L123,256 Q122,258 119,258 L107,258 Q104,258 103,256 Z" fill="#4A72B8" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M112,224 Q120,240 117,256 L109,256 Q114,240 105,224 Z" fill="#263F6B" opacity="0.7"/>' +
+    '<path d="M79,209 Q86,214 93,209" stroke="#33518A" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+    '<path d="M107,209 Q114,214 121,209" stroke="#33518A" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+    '<path d="M100,206 L100,222" stroke="#33518A" stroke-width="1.6"/>' +
+    '<path d="M78,224 L82,254" stroke="#E3B655" stroke-width="1.4"/>' +
+    '<path d="M122,224 L118,254" stroke="#E3B655" stroke-width="1.4"/>' +
+    '<path d="M82,205 L82,208" stroke="#33518A" stroke-width="2.2" stroke-linecap="round"/>' +
+    '<path d="M100,205 L100,208" stroke="#33518A" stroke-width="2.2" stroke-linecap="round"/>' +
+    '<path d="M118,205 L118,208" stroke="#33518A" stroke-width="2.2" stroke-linecap="round"/>';
+  } },
+{ id:'skirt_pleats', category:'bottoms', name:'プリーツスカート', price:50,
+  getSVG:function(){ return '' +
+    '<path d="M76,204 L124,204 L136,238 Q136,242 132,242 L68,242 Q64,242 64,238 Z" fill="#D6547E" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M77,204 L123,204 L123,210 L77,210 Z" fill="#A63D63" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M112,207 Q128,222 130,240 L118,240 Q120,222 104,207 Z" fill="#8C2F52" opacity="0.7"/>' +
+    '<path d="M84,208 L74,240" stroke="#A63D63" stroke-width="1.6"/>' +
+    '<path d="M92,208 L88,240" stroke="#A63D63" stroke-width="1.6"/>' +
+    '<path d="M100,208 L100,240" stroke="#A63D63" stroke-width="1.6"/>' +
+    '<path d="M108,208 L112,240" stroke="#A63D63" stroke-width="1.6"/>' +
+    '<path d="M116,208 L126,240" stroke="#A63D63" stroke-width="1.6"/>' +
+    '<path d="M70,236 Q100,240 130,236" stroke="#F2A9C4" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'cargo_pants', category:'bottoms', name:'カーゴパンツ', price:80,
+  getSVG:function(){ return '' +
+    '<path d="M73,204 L127,204 L127,226 Q127,230 122,230 L78,230 Q73,230 73,226 Z" fill="#6B7A4F" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M74,204 L126,204 L126,211 L74,211 Z" fill="#4F5A38" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M116,207 Q124,216 121,228 L110,228 Q116,216 106,207 Z" fill="#3E4A2C" opacity="0.75"/>' +
+    '<path d="M75,222 L99,222 L97,256 Q96,258 93,258 L81,258 Q78,258 77,256 Z" fill="#6B7A4F" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M101,222 L125,222 L123,256 Q122,258 119,258 L107,258 Q104,258 103,256 Z" fill="#6B7A4F" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M112,224 Q120,240 117,256 L109,256 Q114,240 105,224 Z" fill="#3E4A2C" opacity="0.7"/>' +
+    '<path d="M76,231 L92,231 L91,247 Q91,250 88,250 L79,250 Q76,250 76,247 Z" fill="#5C6A44" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M75,231 L93,231 L92,236 L76,236 Z" fill="#4F5A38" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<circle cx="84" cy="233.5" r="1.3" fill="#3E4A2C"/>' +
+    '<path d="M108,231 L124,231 L124,247 Q124,250 121,250 L112,250 Q109,250 109,247 Z" fill="#5C6A44" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M107,231 L125,231 L125,236 L108,236 Z" fill="#4F5A38" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<circle cx="116" cy="233.5" r="1.3" fill="#3E4A2C"/>' +
+    '<path d="M100,206 L100,222" stroke="#4F5A38" stroke-width="1.6"/>';
+  } },
+{ id:'shorts_white', category:'bottoms', name:'白短パン', price:15,
+  getSVG:function(){ return '' +
+    '<path d="M74,204 L126,204 L127,226 Q127,240 120,240 L106,240 Q102,240 100,232 Q98,240 94,240 L80,240 Q73,240 73,226 Z" fill="#F2EEE4" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M118,208 Q124,222 121,236 L112,236 Q118,222 110,208 Z" fill="#D2CBB8" opacity="0.8"/>' +
+    '<path d="M74,204 L126,204 L126,211 L74,211 Z" fill="#C9C0A6" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M74,233 L96,233 L95,240 L80,240 Q74,240 74,233 Z" fill="#FFFFFF"/>' +
+    '<path d="M104,233 L126,233 Q126,240 120,240 L105,240 Z" fill="#FFFFFF"/>' +
+    '<path d="M99,212 L100,228" stroke="#D2CBB8" stroke-width="1.5"/>' +
+    '<path d="M96,207 Q100,211 104,207" stroke="#8A806A" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="100" cy="208" r="1.5" fill="#8A806A"/>';
+  } },
+{ id:'skirt_long', category:'bottoms', name:'ロングスカート', price:60,
+  getSVG:function(){ return '' +
+    '<path d="M76,204 L124,204 L142,252 Q142,258 137,258 L63,258 Q58,258 58,252 Z" fill="#3D5A80" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M77,204 L123,204 L123,210 L77,210 Z" fill="#28405E" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M112,207 Q134,226 137,254 L122,254 Q126,226 104,207 Z" fill="#1E3049" opacity="0.7"/>' +
+    '<path d="M82,212 Q78,236 74,254" stroke="#28405E" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M94,212 Q92,236 90,256" stroke="#28405E" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M106,212 Q108,236 110,256" stroke="#28405E" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M118,212 Q124,236 128,254" stroke="#28405E" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M64,250 Q100,256 136,250" stroke="#6E8FB8" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'hakama_blue', category:'bottoms', name:'袴', price:200,
+  getSVG:function(){ return '' +
+    '<path d="M74,204 L126,204 Q152,210 158,230 Q162,246 150,258 L50,258 Q38,246 42,230 Q48,210 74,204 Z" fill="#2A3A6B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M73,203 L127,203 L127,211 L73,211 Z" fill="#1B2650" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M118,207 Q146,222 148,244 Q146,252 138,254 L124,254 Q132,232 106,208 Z" fill="#131C3E" opacity="0.75"/>' +
+    '<path d="M80,208 L46,252" stroke="#1B2650" stroke-width="1.6"/>' +
+    '<path d="M88,208 L70,254" stroke="#1B2650" stroke-width="1.6"/>' +
+    '<path d="M97,208 L92,256" stroke="#1B2650" stroke-width="1.6"/>' +
+    '<path d="M104,208 L108,256" stroke="#1B2650" stroke-width="1.6"/>' +
+    '<path d="M112,208 L130,254" stroke="#1B2650" stroke-width="1.6"/>' +
+    '<path d="M120,208 L152,252" stroke="#1B2650" stroke-width="1.6"/>' +
+    '<path d="M77,212 L123,225" stroke="#4a3428" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M123,212 L77,225" stroke="#4a3428" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M77,212 L123,225" stroke="#F0E6C8" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M123,212 L77,225" stroke="#F0E6C8" stroke-width="3" stroke-linecap="round"/>' +
+    '<circle cx="100" cy="218" r="4" fill="#F0E6C8" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M100,221 Q97,228 99,235 M100,221 Q103,228 101,235" fill="none" stroke="#4a3428" stroke-width="4" stroke-linecap="round"/>' +
+    '<path d="M100,221 Q97,228 99,235 M100,221 Q103,228 101,235" fill="none" stroke="#F0E6C8" stroke-width="2.6" stroke-linecap="round"/>';
+  } },
+// ===== headwear =====
+{ id:'cap_basic', category:'headwear', name:'キャップ', price:20,
+  getSVG:function(){ return '' +
+    // クラウン（頭を覆うドーム）
+    '<path d="M45,68 C42,36 66,20 100,20 C134,20 158,36 155,68 Q155,76 147,72 Q100,60 53,72 Q45,76 45,68 Z" fill="#E24C4C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右かげ
+    '<path d="M100,20 C134,20 158,36 155,68 Q155,76 147,72 Q124,64 100,60 Z" fill="#B23838" opacity="0.75"/>' +
+    // つば（バイザー）
+    '<path d="M53,64 Q100,74 147,64 Q142,78 100,81 Q58,78 53,64 Z" fill="#C93C3C" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M100,66 Q124,71 143,65 Q139,76 100,79 Z" fill="#A83030" opacity="0.6"/>' +
+    // 天ボタン
+    '<circle cx="100" cy="21" r="3" fill="#B23838" stroke="#4a3428" stroke-width="1.6"/>' +
+    // ハイライト
+    '<path d="M58,36 Q78,23 98,22" stroke="#F5897F" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.85"/>';
+  } },
+{ id:'beret_red', category:'headwear', name:'ベレー帽', price:50,
+  getSVG:function(){ return '' +
+    // ふっくらしたクラウン（右へたわむ）
+    '<path d="M44,60 C40,32 64,16 98,15 C136,13 162,32 160,58 C158,72 144,77 130,70 Q100,58 66,68 Q46,72 44,60 Z" fill="#D6294B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右かげ
+    '<path d="M160,58 C158,72 144,77 130,70 Q114,63 100,60 Q130,46 148,36 Q158,46 160,58 Z" fill="#A81638" opacity="0.75"/>' +
+    // 縁のバンド
+    '<path d="M47,58 Q100,72 157,55 Q154,66 100,80 Q49,68 47,58 Z" fill="#B81E3E" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    // てっぺんの糸ループ
+    '<circle cx="116" cy="16" r="3" fill="#D6294B" stroke="#4a3428" stroke-width="1.6"/>' +
+    // ハイライト
+    '<path d="M54,32 Q74,19 94,16" stroke="#F0678A" stroke-width="2.2" fill="none" opacity="0.85" stroke-linecap="round"/>';
+  } },
+{ id:'ribbon_cute', category:'headwear', name:'リボン', price:25,
+  getSVG:function(){ return '' +
+    // 右かげ側の羽
+    '<path d="M132,38 L149,28 Q157,32 154,40 Q157,46 149,50 L132,38 Z" fill="#EE5C9B" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    // 左の羽
+    '<path d="M132,38 L115,28 Q107,32 110,40 Q107,46 115,50 L132,38 Z" fill="#FF7FB4" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    // 右かげ
+    '<path d="M132,38 L149,28 Q157,32 154,40 L132,40 Z" fill="#C93E7A" opacity="0.55"/>' +
+    // 中心の結び目
+    '<circle cx="132" cy="38" r="5.5" fill="#E8508C" stroke="#4a3428" stroke-width="2"/>' +
+    // 垂れリボン
+    '<path d="M128,42 L122,56 L128,54 L130,44 Z" fill="#FF7FB4" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    '<path d="M136,42 L142,56 L136,54 L134,44 Z" fill="#EE5C9B" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round"/>' +
+    // ハイライト
+    '<path d="M118,32 Q124,35 128,38" stroke="#FFFFFF" stroke-width="1.6" fill="none" opacity="0.7" stroke-linecap="round"/>';
+  } },
+{ id:'halo_angel', category:'headwear', name:'天使の輪', price:150,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="halo_angel-gold1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#FFF6D0"/>' +
+        '<stop offset="55%" stop-color="#FBD65C"/>' +
+        '<stop offset="100%" stop-color="#DDA928"/>' +
+      '</linearGradient>' +
+      '<radialGradient id="halo_angel-glow1" cx="50%" cy="50%" r="50%">' +
+        '<stop offset="0%" stop-color="#FFF6C8" stop-opacity="0.75"/>' +
+        '<stop offset="100%" stop-color="#FFF6C8" stop-opacity="0"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    // 光の輪（オーラ）
+    '<ellipse cx="100" cy="18" rx="40" ry="16" fill="url(#halo_angel-glow1)"/>' +
+    // 金の輪（楕円リング / evenodd で穴あけ）
+    '<path d="M70,18 Q100,3 130,18 Q100,33 70,18 Z M81,18 Q100,10 119,18 Q100,26 81,18 Z" fill-rule="evenodd" fill="url(#halo_angel-gold1)" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    // かがやきの点
+    '<path d="M66,12 L68,16 L72,17 L68,18 L66,22 L64,18 L60,17 L64,16 Z" fill="#FFFFFF" opacity="0.85"/>' +
+    '<circle cx="136" cy="22" r="2" fill="#FFFFFF" opacity="0.8"/>';
+  } },
+{ id:'crown_gold', category:'headwear', name:'王冠', price:200,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="crown_gold-metal1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#FFF3C4"/>' +
+        '<stop offset="45%" stop-color="#F7C948"/>' +
+        '<stop offset="100%" stop-color="#C9962B"/>' +
+      '</linearGradient>' +
+      '<radialGradient id="crown_gold-ruby1" cx="35%" cy="30%" r="70%">' +
+        '<stop offset="0%" stop-color="#FF8FA0"/>' +
+        '<stop offset="100%" stop-color="#D6294B"/>' +
+      '</radialGradient>' +
+      '<radialGradient id="crown_gold-sapphire1" cx="35%" cy="30%" r="70%">' +
+        '<stop offset="0%" stop-color="#8FC4FF"/>' +
+        '<stop offset="100%" stop-color="#2D6FD6"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    // 左スパイク
+    '<path d="M50,60 L64,32 L78,60 Z" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    // 右スパイク
+    '<path d="M122,60 L136,32 L150,60 Z" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    // 中央スパイク（最も高い）
+    '<path d="M84,60 L100,16 L116,60 Z" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="2.4" stroke-linejoin="round"/>' +
+    // スパイク右かげ
+    '<path d="M100,16 L116,60 L106,60 Q100,36 100,16 Z" fill="#8A651C" opacity="0.5"/>' +
+    '<path d="M136,32 L150,60 L142,60 Q138,44 136,32 Z" fill="#8A651C" opacity="0.5"/>' +
+    // 玉飾り
+    '<circle cx="100" cy="14" r="4" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<circle cx="64" cy="30" r="3" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<circle cx="136" cy="30" r="3" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="1.6"/>' +
+    // ベースバンド
+    '<path d="M50,58 Q100,49 150,58 L148,74 Q100,83 52,74 Z" fill="url(#crown_gold-metal1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // バンド右かげ
+    '<path d="M100,50 Q126,53 148,60 L148,74 Q124,68 106,61 Z" fill="#8A651C" opacity="0.45"/>' +
+    // 宝石（中央ルビー・左右サファイア）
+    '<ellipse cx="100" cy="42" rx="5.5" ry="6.5" fill="url(#crown_gold-ruby1)" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<circle cx="76" cy="66" r="3.4" fill="url(#crown_gold-sapphire1)" stroke="#4a3428" stroke-width="1.4"/>' +
+    '<circle cx="124" cy="66" r="3.4" fill="url(#crown_gold-sapphire1)" stroke="#4a3428" stroke-width="1.4"/>' +
+    // きらめき
+    '<path d="M64,38 L66,42 L70,43 L66,44 L64,48 L62,44 L58,43 L62,42 Z" fill="#FFFFFF" opacity="0.8"/>';
+  } },
+{ id:'hat_wizard', category:'headwear', name:'魔法使い帽子', price:250,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="hat_wizard-gold1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#FFE9A0"/>' +
+        '<stop offset="100%" stop-color="#C9962B"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // つば（広め・ふわっと）
+    '<path d="M36,66 Q100,50 164,66 Q160,80 100,82 Q40,80 36,66 Z" fill="#6B4FA0" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M100,52 Q136,56 160,66 Q158,78 118,80 Q108,66 100,52 Z" fill="#4E3878" opacity="0.7"/>' +
+    // とんがり頭（先が軽く巻く）
+    '<path d="M68,60 C70,26 82,4 98,4 C108,4 114,10 108,15 C100,22 106,30 116,27 C120,36 116,46 132,60 Q100,48 68,60 Z" fill="#6B4FA0" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // とんがり右かげ
+    '<path d="M98,4 C108,4 114,10 108,15 C100,22 106,30 116,27 C120,36 116,46 132,60 Q118,52 110,45 Q114,14 98,4 Z" fill="#4E3878" opacity="0.65"/>' +
+    // 金バンド
+    '<path d="M66,56 Q100,46 134,56 L132,66 Q100,56 68,66 Z" fill="url(#hat_wizard-gold1)" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<circle cx="100" cy="60" r="3" fill="#D6294B" stroke="#4a3428" stroke-width="1.4"/>' +
+    // 星の飾り
+    '<path d="M84,36 L86,40 L90,41 L86,43 L84,47 L82,43 L78,41 L82,40 Z" fill="#FFE27A" stroke="#4a3428" stroke-width="1" stroke-linejoin="round"/>' +
+    '<path d="M114,20 L115,23 L118,24 L115,25 L114,28 L113,25 L110,24 L113,23 Z" fill="#FFE27A" stroke="#4a3428" stroke-width="0.9" stroke-linejoin="round"/>' +
+    // ハイライト
+    '<path d="M74,54 Q84,36 92,20" stroke="#9C82C9" stroke-width="2.2" fill="none" opacity="0.7" stroke-linecap="round"/>';
+  } },
+{ id:'helmet_knight', category:'headwear', name:'騎士ヘルメット', price:600,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="helmet_knight-metal1" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#F2F5F8"/>' +
+        '<stop offset="55%" stop-color="#C3CBD4"/>' +
+        '<stop offset="100%" stop-color="#8891A0"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // ヘルメット本体（外形＋顔穴を evenodd で一体成形。頭頂〜ほほを覆い、顔は開放）
+    '<path fill-rule="evenodd" d="M45,88 C42,44 68,20 100,20 C132,20 158,44 155,88 C156,102 150,117 140,123 L60,123 C50,117 44,102 45,88 Z M66,58 Q100,47 134,58 Q143,90 134,120 Q100,131 66,120 Q57,90 66,58 Z" fill="url(#helmet_knight-metal1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右側かげ
+    '<path d="M100,20 C132,20 158,44 155,88 C156,102 150,117 140,123 L120,123 Q130,100 129,70 Q129,40 110,24 Q105,22 100,20 Z" fill="#5C6472" opacity="0.32"/>' +
+    // ふち飾り（顔穴のまわり）
+    '<path d="M66,58 Q100,47 134,58" stroke="#D9A93A" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+    // びょう（リベット）
+    '<circle cx="51" cy="92" r="2" fill="#EAF0F5" stroke="#4a3428" stroke-width="1"/>' +
+    '<circle cx="149" cy="92" r="2" fill="#8891A0" stroke="#4a3428" stroke-width="1"/>' +
+    // 羽根飾り
+    '<path d="M92,28 Q90,6 100,-2 Q110,6 108,28 Q100,20 92,28 Z" fill="#D6294B" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M100,-2 Q110,6 108,28 Q104,22 101,16 Q104,8 100,-2 Z" fill="#A81638" opacity="0.6"/>' +
+    // ハイライト
+    '<path d="M58,42 Q76,26 98,23" stroke="#FFFFFF" stroke-width="2.2" fill="none" opacity="0.6" stroke-linecap="round"/>';
+  } },
+{ id:'tiara_diamond', category:'headwear', name:'ダイヤティアラ', price:800,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="tiara_diamond-metal1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#FFFFFF"/>' +
+        '<stop offset="50%" stop-color="#DCE6F0"/>' +
+        '<stop offset="100%" stop-color="#A9B7C6"/>' +
+      '</linearGradient>' +
+      '<radialGradient id="tiara_diamond-gem1" cx="35%" cy="30%" r="70%">' +
+        '<stop offset="0%" stop-color="#FFFFFF"/>' +
+        '<stop offset="55%" stop-color="#CDEBFF"/>' +
+        '<stop offset="100%" stop-color="#8FC7EA"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    // 左サブアーチ
+    '<path d="M60,70 Q64,54 72,50 Q78,54 80,70" fill="none" stroke="url(#tiara_diamond-metal1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+    // 右サブアーチ
+    '<path d="M140,70 Q136,54 128,50 Q122,54 120,70" fill="none" stroke="url(#tiara_diamond-metal1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+    // 中央アーチ
+    '<path d="M88,70 Q92,42 100,34 Q108,42 112,70" fill="none" stroke="url(#tiara_diamond-metal1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' +
+    // ベースバンド
+    '<path d="M54,68 Q100,76 146,68 L144,77 Q100,84 56,77 Z" fill="url(#tiara_diamond-metal1)" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M100,71 Q124,73 144,68 L142,77 Q120,81 106,79 Z" fill="#8B99AA" opacity="0.4"/>' +
+    // 側面の小ダイヤ
+    '<path d="M72,42 L77,48 L72,54 L67,48 Z" fill="url(#tiara_diamond-gem1)" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M128,42 L133,48 L128,54 L123,48 Z" fill="url(#tiara_diamond-gem1)" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    // メインダイヤ
+    '<path d="M100,24 L109,34 L100,44 L91,34 Z" fill="url(#tiara_diamond-gem1)" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M100,24 L100,44 M91,34 L109,34" stroke="#FFFFFF" stroke-width="1" opacity="0.7"/>' +
+    // バンドの小粒ダイヤ
+    '<circle cx="85" cy="74" r="2.2" fill="url(#tiara_diamond-gem1)" stroke="#4a3428" stroke-width="1.2"/>' +
+    '<circle cx="115" cy="74" r="2.2" fill="url(#tiara_diamond-gem1)" stroke="#4a3428" stroke-width="1.2"/>' +
+    // きらめき
+    '<path d="M82,20 L84,24 L88,25 L84,26 L82,30 L80,26 L76,25 L80,24 Z" fill="#FFFFFF" opacity="0.85"/>' +
+    '<circle cx="122" cy="18" r="1.6" fill="#FFFFFF" opacity="0.8"/>';
+  } },
+// ===== accessory =====
+{ id:'sunglasses', category:'accessory', name:'サングラス', price:30, layer:'front',
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="sunglasses-g1" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#4a4854"/>' +
+        '<stop offset="60%" stop-color="#221f26"/>' +
+        '<stop offset="100%" stop-color="#0e0c10"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // 左テンプル・右テンプル
+    '<path d="M68,83 L49,86" stroke="#4a3428" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    '<path d="M132,83 L151,86" stroke="#4a3428" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    // ブリッジ
+    '<path d="M89,85 Q100,80 111,85" stroke="#4a3428" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    // 左レンズ
+    '<ellipse cx="79" cy="87" rx="11.5" ry="9.5" fill="url(#sunglasses-g1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右レンズ
+    '<ellipse cx="121" cy="87" rx="11.5" ry="9.5" fill="url(#sunglasses-g1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // ハイライト
+    '<path d="M73,82 L78,84" stroke="#FFFFFF" stroke-width="1.8" opacity="0.55" stroke-linecap="round"/>' +
+    '<path d="M115,82 L120,84" stroke="#FFFFFF" stroke-width="1.8" opacity="0.55" stroke-linecap="round"/>';
+  } },
+{ id:'bowtie_red', category:'accessory', name:'蝶ネクタイ', price:40, layer:'front',
+  getSVG:function(){ return '' +
+    // 左翼
+    '<path d="M100,142 L81,132 L83,152 Z" fill="#D6392C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右翼
+    '<path d="M100,142 L119,132 L117,152 Z" fill="#D6392C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右翼かげ
+    '<path d="M100,142 L119,132 L112,138 Z" fill="#A82A20" opacity="0.65"/>' +
+    // 結び目
+    '<rect x="95.5" y="137.5" width="9" height="9" rx="2" fill="#A82A20" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    // ハイライト
+    '<path d="M88,136 L93,139" stroke="#FFFFFF" stroke-width="1.4" opacity="0.5" stroke-linecap="round"/>';
+  } },
+{ id:'scarf_warm', category:'accessory', name:'マフラー', price:60, layer:'front',
+  getSVG:function(){ return '' +
+    // 巻き部分
+    '<path d="M80,136 Q100,124 120,136 L121,148 Q100,140 79,148 Z" fill="#C1432E" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右かげ
+    '<path d="M100,128 Q113,132 120,136 L121,148 Q110,143 100,138 Z" fill="#96311F" opacity="0.75"/>' +
+    // 編み目ライン
+    '<path d="M83,140 Q100,134 117,140" stroke="#F0DCC0" stroke-width="2" fill="none" opacity="0.85" stroke-linecap="round"/>' +
+    // 左たれ
+    '<path d="M85,144 Q79,160 82,178 Q86,181 90,178 Q88,160 91,144 Z" fill="#C1432E" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M89,148 Q92,162 89,177 L91,177 Q94,162 91,148 Z" fill="#96311F" opacity="0.6"/>' +
+    // 左フリンジ
+    '<path d="M84,178 L83,184" stroke="#8a2e1c" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<path d="M87,179 L87,185" stroke="#8a2e1c" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<path d="M90,178 L91,184" stroke="#8a2e1c" stroke-width="1.6" stroke-linecap="round"/>' +
+    // 右たれ
+    '<path d="M115,144 Q121,160 118,178 Q114,181 110,178 Q112,160 109,144 Z" fill="#C1432E" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M113,148 Q116,162 113,177 L115,177 Q118,162 115,148 Z" fill="#96311F" opacity="0.6"/>' +
+    // 右フリンジ
+    '<path d="M112,178 L111,184" stroke="#8a2e1c" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<path d="M115,179 L115,185" stroke="#8a2e1c" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<path d="M118,178 L119,184" stroke="#8a2e1c" stroke-width="1.6" stroke-linecap="round"/>';
+  } },
+{ id:'watch_gold', category:'accessory', name:'金時計', price:150, layer:'front',
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<radialGradient id="watch_gold-g1" cx="35%" cy="30%" r="70%">' +
+        '<stop offset="0%" stop-color="#FFEBAE"/>' +
+        '<stop offset="55%" stop-color="#D4A017"/>' +
+        '<stop offset="100%" stop-color="#8a6a10"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    // バンド上
+    '<path d="M57,181 Q65,178 73,181 L73,187 Q65,185 57,187 Z" fill="url(#watch_gold-g1)" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    // バンド下
+    '<path d="M57,192 Q65,190 73,192 L73,197 Q65,199 57,197 Z" fill="url(#watch_gold-g1)" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    // 文字盤フレーム
+    '<circle cx="65" cy="188" r="7.5" fill="url(#watch_gold-g1)" stroke="#4a3428" stroke-width="2.5"/>' +
+    // 文字盤
+    '<circle cx="65" cy="188" r="4.8" fill="#FFF8E8" stroke="#8a6a10" stroke-width="0.8"/>' +
+    // 目盛り
+    '<circle cx="65" cy="184" r="0.6" fill="#8a6a10"/>' +
+    '<circle cx="69" cy="188" r="0.6" fill="#8a6a10"/>' +
+    '<circle cx="65" cy="192" r="0.6" fill="#8a6a10"/>' +
+    '<circle cx="61" cy="188" r="0.6" fill="#8a6a10"/>' +
+    // 針
+    '<path d="M65,188 L65,185" stroke="#33200F" stroke-width="1.2" stroke-linecap="round"/>' +
+    '<path d="M65,188 L68,189" stroke="#33200F" stroke-width="1.2" stroke-linecap="round"/>' +
+    // ハイライト
+    '<path d="M62,184 Q65,182 68,184" stroke="#FFFFFF" stroke-width="1.2" fill="none" opacity="0.6" stroke-linecap="round"/>';
+  } },
+{ id:'medal_gold', category:'accessory', name:'金メダル', price:200, layer:'front',
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<radialGradient id="medal_gold-g1" cx="35%" cy="30%" r="70%">' +
+        '<stop offset="0%" stop-color="#FFEBAE"/>' +
+        '<stop offset="55%" stop-color="#D4A017"/>' +
+        '<stop offset="100%" stop-color="#8a6a10"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    // リボン（紺）
+    '<path d="M90,138 L110,138 L105,161 L95,161 Z" fill="#2A4B8C" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    // リボン中央赤ライン
+    '<path d="M96,138 L104,138 L102,161 L98,161 Z" fill="#C1272D"/>' +
+    // 連結バー
+    '<rect x="96" y="157" width="8" height="5" rx="1.5" fill="url(#medal_gold-g1)" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    // メダル本体
+    '<circle cx="100" cy="170" r="13" fill="url(#medal_gold-g1)" stroke="#4a3428" stroke-width="2.5"/>' +
+    '<circle cx="100" cy="170" r="9" fill="#F4D468" stroke="#B8860B" stroke-width="1.4"/>' +
+    // 星
+    '<path d="M100,164 L101.8,168.5 L106.5,168.7 L102.8,171.6 L104.2,176 L100,173.2 L95.8,176 L97.2,171.6 L93.5,168.7 L98.2,168.5 Z" fill="#FFF8E0" stroke="#B8860B" stroke-width="0.6" stroke-linejoin="round"/>' +
+    // ハイライト
+    '<path d="M93,164 Q98,161 103,163" stroke="#FFFFFF" stroke-width="1.4" fill="none" opacity="0.55" stroke-linecap="round"/>';
+  } },
+{ id:'necklace_diamond', category:'accessory', name:'ダイヤネックレス', price:500, layer:'front',
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="necklace_diamond-g1" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#FFFFFF"/>' +
+        '<stop offset="40%" stop-color="#CFEBFA"/>' +
+        '<stop offset="70%" stop-color="#FFFFFF"/>' +
+        '<stop offset="100%" stop-color="#93C0E0"/>' +
+      '</linearGradient>' +
+      '<radialGradient id="necklace_diamond-g2" cx="35%" cy="30%" r="70%">' +
+        '<stop offset="0%" stop-color="#FFEBAE"/>' +
+        '<stop offset="100%" stop-color="#B8860B"/>' +
+      '</radialGradient>' +
+    '</defs>' +
+    // チェーン
+    '<path d="M82,139 Q100,156 118,139" stroke="url(#necklace_diamond-g2)" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="88" cy="145" r="1.3" fill="#D4A017"/>' +
+    '<circle cx="112" cy="145" r="1.3" fill="#D4A017"/>' +
+    // 台座（ベイル）
+    '<circle cx="100" cy="150" r="2.6" fill="url(#necklace_diamond-g2)" stroke="#4a3428" stroke-width="1.2"/>' +
+    // ダイヤ本体
+    '<path d="M100,152 L106.5,158 L100,168 L93.5,158 Z" fill="url(#necklace_diamond-g1)" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    // ファセットライン
+    '<path d="M100,152 L100,168" stroke="#FFFFFF" stroke-width="0.9" opacity="0.7"/>' +
+    '<path d="M94.5,158 L105.5,158" stroke="#FFFFFF" stroke-width="0.9" opacity="0.7"/>' +
+    // きらめき
+    '<path d="M85,140 L86.5,143.5 L90,145 L86.5,146.5 L85,150 L83.5,146.5 L80,145 L83.5,143.5 Z" fill="#FFFFFF" opacity="0.9"/>' +
+    '<path d="M115,140 L113.5,143.5 L110,145 L113.5,146.5 L115,150 L116.5,146.5 L120,145 L116.5,143.5 Z" fill="#FFFFFF" opacity="0.9"/>' +
+    '<path d="M108,157 L108.8,159 L110.8,159.8 L108.8,160.6 L108,162.6 L107.2,160.6 L105.2,159.8 L107.2,159 Z" fill="#FFFFFF" opacity="0.85"/>';
+  } },
+{ id:'wings_angel', category:'accessory', name:'天使の翼', price:300, layer:'back',
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="wings_angel-g1" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0%" stop-color="#FFE9A8"/>' +
+        '<stop offset="50%" stop-color="#D4A017"/>' +
+        '<stop offset="100%" stop-color="#FFE9A8"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // 後光（左右）
+    '<ellipse cx="47" cy="170" rx="30" ry="48" fill="#FFF6D8" opacity="0.32" filter="url(#av-glow)"/>' +
+    '<ellipse cx="153" cy="170" rx="30" ry="48" fill="#FFF6D8" opacity="0.32" filter="url(#av-glow)"/>' +
+    // 左翼本体（羽先はギザ羽根の連なり）
+    '<path d="M74,132 C54,116 24,118 19,150 C16,174 21,194 30,208 Q36,199 41,210 Q47,201 52,211 Q58,201 62,210 Q68,198 71,180 C75,164 77,148 74,132 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 左翼内側かげ
+    '<path d="M74,132 C71,152 68,175 63,196 Q60,204 55,210 L60,207 Q66,196 70,178 C74,163 76,148 74,132 Z" fill="#E7E0D0" opacity="0.65"/>' +
+    // 左羽根の筋
+    '<path d="M68,140 Q45,155 33,175" stroke="#4a3428" stroke-width="1.5" fill="none" opacity="0.55" stroke-linecap="round"/>' +
+    '<path d="M65,155 Q42,172 30,192" stroke="#4a3428" stroke-width="1.5" fill="none" opacity="0.55" stroke-linecap="round"/>' +
+    '<path d="M60,172 Q40,188 30,204" stroke="#4a3428" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>' +
+    // 左ゴールドトリム
+    '<path d="M74,132 C54,116 24,118 19,150" stroke="url(#wings_angel-g1)" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.9"/>' +
+    // 左きらめき
+    '<path d="M36,124 L38,130 L44,132 L38,134 L36,140 L34,134 L28,132 L34,130 Z" fill="#FFF6D0" opacity="0.85"/>' +
+    // 右翼本体
+    '<path d="M126,132 C146,116 176,118 181,150 C184,174 179,194 170,208 Q164,199 159,210 Q153,201 148,211 Q142,201 138,210 Q132,198 129,180 C125,164 123,148 126,132 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右翼内側かげ
+    '<path d="M126,132 C129,152 132,175 137,196 Q140,204 145,210 L140,207 Q134,196 130,178 C126,163 124,148 126,132 Z" fill="#E7E0D0" opacity="0.65"/>' +
+    // 右羽根の筋
+    '<path d="M132,140 Q155,155 167,175" stroke="#4a3428" stroke-width="1.5" fill="none" opacity="0.55" stroke-linecap="round"/>' +
+    '<path d="M135,155 Q158,172 170,192" stroke="#4a3428" stroke-width="1.5" fill="none" opacity="0.55" stroke-linecap="round"/>' +
+    '<path d="M140,172 Q160,188 170,204" stroke="#4a3428" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>' +
+    // 右ゴールドトリム
+    '<path d="M126,132 C146,116 176,118 181,150" stroke="url(#wings_angel-g1)" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.9"/>' +
+    // 右きらめき
+    '<path d="M164,124 L162,130 L156,132 L162,134 L164,140 L166,134 L172,132 L166,130 Z" fill="#FFF6D0" opacity="0.85"/>';
+  } },
+{ id:'cape_vampire', category:'accessory', name:'ヴァンパイアマント', price:350, layer:'back',
+  getSVG:function(){ return '' +
+    // 赤い裏地（本体より少し大きく描いて縁に見せる）
+    '<path d="M100,129 C70,127 27,144 25,190 C23,222 31,254 58,262 C64,243 73,217 86,202 C91,224 97,245 100,260 C103,245 109,224 114,202 C127,217 136,243 142,262 C169,254 177,222 175,190 C173,144 130,127 100,129 Z" fill="#7A1B24" stroke="#4a3428" stroke-width="2"/>' +
+    // 襟の赤裏地
+    '<path d="M89,150 L68,97 Q63,113 67,130 L84,152 Z" fill="#7A1B24"/>' +
+    '<path d="M111,150 L132,97 Q137,113 133,130 L116,152 Z" fill="#7A1B24"/>' +
+    // マント本体（黒）
+    '<path d="M100,132 C72,130 32,146 30,190 C28,220 35,250 58,257 C63,239 72,215 86,201 C91,222 96,242 100,255 C104,242 109,222 114,201 C128,215 137,239 142,257 C165,250 172,220 170,190 C168,146 128,130 100,132 Z" fill="#1B1613" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // 右かげ
+    '<path d="M100,140 C120,145 155,160 165,190 Q168,215 155,240 Q148,225 140,205 Q130,175 100,155 Z" fill="#000000" opacity="0.25"/>' +
+    // 立ち襟（黒）
+    '<path d="M88,148 L70,100 Q66,113 69,128 L83,150 Z" fill="#1B1613" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M112,148 L130,100 Q134,113 131,128 L117,150 Z" fill="#1B1613" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    // ハイライト
+    '<path d="M40,150 Q34,175 36,205" stroke="#4a3f3a" stroke-width="1.6" fill="none" opacity="0.5" stroke-linecap="round"/>';
+  } },
+// ===== shoes =====
+{ id:'sneakers_white', category:'shoes', name:'スニーカー', price:0, isDefault:true,
+  getSVG:function(){ return '' +
+    // 左足
+    '<path d="M79,244 L96,244 L96,258 Q96,265 89,265 L70,265 Q64,265 65,258 Q66,250 74,247 Q78,246 79,244 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M65,259 L96,259 L96,262 Q96,266 90,266 L70,266 Q64,266 65,259 Z" fill="#D8D4CE" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M79,247 Q76,252 70,255" stroke="#E84B4B" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="88" cy="250" r="1.4" fill="#B8B4AE"/>' +
+    // 右足
+    '<path d="M121,244 L104,244 L104,258 Q104,265 111,265 L130,265 Q136,265 135,258 Q134,250 126,247 Q122,246 121,244 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M135,259 L104,259 L104,262 Q104,266 110,266 L130,266 Q136,266 135,259 Z" fill="#D8D4CE" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M121,247 Q124,252 130,255" stroke="#E84B4B" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+    '<circle cx="112" cy="250" r="1.4" fill="#B8B4AE"/>';
+  } },
+{ id:'sneakers_red', category:'shoes', name:'赤スニーカー', price:15,
+  getSVG:function(){ return '' +
+    // 左足
+    '<path d="M79,244 L96,244 L96,258 Q96,265 89,265 L70,265 Q64,265 65,258 Q66,250 74,247 Q78,246 79,244 Z" fill="#E5473F" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M65,259 L96,259 L96,262 Q96,266 90,266 L70,266 Q64,266 65,259 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M79,247 Q76,252 70,255" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+    '<path d="M92,246 Q86,254 74,257" stroke="#B3352E" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.75"/>' +
+    '<circle cx="88" cy="250" r="1.4" fill="#FFFFFF"/>' +
+    // 右足
+    '<path d="M121,244 L104,244 L104,258 Q104,265 111,265 L130,265 Q136,265 135,258 Q134,250 126,247 Q122,246 121,244 Z" fill="#E5473F" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M135,259 L104,259 L104,262 Q104,266 110,266 L130,266 Q136,266 135,259 Z" fill="#FFFFFF" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M121,247 Q124,252 130,255" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+    '<path d="M108,246 Q114,254 126,257" stroke="#B3352E" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.75"/>' +
+    '<circle cx="112" cy="250" r="1.4" fill="#FFFFFF"/>';
+  } },
+{ id:'boots_brown', category:'shoes', name:'ブーツ', price:70,
+  getSVG:function(){ return '' +
+    // 左ブーツ（筒が高い）
+    '<path d="M75,225 L96,225 L97,258 Q97,265 90,265 L70,265 Q64,265 65,258 Q66,250 74,247 Q76,240 75,225 Z" fill="#8A5A34" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M75,225 L96,225 L96,233 L75,233 Z" fill="#6E4526" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M65,259 L97,259 L97,262 Q97,266 91,266 L70,266 Q64,266 65,259 Z" fill="#4A3320" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M90,232 Q94,248 90,262" stroke="#6E4526" stroke-width="1.6" fill="none" opacity="0.85"/>' +
+    '<circle cx="80" cy="238" r="1.3" fill="#D8B888"/>' +
+    '<circle cx="80" cy="246" r="1.3" fill="#D8B888"/>' +
+    '<path d="M77,238 L80,246" stroke="#D8B888" stroke-width="1.3"/>' +
+    // 右ブーツ
+    '<path d="M125,225 L104,225 L103,258 Q103,265 110,265 L130,265 Q136,265 135,258 Q134,250 126,247 Q124,240 125,225 Z" fill="#8A5A34" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M125,225 L104,225 L104,233 L125,233 Z" fill="#6E4526" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M135,259 L103,259 L103,262 Q103,266 109,266 L130,266 Q136,266 135,259 Z" fill="#4A3320" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M110,232 Q106,248 110,262" stroke="#6E4526" stroke-width="1.6" fill="none" opacity="0.85"/>' +
+    '<circle cx="120" cy="238" r="1.3" fill="#D8B888"/>' +
+    '<circle cx="120" cy="246" r="1.3" fill="#D8B888"/>' +
+    '<path d="M123,238 L120,246" stroke="#D8B888" stroke-width="1.3"/>';
+  } },
+{ id:'loafers_brown', category:'shoes', name:'ローファー', price:50,
+  getSVG:function(){ return '' +
+    // 左ローファー
+    '<path d="M79,246 L96,246 L96,258 Q96,265 89,265 L70,265 Q64,265 65,258 Q66,251 74,248 Q78,247 79,246 Z" fill="#7A4B2A" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M65,259 L96,259 L96,262 Q96,267 90,267 L70,267 Q64,267 65,259 Z" fill="#4E301A" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M92,248 Q86,255 72,258" stroke="#5E3A20" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.85"/>' +
+    '<path d="M78,251 L84,251 L84,255 L78,255 Z" fill="#D8B84A" stroke="#4a3428" stroke-width="1.3"/>' +
+    // 右ローファー
+    '<path d="M121,246 L104,246 L104,258 Q104,265 111,265 L130,265 Q136,265 135,258 Q134,251 126,248 Q122,247 121,246 Z" fill="#7A4B2A" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M135,259 L104,259 L104,262 Q104,267 110,267 L130,267 Q136,267 135,259 Z" fill="#4E301A" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M108,248 Q114,255 128,258" stroke="#5E3A20" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.85"/>' +
+    '<path d="M116,251 L122,251 L122,255 L116,255 Z" fill="#D8B84A" stroke="#4a3428" stroke-width="1.3"/>';
+  } },
+{ id:'sandals_beach', category:'shoes', name:'ビーチサンダル', price:25,
+  getSVG:function(){ return '' +
+    // 左サンダル（甲を覆わないフラットソール＋バンド）
+    '<path d="M67,258 Q66,251 75,249 Q86,246 95,251 Q97,254 96,259 Q95,264 89,264 L71,264 Q67,264 67,258 Z" fill="#F2A93B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M69,261 L94,261 L94,263 Q94,265 90,265 L72,265 Q69,265 69,261 Z" fill="#D98A22" stroke="#4a3428" stroke-width="1.4"/>' +
+    '<path d="M81,249 Q80,254 82,258" stroke="#E84B4B" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M75,251 Q80,247 88,251" stroke="#E84B4B" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+    // 右サンダル
+    '<path d="M133,258 Q134,251 125,249 Q114,246 105,251 Q103,254 104,259 Q105,264 111,264 L129,264 Q133,264 133,258 Z" fill="#F2A93B" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M131,261 L106,261 L106,263 Q106,265 110,265 L128,265 Q131,265 131,261 Z" fill="#D98A22" stroke="#4a3428" stroke-width="1.4"/>' +
+    '<path d="M119,249 Q120,254 118,258" stroke="#E84B4B" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+    '<path d="M125,251 Q120,247 112,251" stroke="#E84B4B" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+  } },
+{ id:'sneakers_gold', category:'shoes', name:'金スニーカー', price:400,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="sneakers_gold-g1" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0" stop-color="#FFF3B0"/>' +
+        '<stop offset="0.5" stop-color="#F0C232"/>' +
+        '<stop offset="1" stop-color="#C6941A"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // 左足
+    '<path d="M79,244 L96,244 L96,258 Q96,265 89,265 L70,265 Q64,265 65,258 Q66,250 74,247 Q78,246 79,244 Z" fill="url(#sneakers_gold-g1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M65,259 L96,259 L96,262 Q96,266 90,266 L70,266 Q64,266 65,259 Z" fill="#C6941A" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M79,247 Q76,252 70,255" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.9"/>' +
+    '<path d="M74,242 L76,247 L71,245 L76,244 L74,239 L78,243 Z" fill="#FFF6D2" stroke="#C6941A" stroke-width="0.8" stroke-linejoin="round"/>' +
+    '<circle cx="88" cy="250" r="1.4" fill="#FFF6D2"/>' +
+    // 右足
+    '<path d="M121,244 L104,244 L104,258 Q104,265 111,265 L130,265 Q136,265 135,258 Q134,250 126,247 Q122,246 121,244 Z" fill="url(#sneakers_gold-g1)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M135,259 L104,259 L104,262 Q104,266 110,266 L130,266 Q136,266 135,259 Z" fill="#C6941A" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M121,247 Q124,252 130,255" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" opacity="0.9"/>' +
+    '<path d="M126,242 L128,247 L123,245 L128,244 L126,239 L130,243 Z" fill="#FFF6D2" stroke="#C6941A" stroke-width="0.8" stroke-linejoin="round"/>' +
+    '<circle cx="112" cy="250" r="1.4" fill="#FFF6D2"/>';
+  } },
+{ id:'shoes_glass', category:'shoes', name:'ガラスの靴', price:600,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<linearGradient id="shoes_glass-g1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#E6F7FC" stop-opacity="0.9"/>' +
+        '<stop offset="1" stop-color="#9FDCEE" stop-opacity="0.55"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    // 左足（つま先が細く上品な靴型）
+    '<path d="M80,244 L96,244 L96,257 Q96,264 89,264 L71,264 Q65,264 66,258 Q67,251 76,247 Q79,246 80,244 Z" fill="url(#shoes_glass-g1)" stroke="#5FAFC9" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M66,258 L96,258 L96,261 Q96,265 90,265 L71,265 Q65,265 66,258 Z" fill="#BFE9F5" stroke="#5FAFC9" stroke-width="1.6" opacity="0.85"/>' +
+    '<path d="M80,247 Q77,252 71,255" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.9"/>' +
+    '<path d="M72,246 L73,250 L70,248 L73,247 L72,244 L75,247 Z" fill="#FFFFFF" opacity="0.95"/>' +
+    '<circle cx="87" cy="252" r="1.2" fill="#FFFFFF" opacity="0.9"/>' +
+    '<circle cx="90" cy="257" r="0.9" fill="#FFFFFF" opacity="0.85"/>' +
+    // 右足
+    '<path d="M120,244 L104,244 L104,257 Q104,264 111,264 L129,264 Q135,264 134,258 Q133,251 124,247 Q121,246 120,244 Z" fill="url(#shoes_glass-g1)" stroke="#5FAFC9" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M134,258 L104,258 L104,261 Q104,265 110,265 L129,265 Q135,265 134,258 Z" fill="#BFE9F5" stroke="#5FAFC9" stroke-width="1.6" opacity="0.85"/>' +
+    '<path d="M120,247 Q123,252 129,255" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.9"/>' +
+    '<path d="M128,246 L127,250 L130,248 L127,247 L128,244 L125,247 Z" fill="#FFFFFF" opacity="0.95"/>' +
+    '<circle cx="113" cy="252" r="1.2" fill="#FFFFFF" opacity="0.9"/>' +
+    '<circle cx="110" cy="257" r="0.9" fill="#FFFFFF" opacity="0.85"/>';
+  } },
+// ===== background =====
+{ id:'bg_classroom', category:'background', name:'教室', price:50,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_classroom-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_classroom-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3ECDD"/><stop offset="1" stop-color="#E6DCC3"/></linearGradient>' +
+      '<linearGradient id="bg_classroom-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BEE3F5"/><stop offset="1" stop-color="#E8F5FB"/></linearGradient>' +
+      '<linearGradient id="bg_classroom-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CC9F6E"/><stop offset="1" stop-color="#A97C4F"/></linearGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_classroom-clip)">' +
+      '<rect x="0" y="0" width="200" height="300" fill="url(#bg_classroom-wall)"/>' +
+      '<rect x="0" y="224" width="200" height="76" fill="url(#bg_classroom-floor)"/>' +
+      '<rect x="0" y="222" width="200" height="8" fill="#8B5A2B"/>' +
+      '<path d="M0,240 L200,240 M0,252 L200,252 M0,264 L200,264 M0,276 L200,276 M0,288 L200,288" stroke="#8B6239" stroke-width="1.2" opacity="0.35"/>' +
+      '<rect x="8" y="36" width="34" height="100" rx="3" fill="url(#bg_classroom-sky)" stroke="#8B5E34" stroke-width="3"/>' +
+      '<path d="M25,36 L25,136 M8,86 L42,86" stroke="#8B5E34" stroke-width="3"/>' +
+      '<ellipse cx="17" cy="58" rx="7" ry="4" fill="#FFFFFF" opacity="0.8"/>' +
+      '<ellipse cx="30" cy="106" rx="6" ry="3.5" fill="#FFFFFF" opacity="0.7"/>' +
+      '<rect x="158" y="36" width="34" height="100" rx="3" fill="url(#bg_classroom-sky)" stroke="#8B5E34" stroke-width="3"/>' +
+      '<path d="M175,36 L175,136 M158,86 L192,86" stroke="#8B5E34" stroke-width="3"/>' +
+      '<ellipse cx="183" cy="58" rx="7" ry="4" fill="#FFFFFF" opacity="0.8"/>' +
+      '<ellipse cx="170" cy="106" rx="6" ry="3.5" fill="#FFFFFF" opacity="0.7"/>' +
+      '<rect x="25" y="18" width="150" height="48" rx="4" fill="#2E5339" stroke="#8B5A2B" stroke-width="4"/>' +
+      '<rect x="25" y="66" width="150" height="6" fill="#B08A55" stroke="#6B4423" stroke-width="2"/>' +
+      '<path d="M42,32 Q57,25 72,33" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round"/>' +
+      '<path d="M112,26 L127,40 M127,26 L112,40" stroke="#FFFFFF" stroke-width="1.8" opacity="0.55" stroke-linecap="round"/>' +
+      '<circle cx="150" cy="45" r="9" fill="none" stroke="#FFD866" stroke-width="2" opacity="0.7"/>' +
+      '<rect x="6" y="248" width="40" height="6" rx="1" fill="#8B5A2B" stroke="#6B4423" stroke-width="1.5"/>' +
+      '<rect x="10" y="254" width="4" height="28" fill="#6B4423"/>' +
+      '<rect x="38" y="254" width="4" height="28" fill="#6B4423"/>' +
+      '<rect x="8" y="264" width="16" height="5" rx="1" fill="#7A5230"/>' +
+      '<rect x="14" y="268" width="4" height="18" fill="#5A3D22"/>' +
+      '<rect x="154" y="248" width="40" height="6" rx="1" fill="#8B5A2B" stroke="#6B4423" stroke-width="1.5"/>' +
+      '<rect x="186" y="254" width="4" height="28" fill="#6B4423"/>' +
+      '<rect x="158" y="254" width="4" height="28" fill="#6B4423"/>' +
+      '<rect x="176" y="264" width="16" height="5" rx="1" fill="#7A5230"/>' +
+      '<rect x="182" y="268" width="4" height="18" fill="#5A3D22"/>' +
+    '</g>';
+  } },
+{ id:'bg_sakura', category:'background', name:'桜', price:100,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_sakura-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_sakura-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#AEE0F5"/><stop offset="0.6" stop-color="#DCEEF5"/><stop offset="1" stop-color="#FCE8EE"/></linearGradient>' +
+      '<linearGradient id="bg_sakura-grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FD988"/><stop offset="1" stop-color="#6FAE5C"/></linearGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_sakura-clip)">' +
+      '<rect x="0" y="0" width="200" height="200" fill="url(#bg_sakura-sky)"/>' +
+      '<circle cx="168" cy="42" r="26" fill="#FFF3C4" opacity="0.5"/>' +
+      '<path d="M0,190 Q100,178 200,190 L200,300 L0,300 Z" fill="url(#bg_sakura-grass)"/>' +
+      '<path d="M28,190 C25,150 30,110 41,84 C45,77 51,79 49,87 C42,110 40,150 45,190 Z" fill="#7A4A2B"/>' +
+      '<path d="M41,120 C43,150 41,175 45,190 L41,190 C39,160 39,130 37,110 Z" fill="#5E381F" opacity="0.55"/>' +
+      '<path d="M47,94 C70,87 95,89 114,84" stroke="#7A4A2B" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+      '<path d="M40,110 C25,105 15,100 8,92" stroke="#7A4A2B" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+      '<circle cx="35" cy="40" r="27" fill="#FFC2D6"/>' +
+      '<circle cx="65" cy="28" r="23" fill="#FFB0CB"/>' +
+      '<circle cx="18" cy="65" r="21" fill="#FFCBDD"/>' +
+      '<circle cx="85" cy="46" r="19" fill="#FFB7C9"/>' +
+      '<circle cx="98" cy="70" r="15" fill="#FFC7D9"/>' +
+      '<circle cx="15" cy="95" r="17" fill="#FFB0CB"/>' +
+      '<circle cx="70" cy="35" r="18" fill="#F694B4" opacity="0.4"/>' +
+      '<circle cx="38" cy="50" r="20" fill="#F694B4" opacity="0.3"/>' +
+      '<ellipse cx="60" cy="130" rx="3.4" ry="1.8" fill="#FFC2D6" opacity="0.75" transform="rotate(25 60 130)"/>' +
+      '<ellipse cx="132" cy="160" rx="3.4" ry="1.8" fill="#FFC2D6" opacity="0.7" transform="rotate(-15 132 160)"/>' +
+      '<ellipse cx="92" cy="205" rx="3.2" ry="1.7" fill="#FFD3E0" opacity="0.7" transform="rotate(40 92 205)"/>' +
+      '<ellipse cx="152" cy="112" rx="3.2" ry="1.7" fill="#FFC2D6" opacity="0.7" transform="rotate(10 152 112)"/>' +
+      '<ellipse cx="28" cy="150" rx="3" ry="1.6" fill="#FFD3E0" opacity="0.65" transform="rotate(-30 28 150)"/>' +
+      '<ellipse cx="172" cy="182" rx="3.2" ry="1.7" fill="#FFC2D6" opacity="0.65" transform="rotate(20 172 182)"/>' +
+      '<ellipse cx="115" cy="235" rx="3.4" ry="1.8" fill="#FFD3E0" opacity="0.65" transform="rotate(-10 115 235)"/>' +
+      '<ellipse cx="46" cy="255" rx="4" ry="2" fill="#FFD3E0" opacity="0.7" transform="rotate(15 46 255)"/>' +
+      '<ellipse cx="160" cy="270" rx="4" ry="2" fill="#FFC2D6" opacity="0.7" transform="rotate(-20 160 270)"/>' +
+      '<ellipse cx="90" cy="280" rx="4" ry="2" fill="#FFD3E0" opacity="0.65" transform="rotate(5 90 280)"/>' +
+    '</g>';
+  } },
+{ id:'bg_sunset', category:'background', name:'夕焼け', price:150,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_sunset-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_sunset-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4B3B73"/><stop offset="0.35" stop-color="#C85C6E"/><stop offset="0.62" stop-color="#F2915B"/><stop offset="0.85" stop-color="#FCC06B"/><stop offset="1" stop-color="#FDE29A"/></linearGradient>' +
+      '<radialGradient id="bg_sunset-glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFEFC0" stop-opacity="0.9"/><stop offset="1" stop-color="#FFEFC0" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="bg_sunset-sunfill" cx="0.35" cy="0.35" r="0.75"><stop offset="0" stop-color="#FFF3D0"/><stop offset="0.7" stop-color="#FFDD93"/><stop offset="1" stop-color="#FFC168"/></radialGradient>' +
+      '<linearGradient id="bg_sunset-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B2B55"/><stop offset="1" stop-color="#241A3D"/></linearGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_sunset-clip)">' +
+      '<rect x="0" y="0" width="200" height="300" fill="url(#bg_sunset-sky)"/>' +
+      '<circle cx="145" cy="100" r="55" fill="url(#bg_sunset-glow)"/>' +
+      '<circle cx="145" cy="100" r="30" fill="url(#bg_sunset-sunfill)"/>' +
+      '<path d="M70,55 Q75,50 80,55 Q85,50 90,55" stroke="#3B2B55" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>' +
+      '<path d="M55,68 Q60,63 65,68 Q70,63 75,68" stroke="#3B2B55" stroke-width="1.3" fill="none" opacity="0.5" stroke-linecap="round"/>' +
+      '<ellipse cx="30" cy="75" rx="22" ry="11" fill="#7A5C8C" opacity="0.55"/>' +
+      '<ellipse cx="48" cy="70" rx="16" ry="9" fill="#7A5C8C" opacity="0.5"/>' +
+      '<ellipse cx="15" cy="82" rx="14" ry="8" fill="#7A5C8C" opacity="0.5"/>' +
+      '<ellipse cx="163" cy="128" rx="27" ry="12" fill="#8C5C6E" opacity="0.5"/>' +
+      '<ellipse cx="184" cy="132" rx="16" ry="9" fill="#8C5C6E" opacity="0.45"/>' +
+      '<ellipse cx="112" cy="42" rx="18" ry="8" fill="#6B4C7A" opacity="0.4"/>' +
+      '<path d="M0,235 Q50,222 100,232 Q150,240 200,225 L200,300 L0,300 Z" fill="url(#bg_sunset-hill)"/>' +
+      '<path d="M15,210 L22,226 L8,226 Z" fill="#1B1330" opacity="0.85"/>' +
+      '<path d="M22,216 L27,226 L17,226 Z" fill="#1B1330" opacity="0.85"/>' +
+      '<path d="M185,206 L192,222 L178,222 Z" fill="#1B1330" opacity="0.85"/>' +
+      '<path d="M178,212 L183,222 L173,222 Z" fill="#1B1330" opacity="0.85"/>' +
+    '</g>';
+  } },
+{ id:'bg_starry', category:'background', name:'星空', price:200,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_starry-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_starry-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A0E33"/><stop offset="0.6" stop-color="#1C2058"/><stop offset="1" stop-color="#34366E"/></linearGradient>' +
+      '<radialGradient id="bg_starry-moonglow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF8DE" stop-opacity="0.55"/><stop offset="1" stop-color="#FFF8DE" stop-opacity="0"/></radialGradient>' +
+      '<linearGradient id="bg_starry-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12173A"/><stop offset="1" stop-color="#080A22"/></linearGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_starry-clip)">' +
+      '<rect x="0" y="0" width="200" height="300" fill="url(#bg_starry-sky)"/>' +
+      '<circle cx="162" cy="55" r="40" fill="url(#bg_starry-moonglow)"/>' +
+      '<circle cx="162" cy="55" r="24" fill="#FFF6DA"/>' +
+      '<circle cx="155" cy="48" r="3" fill="#F0E3B0" opacity="0.6"/>' +
+      '<circle cx="171" cy="62" r="4" fill="#F0E3B0" opacity="0.5"/>' +
+      '<circle cx="168" cy="45" r="2" fill="#F0E3B0" opacity="0.5"/>' +
+      '<circle cx="20" cy="35" r="1.4" fill="#FFFFFF" opacity="0.9"/>' +
+      '<circle cx="45" cy="20" r="1" fill="#FFFFFF" opacity="0.7"/>' +
+      '<circle cx="65" cy="45" r="1.2" fill="#FFFFFF" opacity="0.8"/>' +
+      '<circle cx="90" cy="18" r="1" fill="#FFFFFF" opacity="0.7"/>' +
+      '<circle cx="115" cy="35" r="1.3" fill="#FFFFFF" opacity="0.85"/>' +
+      '<circle cx="130" cy="15" r="1" fill="#FFFFFF" opacity="0.7"/>' +
+      '<circle cx="12" cy="90" r="1.2" fill="#FFFFFF" opacity="0.8"/>' +
+      '<circle cx="55" cy="100" r="1" fill="#FFFFFF" opacity="0.65"/>' +
+      '<circle cx="185" cy="105" r="1.2" fill="#FFFFFF" opacity="0.75"/>' +
+      '<circle cx="190" cy="150" r="1" fill="#FFFFFF" opacity="0.6"/>' +
+      '<circle cx="10" cy="170" r="1.1" fill="#FFFFFF" opacity="0.7"/>' +
+      '<circle cx="35" cy="185" r="1" fill="#FFFFFF" opacity="0.6"/>' +
+      '<circle cx="18" cy="120" r="1.3" fill="#FFFFFF" opacity="0.8"/>' +
+      '<circle cx="100" cy="60" r="1" fill="#FFFFFF" opacity="0.6"/>' +
+      '<path d="M30,45 L31.2,48.8 L35,50 L31.2,51.2 L30,55 L28.8,51.2 L25,50 L28.8,48.8 Z" fill="#FFF7D6"/>' +
+      '<path d="M172,90 L173.2,93.8 L177,95 L173.2,96.2 L172,100 L170.8,96.2 L167,95 L170.8,93.8 Z" fill="#FFF7D6"/>' +
+      '<path d="M22,142 L23,145.2 L26,146 L23,146.8 L22,150 L21,146.8 L18,146 L21,145.2 Z" fill="#FFF7D6" opacity="0.9"/>' +
+      '<path d="M0,238 Q60,222 100,230 Q150,238 200,224 L200,300 L0,300 Z" fill="url(#bg_starry-hill)"/>' +
+      '<rect x="14" y="222" width="7" height="8" fill="#1B1F44"/>' +
+      '<circle cx="17.5" cy="226" r="1" fill="#FFD866" opacity="0.85"/>' +
+      '<rect x="178" y="215" width="7" height="8" fill="#1B1F44"/>' +
+      '<circle cx="181.5" cy="219" r="1" fill="#FFD866" opacity="0.85"/>' +
+    '</g>';
+  } },
+{ id:'bg_ocean', category:'background', name:'海', price:150,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_ocean-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_ocean-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BEE6F5"/><stop offset="1" stop-color="#EAF7F0"/></linearGradient>' +
+      '<linearGradient id="bg_ocean-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FC2DE"/><stop offset="1" stop-color="#1E6E96"/></linearGradient>' +
+      '<linearGradient id="bg_ocean-sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5E3B8"/><stop offset="1" stop-color="#E8CE94"/></linearGradient>' +
+      '<radialGradient id="bg_ocean-sunglow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FFF8D8" stop-opacity="0.7"/><stop offset="1" stop-color="#FFF8D8" stop-opacity="0"/></radialGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_ocean-clip)">' +
+      '<rect x="0" y="0" width="200" height="142" fill="url(#bg_ocean-sky)"/>' +
+      '<circle cx="38" cy="52" r="40" fill="url(#bg_ocean-sunglow)"/>' +
+      '<circle cx="38" cy="52" r="17" fill="#FFF3C0"/>' +
+      '<ellipse cx="150" cy="45" rx="20" ry="9" fill="#FFFFFF" opacity="0.9"/>' +
+      '<ellipse cx="168" cy="50" rx="13" ry="7" fill="#FFFFFF" opacity="0.85"/>' +
+      '<ellipse cx="165" cy="80" rx="16" ry="7" fill="#FFFFFF" opacity="0.8"/>' +
+      '<rect x="0" y="140" width="200" height="132" fill="url(#bg_ocean-water)"/>' +
+      '<path d="M0,140 L200,140" stroke="#FFFFFF" stroke-width="1.5" opacity="0.4"/>' +
+      '<path d="M0,160 Q10,156 20,160 T40,160 T60,160 T80,160 T100,160 T120,160 T140,160 T160,160 T180,160 T200,160" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.4"/>' +
+      '<path d="M0,185 Q10,181 20,185 T40,185 T60,185 T80,185 T100,185 T120,185 T140,185 T160,185 T180,185 T200,185" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.35"/>' +
+      '<path d="M0,210 Q10,206 20,210 T40,210 T60,210 T80,210 T100,210 T120,210 T140,210 T160,210 T180,210 T200,210" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.35"/>' +
+      '<path d="M0,235 Q10,231 20,235 T40,235 T60,235 T80,235 T100,235 T120,235 T140,235 T160,235 T180,235 T200,235" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>' +
+      '<path d="M0,255 Q10,251 20,255 T40,255 T60,255 T80,255 T100,255 T120,255 T140,255 T160,255 T180,255 T200,255" stroke="#FFFFFF" stroke-width="1.5" fill="none" opacity="0.3"/>' +
+      '<rect x="0" y="272" width="200" height="28" fill="url(#bg_ocean-sand)"/>' +
+      '<path d="M0,272 Q10,268 20,272 Q30,276 40,272 Q50,268 60,272 Q70,276 80,272 Q90,268 100,272 Q110,276 120,272 Q130,268 140,272 Q150,276 160,272 Q170,268 180,272 Q190,276 200,272 L200,280 L0,280 Z" fill="#FFFFFF" opacity="0.85"/>' +
+      '<circle cx="55" cy="290" r="2" fill="#F2C58A"/>' +
+      '<circle cx="145" cy="292" r="1.6" fill="#E8B878"/>' +
+      '<circle cx="100" cy="286" r="1.4" fill="#F2C58A"/>' +
+    '</g>';
+  } },
+{ id:'bg_galaxy', category:'background', name:'銀河', price:500,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_galaxy-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_galaxy-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05030F"/><stop offset="1" stop-color="#241143"/></linearGradient>' +
+      '<linearGradient id="bg_galaxy-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#140A2E"/><stop offset="1" stop-color="#05030F"/></linearGradient>' +
+      '<radialGradient id="bg_galaxy-nebula1" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#FF8FD0" stop-opacity="0.5"/><stop offset="1" stop-color="#FF8FD0" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="bg_galaxy-nebula2" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#6EE7F0" stop-opacity="0.45"/><stop offset="1" stop-color="#6EE7F0" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="bg_galaxy-swirlcore" cx="0.4" cy="0.4" r="0.6"><stop offset="0" stop-color="#FFF6E0"/><stop offset="0.5" stop-color="#FFD9F0"/><stop offset="1" stop-color="#B98CE8" stop-opacity="0.3"/></radialGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_galaxy-clip)">' +
+      '<rect x="0" y="0" width="200" height="300" fill="url(#bg_galaxy-sky)"/>' +
+      '<ellipse cx="32" cy="205" rx="55" ry="40" fill="url(#bg_galaxy-nebula1)"/>' +
+      '<ellipse cx="172" cy="55" rx="48" ry="36" fill="url(#bg_galaxy-nebula2)"/>' +
+      '<ellipse cx="160" cy="225" rx="38" ry="28" fill="url(#bg_galaxy-nebula1)" opacity="0.6"/>' +
+      '<path d="M165,55 C185,50 195,35 180,20 C170,12 155,15 150,25" stroke="#C9A6F5" stroke-width="4" fill="none" opacity="0.55" stroke-linecap="round"/>' +
+      '<path d="M165,55 C145,62 130,50 138,35 C142,27 155,25 162,32" stroke="#8FD0F0" stroke-width="4" fill="none" opacity="0.5" stroke-linecap="round"/>' +
+      '<circle cx="165" cy="55" r="10" fill="url(#bg_galaxy-swirlcore)"/>' +
+      '<circle cx="18" cy="30" r="1.3" fill="#FFFFFF" opacity="0.85"/>' +
+      '<circle cx="50" cy="15" r="1" fill="#FFFFFF" opacity="0.7"/>' +
+      '<circle cx="75" cy="40" r="1.2" fill="#FFFFFF" opacity="0.8"/>' +
+      '<circle cx="105" cy="20" r="1" fill="#FFFFFF" opacity="0.7"/>' +
+      '<circle cx="130" cy="90" r="1.2" fill="#FFFFFF" opacity="0.8"/>' +
+      '<circle cx="15" cy="80" r="1" fill="#FFFFFF" opacity="0.65"/>' +
+      '<circle cx="60" cy="110" r="1.1" fill="#FFFFFF" opacity="0.75"/>' +
+      '<circle cx="190" cy="130" r="1" fill="#FFFFFF" opacity="0.6"/>' +
+      '<circle cx="20" cy="150" r="1.2" fill="#FFFFFF" opacity="0.8"/>' +
+      '<circle cx="185" cy="180" r="1" fill="#FFFFFF" opacity="0.65"/>' +
+      '<path d="M40,25 L41.2,28.8 L45,30 L41.2,31.2 L40,35 L38.8,31.2 L35,30 L38.8,28.8 Z" fill="#FFF7D6"/>' +
+      '<path d="M110,60 L111.2,63.8 L115,65 L111.2,66.2 L110,70 L108.8,66.2 L105,65 L108.8,63.8 Z" fill="#FFF7D6" opacity="0.9"/>' +
+      '<path d="M25,110 L26,113.2 L29,114 L26,114.8 L25,118 L24,114.8 L21,114 L24,113.2 Z" fill="#FFF7D6" opacity="0.85"/>' +
+      '<path d="M0,260 Q100,240 200,260 L200,300 L0,300 Z" fill="url(#bg_galaxy-ground)"/>' +
+      '<ellipse cx="60" cy="278" rx="14" ry="5" fill="#0A0620" opacity="0.4"/>' +
+      '<ellipse cx="150" cy="286" rx="18" ry="6" fill="#0A0620" opacity="0.35"/>' +
+      '<circle cx="90" cy="270" r="1" fill="#FFFFFF" opacity="0.5"/>' +
+      '<circle cx="130" cy="280" r="1" fill="#FFFFFF" opacity="0.45"/>' +
+    '</g>';
+  } },
+{ id:'bg_castle', category:'background', name:'城', price:400,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_castle-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_castle-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFEAF7"/><stop offset="1" stop-color="#F7EFDD"/></linearGradient>' +
+      '<linearGradient id="bg_castle-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FD98A"/><stop offset="1" stop-color="#6FAE5C"/></linearGradient>' +
+      '<linearGradient id="bg_castle-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EFEAE0"/><stop offset="1" stop-color="#CFC7AE"/></linearGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_castle-clip)">' +
+      '<rect x="0" y="0" width="200" height="300" fill="url(#bg_castle-sky)"/>' +
+      '<path d="M0,150 Q60,132 100,142 Q150,152 200,134 L200,182 L0,182 Z" fill="#D7ECC2" opacity="0.7"/>' +
+      '<rect x="148" y="100" width="18" height="50" fill="url(#bg_castle-stone)" stroke="#B7AE92" stroke-width="2"/>' +
+      '<path d="M145,100 L157,80 L169,100 Z" fill="#C77B6E" stroke="#A85F55" stroke-width="2"/>' +
+      '<rect x="154" y="118" width="6" height="10" rx="2" fill="#5A4A6E" opacity="0.85"/>' +
+      '<rect x="160" y="72" width="26" height="78" fill="url(#bg_castle-stone)" stroke="#B7AE92" stroke-width="2"/>' +
+      '<path d="M157,72 L173,46 L189,72 Z" fill="#C77B6E" stroke="#A85F55" stroke-width="2"/>' +
+      '<rect x="160" y="65" width="6" height="7" fill="url(#bg_castle-stone)" stroke="#B7AE92" stroke-width="1.3"/>' +
+      '<rect x="171" y="65" width="6" height="7" fill="url(#bg_castle-stone)" stroke="#B7AE92" stroke-width="1.3"/>' +
+      '<rect x="180" y="65" width="6" height="7" fill="url(#bg_castle-stone)" stroke="#B7AE92" stroke-width="1.3"/>' +
+      '<rect x="169" y="96" width="8" height="16" rx="4" fill="#5A4A6E" opacity="0.85"/>' +
+      '<line x1="173" y1="46" x2="173" y2="32" stroke="#8B5A2B" stroke-width="1.5"/>' +
+      '<path d="M173,32 L185,37 L173,42 Z" fill="#E85B5B"/>' +
+      '<rect x="176" y="95" width="18" height="55" fill="url(#bg_castle-stone)" stroke="#B7AE92" stroke-width="2"/>' +
+      '<path d="M173,95 L185,74 L197,95 Z" fill="#C77B6E" stroke="#A85F55" stroke-width="2"/>' +
+      '<rect x="182" y="114" width="6" height="10" rx="2" fill="#5A4A6E" opacity="0.85"/>' +
+      '<path d="M0,225 Q60,208 100,218 Q150,228 200,210 L200,300 L0,300 Z" fill="url(#bg_castle-hill)"/>' +
+      '<path d="M140,300 Q150,255 158,215 Q166,185 172,150" stroke="#E8D9B0" stroke-width="12" fill="none" opacity="0.5" stroke-linecap="round"/>' +
+      '<rect x="10" y="252" width="4" height="22" fill="#6B4423"/>' +
+      '<circle cx="12" cy="245" r="13" fill="#6FAE5C"/>' +
+      '<circle cx="12" cy="245" r="13" fill="#3B8A4A" opacity="0.3"/>' +
+      '<rect x="186" y="246" width="4" height="24" fill="#6B4423"/>' +
+      '<circle cx="188" cy="238" r="15" fill="#6FAE5C"/>' +
+      '<circle cx="188" cy="238" r="15" fill="#3B8A4A" opacity="0.3"/>' +
+    '</g>';
+  } },
+{ id:'bg_rainbow', category:'background', name:'虹', price:300,
+  getSVG:function(){ return '' +
+    '<defs>' +
+      '<clipPath id="bg_rainbow-clip"><rect x="0" y="0" width="200" height="300" rx="8"/></clipPath>' +
+      '<linearGradient id="bg_rainbow-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFEFFB"/><stop offset="1" stop-color="#F5FBFF"/></linearGradient>' +
+      '<linearGradient id="bg_rainbow-grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A9E08C"/><stop offset="1" stop-color="#7AC468"/></linearGradient>' +
+    '</defs>' +
+    '<g clip-path="url(#bg_rainbow-clip)">' +
+      '<rect x="0" y="0" width="200" height="300" fill="url(#bg_rainbow-sky)"/>' +
+      '<path d="M-160,300 A260,260 0 0 1 360,300" stroke="#FF8A8A" stroke-width="11" fill="none"/>' +
+      '<path d="M-148,300 A248,248 0 0 1 348,300" stroke="#FFB870" stroke-width="11" fill="none"/>' +
+      '<path d="M-136,300 A236,236 0 0 1 336,300" stroke="#FFE066" stroke-width="11" fill="none"/>' +
+      '<path d="M-124,300 A224,224 0 0 1 324,300" stroke="#9BE28A" stroke-width="11" fill="none"/>' +
+      '<path d="M-112,300 A212,212 0 0 1 312,300" stroke="#7FC7EA" stroke-width="11" fill="none"/>' +
+      '<path d="M-100,300 A200,200 0 0 1 300,300" stroke="#8C9CE8" stroke-width="11" fill="none"/>' +
+      '<path d="M-88,300 A188,188 0 0 1 288,300" stroke="#C79AE8" stroke-width="11" fill="none"/>' +
+      '<ellipse cx="20" cy="128" rx="20" ry="10" fill="#FFFFFF" opacity="0.9"/>' +
+      '<ellipse cx="35" cy="122" rx="14" ry="8" fill="#FFFFFF" opacity="0.85"/>' +
+      '<ellipse cx="180" cy="128" rx="20" ry="10" fill="#FFFFFF" opacity="0.9"/>' +
+      '<ellipse cx="165" cy="122" rx="14" ry="8" fill="#FFFFFF" opacity="0.85"/>' +
+      '<path d="M0,238 Q100,222 200,238 L200,300 L0,300 Z" fill="url(#bg_rainbow-grass)"/>' +
+      '<ellipse cx="8" cy="255" rx="16" ry="8" fill="#FFFFFF" opacity="0.85"/>' +
+      '<ellipse cx="192" cy="248" rx="16" ry="8" fill="#FFFFFF" opacity="0.85"/>' +
+      '<circle cx="35" cy="270" r="3.5" fill="#FF8A8A"/>' +
+      '<circle cx="31" cy="267" r="2.4" fill="#FFE066"/>' +
+      '<circle cx="39" cy="267" r="2.4" fill="#FFE066"/>' +
+      '<circle cx="31" cy="273" r="2.4" fill="#FFE066"/>' +
+      '<circle cx="39" cy="273" r="2.4" fill="#FFE066"/>' +
+      '<line x1="35" y1="273" x2="35" y2="286" stroke="#5B8A3E" stroke-width="1.6"/>' +
+      '<circle cx="160" cy="280" r="3.2" fill="#8C9CE8"/>' +
+      '<circle cx="156.5" cy="277.5" r="2.2" fill="#FFF3C0"/>' +
+      '<circle cx="163.5" cy="277.5" r="2.2" fill="#FFF3C0"/>' +
+      '<circle cx="156.5" cy="282.5" r="2.2" fill="#FFF3C0"/>' +
+      '<circle cx="163.5" cy="282.5" r="2.2" fill="#FFF3C0"/>' +
+      '<line x1="160" y1="283" x2="160" y2="294" stroke="#5B8A3E" stroke-width="1.6"/>' +
+    '</g>';
+  } },
+// ===== handheld =====
+{ id:'held_book', category:'handheld', name:'本', price:30,
+  getSVG:function(){ return '' +
+    '<g transform="rotate(-14 133 196)">' +
+    '<rect x="111" y="178" width="42" height="32" rx="3" fill="#B8482E" stroke="#4a3428" stroke-width="2.5"/>' +
+    '<rect x="151" y="181" width="4" height="26" fill="#F5EFE0" stroke="#4a3428" stroke-width="1.4"/>' +
+    '<path d="M152.3,182 L152.3,206 M153.4,182 L153.4,206" stroke="#D8CFB8" stroke-width="0.8"/>' +
+    '<path d="M148,178 L153,181 L153,207 L148,210 Z" fill="#8A3420" opacity="0.75"/>' +
+    '<rect x="118" y="188" width="28" height="5" rx="1.5" fill="#F0D48A" opacity="0.92"/>' +
+    '<path d="M120,197 L143,197 M120,201 L138,201" stroke="#E8C878" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<path d="M137,178 L142,178 L142,214 L139.5,208 L137,214 Z" fill="#D4A62A" stroke="#4a3428" stroke-width="1.6" stroke-linejoin="round"/>' +
+    '<path d="M114,181 Q113,190 116,197" stroke="#E8927A" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>' +
+    '</g>';
+  } },
+{ id:'held_bag', category:'handheld', name:'鞄', price:50,
+  getSVG:function(){ return '' +
+    '<path d="M121,197 Q135,175 149,197 Q145,199 143,197 Q133,181 127,197 Q125,199 121,197 Z" fill="#6B4A32" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<rect x="115" y="197" width="42" height="38" rx="9" fill="#C98A4B" stroke="#4a3428" stroke-width="2.5"/>' +
+    '<path d="M149,199 Q156,218 150,233 L143,233 Q150,218 142,199 Z" fill="#9A5F2C" opacity="0.75"/>' +
+    '<path d="M115,197 Q136,190 157,197 L157,208 Q136,214 115,208 Z" fill="#B8763A" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<rect x="131" y="200" width="10" height="6" rx="1.5" fill="#E8B93C" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<circle cx="136" cy="203" r="2" fill="#8B5A2B"/>' +
+    '<path d="M120,229 Q136,233 152,229" stroke="#8B5A2B" stroke-width="1.4" stroke-dasharray="3,2" fill="none"/>' +
+    '<path d="M120,203 Q118,215 121,227" stroke="#E0A868" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.7"/>';
+  } },
+{ id:'held_backpack', category:'handheld', name:'リュック', price:40,
+  getSVG:function(){ return '' +
+    '<path d="M126,143 Q116,168 128,198 L136,200 Q126,170 134,143 Z" fill="#4a3428" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<ellipse cx="127" cy="145" rx="8" ry="6" fill="#4a3428" opacity="0.9"/>' +
+    '<rect x="126" y="174" width="10" height="6" rx="1.5" fill="#C9C2B4" stroke="#4a3428" stroke-width="1.4"/>' +
+    '<rect x="137" y="150" width="36" height="58" rx="12" fill="#7A8F5C" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M167,152 Q175,180 169,206 L160,206 Q168,180 158,152 Z" fill="#5C6E42" opacity="0.75"/>' +
+    '<path d="M137,150 Q155,141 173,150 L173,168 Q155,174 137,168 Z" fill="#657A48" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M150,148 Q155,139 160,148" stroke="#4a3428" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    '<rect x="145" y="178" width="20" height="20" rx="6" fill="#657A48" stroke="#4a3428" stroke-width="2"/>' +
+    '<path d="M147,182 Q155,180 163,182" stroke="#4a3428" stroke-width="1.4" fill="none"/>' +
+    '<rect x="144" y="160" width="4" height="10" fill="#4a3428"/>' +
+    '<rect x="166" y="160" width="4" height="10" fill="#4a3428"/>' +
+    '<circle cx="146" cy="170" r="2" fill="#C9C2B4"/>' +
+    '<circle cx="168" cy="170" r="2" fill="#C9C2B4"/>';
+  } },
+{ id:'held_wand', category:'handheld', name:'魔法の杖', price:300,
+  getSVG:function(){ return '' +
+    '<defs>' +
+    '<radialGradient id="held_wand-star" cx="35%" cy="35%" r="70%">' +
+    '<stop offset="0%" stop-color="#FFF6D0"/>' +
+    '<stop offset="55%" stop-color="#FFD447"/>' +
+    '<stop offset="100%" stop-color="#C98A1E"/>' +
+    '</radialGradient>' +
+    '</defs>' +
+    '<g transform="rotate(-58 135 199)">' +
+    '<rect x="145" y="197.5" width="62" height="3" rx="1.5" fill="#4A3468" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<path d="M152,198 L156,197.6 M164,198 L168,197.6 M176,198 L180,197.6 M188,198 L192,197.6" stroke="#E8B93C" stroke-width="1.2"/>' +
+    '<rect x="130" y="195.5" width="15" height="7" rx="2.5" fill="#3A2A52" stroke="#4a3428" stroke-width="2"/>' +
+    '<rect x="133" y="195.5" width="2" height="7" fill="#E8B93C"/>' +
+    '<rect x="141" y="195.5" width="2" height="7" fill="#E8B93C"/>' +
+    '<path d="M214,189 L216.65,195.36 L223.51,195.91 L218.28,200.39 L219.88,207.09 L214,203.5 L208.12,207.09 L209.72,200.39 L204.49,195.91 L211.35,195.36 Z" fill="url(#held_wand-star)" stroke="#4a3428" stroke-width="1.8" stroke-linejoin="round" filter="url(#av-glow)"/>' +
+    '<path d="M226,186 L228,190 L232,190 L229,193 L230,197 L226,195 L222,197 L223,193 L220,190 L224,190 Z" fill="#FFF2B0" opacity="0.85"/>' +
+    '<circle cx="200" cy="207" r="2.2" fill="#FFE9A8" opacity="0.85"/>' +
+    '</g>';
+  } },
+{ id:'held_sword', category:'handheld', name:'勇者の剣', price:500,
+  getSVG:function(){ return '' +
+    '<defs>' +
+    '<linearGradient id="held_sword-blade" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#F5F7F9"/>' +
+    '<stop offset="45%" stop-color="#D5DCE1"/>' +
+    '<stop offset="100%" stop-color="#93A0AA"/>' +
+    '</linearGradient>' +
+    '<linearGradient id="held_sword-guard" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#FFE9A8"/>' +
+    '<stop offset="50%" stop-color="#E8B93C"/>' +
+    '<stop offset="100%" stop-color="#A8721A"/>' +
+    '</linearGradient>' +
+    '</defs>' +
+    '<g transform="rotate(-62.5 135 199)">' +
+    '<path d="M153,193 L205,195 L220,199 L205,203 L153,205 Z" fill="url(#held_sword-blade)" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M153,203 L204,201.6 L218,199 L204,203.6 L153,205 Z" fill="#7A8894" opacity="0.55"/>' +
+    '<path d="M156,199 L214,199" stroke="#FFFFFF" stroke-width="1.4" opacity="0.7" stroke-linecap="round"/>' +
+    '<rect x="146" y="188" width="6" height="22" rx="2" fill="url(#held_sword-guard)" stroke="#4a3428" stroke-width="2"/>' +
+    '<rect x="132" y="195" width="15" height="8" rx="3" fill="#4a3428" stroke="#4a3428" stroke-width="2" stroke-linejoin="round"/>' +
+    '<path d="M134,196.5 L145,196.5 M134,201.5 L145,201.5" stroke="#6B5644" stroke-width="1" opacity="0.8"/>' +
+    '<circle cx="130" cy="199" r="5" fill="url(#held_sword-guard)" stroke="#4a3428" stroke-width="1.8"/>' +
+    '</g>';
+  } },
+{ id:'held_lightsaber', category:'handheld', name:'ライトセーバー', price:600,
+  getSVG:function(){ return '' +
+    '<defs>' +
+    '<linearGradient id="held_lightsaber-blade" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="#FFFFFF"/>' +
+    '<stop offset="50%" stop-color="#6FD8FF"/>' +
+    '<stop offset="100%" stop-color="#2B8FE0"/>' +
+    '</linearGradient>' +
+    '</defs>' +
+    '<g transform="rotate(-60 135 199)">' +
+    '<rect x="156" y="193.5" width="64" height="11" rx="5.5" fill="#4FC9FF" opacity="0.35" filter="url(#av-glow)"/>' +
+    '<rect x="156" y="195.5" width="64" height="7" rx="3.5" fill="url(#held_lightsaber-blade)" filter="url(#av-glow)"/>' +
+    '<rect x="158" y="197.7" width="60" height="2.2" rx="1.1" fill="#EAFBFF" opacity="0.9"/>' +
+    '<rect x="150" y="195" width="6" height="8" rx="2" fill="#5A5F66" stroke="#4a3428" stroke-width="1.6"/>' +
+    '<rect x="128" y="193" width="22" height="12" rx="4" fill="#C9CDD2" stroke="#4a3428" stroke-width="2.2" stroke-linejoin="round"/>' +
+    '<path d="M132,193 L132,205 M137,193 L137,205 M143,193 L143,205" stroke="#8A9096" stroke-width="1.2"/>' +
+    '<rect x="133" y="197" width="4" height="4" rx="1" fill="#E84B4B"/>' +
+    '</g>';
+  } },
+{ id:'held_trophy', category:'handheld', name:'トロフィー', price:400,
+  getSVG:function(){ return '' +
+    '<defs>' +
+    '<linearGradient id="held_trophy-gold" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0%" stop-color="#FFF3B0"/>' +
+    '<stop offset="45%" stop-color="#FFD447"/>' +
+    '<stop offset="100%" stop-color="#A8701A"/>' +
+    '</linearGradient>' +
+    '</defs>' +
+    '<path d="M118,168 Q108,168 109,180 Q110,190 120,188" fill="none" stroke="url(#held_trophy-gold)" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M118,168 Q108,168 109,180 Q110,190 120,188" fill="none" stroke="#4a3428" stroke-width="2" stroke-linecap="round"/>' +
+    '<path d="M152,168 Q162,168 161,180 Q160,190 150,188" fill="none" stroke="url(#held_trophy-gold)" stroke-width="4.5" stroke-linecap="round"/>' +
+    '<path d="M152,168 Q162,168 161,180 Q160,190 150,188" fill="none" stroke="#4a3428" stroke-width="2" stroke-linecap="round"/>' +
+    '<rect x="122" y="206" width="26" height="7" rx="2" fill="url(#held_trophy-gold)" stroke="#4a3428" stroke-width="2.2"/>' +
+    '<rect x="131" y="194" width="8" height="13" rx="2" fill="url(#held_trophy-gold)" stroke="#4a3428" stroke-width="1.8"/>' +
+    '<path d="M118,160 Q117,178 127,194 L143,194 Q153,178 152,160 Q152,152 135,152 Q118,152 118,160 Z" fill="url(#held_trophy-gold)" stroke="#4a3428" stroke-width="2.5" stroke-linejoin="round"/>' +
+    '<path d="M148,160 Q150,178 143,194 L138,194 Q145,178 143,160 Z" fill="#A8701A" opacity="0.6"/>' +
+    '<ellipse cx="135" cy="153" rx="17" ry="4" fill="#C98A1E"/>' +
+    '<path d="M124,158 Q122,172 126,186" stroke="#FFFFFF" stroke-width="2.5" opacity="0.65" fill="none" stroke-linecap="round"/>' +
+    '<path d="M135,167 L136.6,171 L141,171 L137.5,173.5 L138.8,177.5 L135,175 L131.2,177.5 L132.5,173.5 L129,171 L133.4,171 Z" fill="#FFF6D0" opacity="0.9"/>';
+  } },
 ];
