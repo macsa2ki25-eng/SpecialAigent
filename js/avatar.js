@@ -87,19 +87,19 @@
     saveEquipped(eq);
   }
 
-  // --- SVG 共通定義（グラデーション・フィルター）---
+  // --- SVG 共通定義 ---
   function sharedDefs() {
     return '<defs>' +
       '<radialGradient id="av-skin" cx="50%" cy="35%" r="60%">' +
-        '<stop offset="0%" stop-color="#FFE8D0"/>' +
-        '<stop offset="100%" stop-color="#F5CBA7"/>' +
+        '<stop offset="0%" stop-color="#FFE8D2"/>' +
+        '<stop offset="100%" stop-color="#FFE2C6"/>' +
       '</radialGradient>' +
       '<linearGradient id="av-skin-v" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0%" stop-color="#FFDFC4"/>' +
-        '<stop offset="100%" stop-color="#F0C8A0"/>' +
+        '<stop offset="0%" stop-color="#FFE2C6"/>' +
+        '<stop offset="100%" stop-color="#F8D4B0"/>' +
       '</linearGradient>' +
       '<filter id="av-shd" x="-20%" y="-10%" width="140%" height="140%">' +
-        '<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.12"/>' +
+        '<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.10"/>' +
       '</filter>' +
       '<filter id="av-shd-sm" x="-20%" y="-10%" width="140%" height="140%">' +
         '<feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.08"/>' +
@@ -108,62 +108,72 @@
         '<feGaussianBlur stdDeviation="3" result="b"/>' +
         '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
       '</filter>' +
-      '<radialGradient id="av-iris" cx="40%" cy="35%" r="55%">' +
-        '<stop offset="0%" stop-color="#6D4C41"/>' +
-        '<stop offset="70%" stop-color="#3E2723"/>' +
-        '<stop offset="100%" stop-color="#1B0F0A"/>' +
-      '</radialGradient>' +
-      '<radialGradient id="av-eye-w" cx="50%" cy="40%" r="50%">' +
-        '<stop offset="0%" stop-color="#fff"/>' +
-        '<stop offset="100%" stop-color="#f0f0f0"/>' +
-      '</radialGradient>' +
       '<radialGradient id="av-blush" cx="50%" cy="50%" r="50%">' +
-        '<stop offset="0%" stop-color="#FFB4B4" stop-opacity="0.55"/>' +
-        '<stop offset="100%" stop-color="#FFB4B4" stop-opacity="0"/>' +
+        '<stop offset="0%" stop-color="#FF9D8A" stop-opacity="0.5"/>' +
+        '<stop offset="100%" stop-color="#FF9D8A" stop-opacity="0"/>' +
       '</radialGradient>' +
     '</defs>';
   }
 
-  // --- SVG 基本パーツ（高品質版）---
+  // --- ハンゲーム風 基本素体 ---
+  // 骨格アンカー: 頭中心(100,80) 胴72-128/140-210 手(65,199)(135,199) 脚206-262 足246-268
+  var OL = '#4a3428';   // 主線
+  var SKIN = '#FFE2C6'; // 肌ベース
+  var SKIN_SH = '#F3C6A0'; // 肌かげ
+
   function bodyBaseSVG() {
     return '' +
-      '<ellipse cx="100" cy="290" rx="36" ry="5" fill="#c0c0c0" opacity="0.35"/>' +
-      '<rect x="72" y="140" width="56" height="70" rx="12" fill="url(#av-skin-v)"/>' +
-      '<rect x="90" y="130" width="20" height="18" rx="6" fill="url(#av-skin)"/>' +
-      '<rect x="56" y="148" width="20" height="48" rx="10" fill="url(#av-skin-v)"/>' +
-      '<rect x="124" y="148" width="20" height="48" rx="10" fill="url(#av-skin-v)"/>' +
-      '<circle cx="66" cy="200" r="8" fill="url(#av-skin)"/>' +
-      '<circle cx="134" cy="200" r="8" fill="url(#av-skin)"/>' +
-      '<rect x="78" y="206" width="18" height="55" rx="9" fill="url(#av-skin-v)"/>' +
-      '<rect x="104" y="206" width="18" height="55" rx="9" fill="url(#av-skin-v)"/>';
+      // 接地影
+      '<ellipse cx="100" cy="288" rx="42" ry="7" fill="#3a2c22" opacity="0.10"/>' +
+      // 脚
+      '<rect x="79" y="204" width="18" height="58" rx="9" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5"/>' +
+      '<rect x="103" y="204" width="18" height="58" rx="9" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5"/>' +
+      '<path d="M114,210 Q118,235 114,256 L118,256 Q121,234 118,210 Z" fill="' + SKIN_SH + '"/>' +
+      // 腕
+      '<rect x="55" y="145" width="19" height="52" rx="9.5" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5"/>' +
+      '<rect x="126" y="145" width="19" height="52" rx="9.5" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5"/>' +
+      '<path d="M138,150 Q142,170 139,192 L142,190 Q144,168 141,150 Z" fill="' + SKIN_SH + '"/>' +
+      // 手（ミトン風）
+      '<circle cx="65" cy="200" r="9" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5"/>' +
+      '<circle cx="135" cy="200" r="9" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5"/>' +
+      // 首
+      '<rect x="92" y="126" width="16" height="20" rx="7" fill="' + SKIN_SH + '"/>' +
+      // 胴
+      '<path d="M84,140 L116,140 Q128,140 128,153 L128,197 Q128,210 115,210 L85,210 Q72,210 72,197 L72,153 Q72,140 84,140 Z" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<path d="M116,144 Q124,172 119,206 L110,206 Q120,174 108,144 Z" fill="' + SKIN_SH + '" opacity="0.6"/>';
   }
 
   function headSVG() {
     return '' +
-      '<circle cx="100" cy="80" r="52" fill="url(#av-skin)"/>' +
-      '<ellipse cx="48" cy="82" rx="6" ry="8" fill="url(#av-skin)"/>' +
-      '<ellipse cx="48" cy="83" rx="3" ry="5" fill="#F0C8A0" opacity="0.5"/>' +
-      '<ellipse cx="152" cy="82" rx="6" ry="8" fill="url(#av-skin)"/>' +
-      '<ellipse cx="152" cy="83" rx="3" ry="5" fill="#F0C8A0" opacity="0.5"/>' +
-      '<path d="M70,71 Q78,67 86,70" stroke="#8D6E63" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
-      '<path d="M114,70 Q122,67 130,71" stroke="#8D6E63" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
-      '<ellipse cx="80" cy="82" rx="10" ry="9" fill="url(#av-eye-w)"/>' +
-      '<ellipse cx="120" cy="82" rx="10" ry="9" fill="url(#av-eye-w)"/>' +
-      '<ellipse cx="80" cy="83" rx="7" ry="7.5" fill="url(#av-iris)"/>' +
-      '<ellipse cx="120" cy="83" rx="7" ry="7.5" fill="url(#av-iris)"/>' +
-      '<circle cx="80" cy="83" r="3.5" fill="#0a0a0a"/>' +
-      '<circle cx="120" cy="83" r="3.5" fill="#0a0a0a"/>' +
-      '<ellipse cx="83" cy="80" rx="2.5" ry="2" fill="#fff" opacity="0.9"/>' +
-      '<ellipse cx="123" cy="80" rx="2.5" ry="2" fill="#fff" opacity="0.9"/>' +
-      '<circle cx="77" cy="85" r="1.2" fill="#fff" opacity="0.5"/>' +
-      '<circle cx="117" cy="85" r="1.2" fill="#fff" opacity="0.5"/>' +
-      '<path d="M70,78 Q75,75 80,76 Q85,75 90,78" stroke="#4E342E" stroke-width="1.5" fill="none"/>' +
-      '<path d="M110,78 Q115,75 120,76 Q125,75 130,78" stroke="#4E342E" stroke-width="1.5" fill="none"/>' +
-      '<path d="M98,91 Q100,93 102,91" stroke="#D4A574" stroke-width="1.2" fill="none" stroke-linecap="round"/>' +
-      '<path d="M91,100 Q96,105 100,106 Q104,105 109,100" stroke="#C9876B" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
-      '<path d="M96,101 Q100,103 104,101" fill="#E8A088" opacity="0.3"/>' +
-      '<ellipse cx="66" cy="94" rx="10" ry="6" fill="url(#av-blush)"/>' +
-      '<ellipse cx="134" cy="94" rx="10" ry="6" fill="url(#av-blush)"/>';
+      // 耳
+      '<ellipse cx="47" cy="87" rx="6.5" ry="9" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2"/>' +
+      '<ellipse cx="153" cy="87" rx="6.5" ry="9" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="2"/>' +
+      // 輪郭（ほっぺふっくら・あご小さめ）
+      '<path d="M100,30 C66,30 46,53 46,83 C46,106 61,124 79,130 Q100,137 121,130 C139,124 154,106 154,83 C154,53 134,30 100,30 Z" fill="' + SKIN + '" stroke="' + OL + '" stroke-width="3" stroke-linejoin="round"/>' +
+      // 頬のかげ（あご下）
+      '<path d="M80,128 Q100,134 120,128 Q100,132 80,128 Z" fill="' + SKIN_SH + '" opacity="0.7"/>' +
+      // まゆ
+      '<path d="M67,70 Q76,64 86,68" stroke="#6b4a35" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+      '<path d="M114,68 Q124,64 133,70" stroke="#6b4a35" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+      // 目（大きくつややか）
+      '<ellipse cx="79" cy="89" rx="9.5" ry="11.5" fill="#33200F"/>' +
+      '<ellipse cx="121" cy="89" rx="9.5" ry="11.5" fill="#33200F"/>' +
+      '<ellipse cx="79" cy="93.5" rx="6.2" ry="5.6" fill="#8A5A2E"/>' +
+      '<ellipse cx="121" cy="93.5" rx="6.2" ry="5.6" fill="#8A5A2E"/>' +
+      '<ellipse cx="79" cy="96" rx="4" ry="3" fill="#C98D4B" opacity="0.85"/>' +
+      '<ellipse cx="121" cy="96" rx="4" ry="3" fill="#C98D4B" opacity="0.85"/>' +
+      '<circle cx="75.5" cy="84" r="3.4" fill="#fff"/>' +
+      '<circle cx="117.5" cy="84" r="3.4" fill="#fff"/>' +
+      '<circle cx="82.5" cy="94" r="1.7" fill="#fff" opacity="0.9"/>' +
+      '<circle cx="124.5" cy="94" r="1.7" fill="#fff" opacity="0.9"/>' +
+      // 上まつげライン
+      '<path d="M69,83 Q79,75 89,83" stroke="#241610" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+      '<path d="M111,83 Q121,75 131,83" stroke="#241610" stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+      // 口（にっこり）
+      '<path d="M92,103 Q100,112 108,103 Q100,107 92,103 Z" fill="#9C4633" stroke="' + OL + '" stroke-width="1.6" stroke-linejoin="round"/>' +
+      // ほっぺ
+      '<ellipse cx="62" cy="100" rx="9" ry="5.5" fill="#FF9D8A" opacity="0.45"/>' +
+      '<ellipse cx="138" cy="100" rx="9" ry="5.5" fill="#FF9D8A" opacity="0.45"/>';
   }
 
   // --- レンダリング ---
