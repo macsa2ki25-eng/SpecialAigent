@@ -273,7 +273,7 @@
     var spike = D(7) + H(2) + D(7);
     var starMark = D(15) + H(1);
     var body = ROUND16.slice();
-    body[4] = H(3) + O(10) + H(3);
+    body[4] = EYES16;
     body[9] = MOUTH16;
     var base = [starMark, spike].concat(body);
     var frameA = base.slice();
