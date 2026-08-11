@@ -203,8 +203,14 @@ button{font-family:inherit;font-size:19px;font-weight:700;cursor:pointer}
 }
 .badge.r1{background:var(--gold);color:#4A3200}
 .badge.r2{background:var(--blue)}
-.deck{font-size:25px;font-weight:800;line-height:1.35;margin:2px 0 6px;word-break:keep-all}
-.meta{font-size:15px;color:var(--muted);word-break:keep-all}
+/* keep-all は「ゆうしょう」が途中で折り返されるのを防ぐためだが、
+   それだけだと「ナンジャモのハラバリーex」のような長いデッキ名が
+   はみ出して横スクロールが出る。anywhere を足して、収まらないときだけ折る。 */
+.deck{
+  font-size:25px;font-weight:800;line-height:1.35;margin:2px 0 6px;
+  word-break:keep-all;overflow-wrap:anywhere;
+}
+.meta{font-size:15px;color:var(--muted);word-break:keep-all;overflow-wrap:anywhere}
 .go{margin-top:8px;font-size:16px;font-weight:700;color:#1F6FEB}
 .rankrow{display:flex;align-items:center;gap:14px}
 .num{
@@ -214,8 +220,10 @@ button{font-family:inherit;font-size:19px;font-weight:700;cursor:pointer}
 .num.n1{background:var(--gold);color:#4A3200}
 .num.n2{background:#B8C0CC;color:#2B2118}
 .num.n3{background:#D9A066}
-.count{font-size:16px;color:var(--muted);word-break:keep-all}
+.count{font-size:16px;color:var(--muted);word-break:keep-all;overflow-wrap:anywhere}
 .count span{display:inline-block;margin-right:12px}
+/* flex の子は既定で内容より縮まないので、明示的に縮められるようにする */
+.rankrow > div:last-child{min-width:0}
 .empty{text-align:center;color:var(--muted);padding:36px 10px;font-size:17px}
 footer{margin-top:28px;font-size:13px;color:var(--muted);line-height:1.8}
 footer a{color:var(--muted)}
