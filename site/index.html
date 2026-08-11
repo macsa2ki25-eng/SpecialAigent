@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FFB703">
+<title>きょうの ポケカ</title>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>きょうの ポケカ</h1>
+  <p class="updated" id="updated"></p>
+
+  <div class="sample" id="sample" style="display:none">
+    ⚠️ いまは れんしゅうよう の サンプルデータ です。
+    ほんものの けっかに なるまで まってね。
+  </div>
+
+  <div class="hero">
+    <p class="cap">いま いちばん つよい デッキ</p>
+    <p class="name" id="heroName"></p>
+    <p class="note" id="heroNote"></p>
+  </div>
+
+  <div class="section-title">なにを みる？</div>
+  <div class="grid2" id="viewRow">
+    <button class="seg" data-value="new" aria-pressed="true">あたらしい じゅん</button>
+    <button class="seg blue" data-value="rank" aria-pressed="false">つよい じゅん</button>
+  </div>
+
+  <div class="grid2" id="rankRow" style="margin-top:10px">
+    <button class="seg" data-value="1" aria-pressed="false">ゆうしょう</button>
+    <button class="seg blue" data-value="2" aria-pressed="false">じゅんゆうしょう</button>
+    <button class="seg span2" data-value="all" aria-pressed="true">ぜんぶ みる</button>
+  </div>
+
+  <div class="grid3" id="periodRow" style="margin-top:10px;display:none">
+    <button class="seg" data-value="7d" aria-pressed="true">1しゅうかん</button>
+    <button class="seg" data-value="30d" aria-pressed="false">1かげつ</button>
+    <button class="seg" data-value="all" aria-pressed="false">ぜんぶ</button>
+  </div>
+
+  <div class="section-title" id="deckTitle">デッキで さがす</div>
+  <div class="chips" id="deckRow"></div>
+
+  <div id="list"></div>
+
+  <footer>
+    データの もとは
+    <a href="https://pokecabook.com/" target="_blank" rel="noopener">ポケカブック</a> と
+    <a href="https://players.pokemon-card.com/" target="_blank" rel="noopener">ポケモンカードゲーム プレイヤーズクラブ</a>
+    です。デッキの なかみは タップして もとの ページで みてね。<br>
+    このページは 家族用の 個人的な まとめです。記事や 画像の 転載は していません。
+  </footer>
+</div>
+
+<style>
+:root{
+  --bg:#FFF7EC; --card:#FFFFFF; --ink:#2B2118; --muted:#7A6A5A;
+  --gold:#FFB703; --blue:#3A86FF; --line:#EFE1CE; --shadow:0 3px 0 #E8D6BE;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN","Yu Gothic",
+    "Meiryo",system-ui,sans-serif;
+  font-size:18px; line-height:1.7; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px;margin:0 auto;padding:16px 14px 64px}
+h1{font-size:28px;margin:8px 0 2px;letter-spacing:.02em}
+.updated{color:var(--muted);font-size:14px;margin:0 0 14px}
+.sample{
+  background:#FFE8E8;border:3px dashed #E63946;border-radius:14px;
+  padding:12px 14px;margin:0 0 16px;font-size:16px;color:#B3242F;font-weight:700;
+}
+.hero{
+  background:linear-gradient(135deg,#FFD166,#FFB703);
+  border-radius:22px;padding:18px 20px;margin-bottom:20px;box-shadow:var(--shadow);
+}
+.hero .cap{font-size:16px;font-weight:700;margin:0 0 6px}
+.hero .name{font-size:30px;font-weight:800;margin:0;line-height:1.3;word-break:break-word}
+.hero .note{font-size:15px;margin:6px 0 0}
+.section-title{font-size:15px;color:var(--muted);margin:22px 0 8px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.span2{grid-column:1 / -1}
+button{font-family:inherit;font-size:19px;font-weight:700;cursor:pointer}
+.seg{
+  min-height:60px;padding:6px 4px;border-radius:16px;
+  border:3px solid var(--line);background:var(--card);color:var(--ink);
+  box-shadow:var(--shadow);line-height:1.3;
+  /* ひらがなが単語の途中で折り返されると読みにくいので、
+     文節の空白でだけ改行させる */
+  word-break:keep-all;overflow-wrap:normal;
+}
+.grid3 .seg{font-size:17px}
+.seg[aria-pressed="true"]{background:var(--gold);border-color:#E09B00}
+.seg.blue[aria-pressed="true"]{background:var(--blue);border-color:#2668D8;color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;-webkit-overflow-scrolling:touch}
+.chip{
+  flex:0 0 auto;min-height:52px;padding:0 18px;border-radius:26px;
+  border:3px solid var(--line);background:var(--card);color:var(--ink);font-size:17px;
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card{
+  display:block;background:var(--card);border:3px solid var(--line);
+  border-radius:20px;padding:14px 16px;margin-bottom:12px;
+  text-decoration:none;color:inherit;box-shadow:var(--shadow);
+}
+.card:active{transform:translateY(2px);box-shadow:none}
+.badge{
+  display:inline-block;border-radius:999px;padding:3px 14px;font-size:15px;
+  font-weight:800;color:#fff;margin-bottom:6px;
+}
+.badge.r1{background:var(--gold);color:#4A3200}
+.badge.r2{background:var(--blue)}
+.deck{font-size:25px;font-weight:800;line-height:1.35;margin:2px 0 6px;word-break:keep-all}
+.meta{font-size:15px;color:var(--muted);word-break:keep-all}
+.go{margin-top:8px;font-size:16px;font-weight:700;color:#1F6FEB}
+.rankrow{display:flex;align-items:center;gap:14px}
+.num{
+  flex:0 0 auto;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  font-size:22px;font-weight:800;color:#fff;background:var(--muted);
+}
+.num.n1{background:var(--gold);color:#4A3200}
+.num.n2{background:#B8C0CC;color:#2B2118}
+.num.n3{background:#D9A066}
+.count{font-size:16px;color:var(--muted);word-break:keep-all}
+.count span{display:inline-block;margin-right:12px}
+.empty{text-align:center;color:var(--muted);padding:36px 10px;font-size:17px}
+footer{margin-top:28px;font-size:13px;color:var(--muted);line-height:1.8}
+footer a{color:var(--muted)}
+</style>
+<script>
+var DATA = {"updatedAt": "2026/08/11 13:39", "isSample": true, "summary": {"total": 66, "first_count": 33, "second_count": 33, "latest_date": "2026-08-09", "oldest_date": "2026-07-22", "store_count": 7, "top_deck": {"deck_key": "ピジョットex", "deck_name": "ピジョットex", "first": 4, "second": 0, "latest_date": "2026-08-09", "total": 4, "score": 8, "position": 1}}, "results": [{"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "シニア", "rank": 2, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "ジュニア", "rank": 2, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "ゲームアーク 丸亀店", "prefecture": "香川", "league": "オープン", "rank": 2, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "オープン", "rank": 2, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "シニア", "rank": 1, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "ジュニア", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "ゲームアーク 丸亀店", "prefecture": "香川", "league": "オープン", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-08-09", "dateLabel": "8がつ9にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "オープン", "rank": 1, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-08-08", "dateLabel": "8がつ8にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "シニア", "rank": 2, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-08-08", "dateLabel": "8がつ8にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 2, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-08-08", "dateLabel": "8がつ8にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "ジュニア", "rank": 2, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-08-08", "dateLabel": "8がつ8にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "シニア", "rank": 1, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-08-08", "dateLabel": "8がつ8にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 1, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-08-08", "dateLabel": "8がつ8にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "ジュニア", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-08-07", "dateLabel": "8がつ7にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "オープン", "rank": 2, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-08-07", "dateLabel": "8がつ7にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "オープン", "rank": 1, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-08-06", "dateLabel": "8がつ6にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "シニア", "rank": 2, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-08-06", "dateLabel": "8がつ6にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "オープン", "rank": 2, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-08-06", "dateLabel": "8がつ6にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "シニア", "rank": 1, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-08-06", "dateLabel": "8がつ6にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "オープン", "rank": 1, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-08-05", "dateLabel": "8がつ5にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 2, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-08-05", "dateLabel": "8がつ5にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 1, "deck": "パオジアンex", "deckKey": "パオジアンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#118AB2", "emoji": "❄️"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "オープン", "rank": 2, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 2, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "オープン", "rank": 2, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "オープン", "rank": 2, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "オープン", "rank": 1, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 1, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "オープン", "rank": 1, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-08-02", "dateLabel": "8がつ2にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "オープン", "rank": 1, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "オープン", "rank": 2, "deck": "パオジアンex", "deckKey": "パオジアンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#118AB2", "emoji": "❄️"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "シニア", "rank": 2, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 2, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "オープン", "rank": 2, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "オープン", "rank": 1, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "シニア", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "バトロコ高田馬場", "prefecture": "東京", "league": "オープン", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-08-01", "dateLabel": "8がつ1にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "オープン", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-07-31", "dateLabel": "7がつ31にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "ジュニア", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-31", "dateLabel": "7がつ31にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "ジュニア", "rank": 1, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-07-29", "dateLabel": "7がつ29にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "オープン", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-29", "dateLabel": "7がつ29にち", "store": "宝島 岐阜本店", "prefecture": "岐阜", "league": "オープン", "rank": 1, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-07-28", "dateLabel": "7がつ28にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "オープン", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-28", "dateLabel": "7がつ28にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "オープン", "rank": 1, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-07-27", "dateLabel": "7がつ27にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "ジュニア", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-27", "dateLabel": "7がつ27にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "シニア", "rank": 2, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-07-27", "dateLabel": "7がつ27にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "ジュニア", "rank": 1, "deck": "サーナイトex", "deckKey": "サーナイトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#EF476F", "emoji": "💗"}, {"date": "2026-07-27", "dateLabel": "7がつ27にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "シニア", "rank": 1, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-07-26", "dateLabel": "7がつ26にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "ジュニア", "rank": 2, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-07-26", "dateLabel": "7がつ26にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "オープン", "rank": 2, "deck": "パオジアンex", "deckKey": "パオジアンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#118AB2", "emoji": "❄️"}, {"date": "2026-07-26", "dateLabel": "7がつ26にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "オープン", "rank": 2, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-07-26", "dateLabel": "7がつ26にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "ジュニア", "rank": 1, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-26", "dateLabel": "7がつ26にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "オープン", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-07-26", "dateLabel": "7がつ26にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "オープン", "rank": 1, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "ジュニア", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "ゲームアーク 丸亀店", "prefecture": "香川", "league": "オープン", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "オープン", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "オープン", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "トイニティ長岡E・PLAZA店", "prefecture": "新潟", "league": "ジュニア", "rank": 1, "deck": "ピジョットex", "deckKey": "ピジョットex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#F77F00", "emoji": "🕊️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "ゲームアーク 丸亀店", "prefecture": "香川", "league": "オープン", "rank": 1, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "カードボックス 福山店", "prefecture": "広島", "league": "オープン", "rank": 1, "deck": "パオジアンex", "deckKey": "パオジアンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#118AB2", "emoji": "❄️"}, {"date": "2026-07-25", "dateLabel": "7がつ25にち", "store": "カードキングダム 難波店", "prefecture": "大阪", "league": "オープン", "rank": 1, "deck": "ミライドンex", "deckKey": "ミライドンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FCBF49", "emoji": "⚡"}, {"date": "2026-07-22", "dateLabel": "7がつ22にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "オープン", "rank": 2, "deck": "ドラパルトex", "deckKey": "ドラパルトex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#7209B7", "emoji": "👻"}, {"date": "2026-07-22", "dateLabel": "7がつ22にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "ジュニア", "rank": 2, "deck": "タケルライコex", "deckKey": "タケルライコex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#FFD166", "emoji": "🌩️"}, {"date": "2026-07-22", "dateLabel": "7がつ22にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "オープン", "rank": 1, "deck": "リザードンex", "deckKey": "リザードンex", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#E63946", "emoji": "🔥"}, {"date": "2026-07-22", "dateLabel": "7がつ22にち", "store": "Super KaBoS + GEO 鯖江店", "prefecture": "福井", "league": "ジュニア", "rank": 1, "deck": "ロストバレット", "deckKey": "ロストバレット", "recipeUrl": "https://pokecabook.com/", "hasCode": false, "color": "#2A9D8F", "emoji": "🌀"}], "rankings": {"7d": {"label": "さいきん 1しゅうかん", "items": [{"deck_key": "ピジョットex", "deck_name": "ピジョットex", "first": 4, "second": 0, "latest_date": "2026-08-09", "total": 4, "score": 8, "position": 1, "color": "#F77F00", "emoji": "🕊️"}, {"deck_key": "ミライドンex", "deck_name": "ミライドンex", "first": 3, "second": 1, "latest_date": "2026-08-09", "total": 4, "score": 7, "position": 2, "color": "#FCBF49", "emoji": "⚡"}, {"deck_key": "ロストバレット", "deck_name": "ロストバレット", "first": 1, "second": 2, "latest_date": "2026-08-09", "total": 3, "score": 4, "position": 3, "color": "#2A9D8F", "emoji": "🌀"}, {"deck_key": "リザードンex", "deck_name": "リザードンex", "first": 1, "second": 1, "latest_date": "2026-08-07", "total": 2, "score": 3, "position": 4, "color": "#E63946", "emoji": "🔥"}, {"deck_key": "タケルライコex", "deck_name": "タケルライコex", "first": 1, "second": 0, "latest_date": "2026-08-06", "total": 1, "score": 2, "position": 5, "color": "#FFD166", "emoji": "🌩️"}, {"deck_key": "パオジアンex", "deck_name": "パオジアンex", "first": 1, "second": 0, "latest_date": "2026-08-05", "total": 1, "score": 2, "position": 6, "color": "#118AB2", "emoji": "❄️"}, {"deck_key": "ドラパルトex", "deck_name": "ドラパルトex", "first": 0, "second": 4, "latest_date": "2026-08-09", "total": 4, "score": 4, "position": 7, "color": "#7209B7", "emoji": "👻"}, {"deck_key": "サーナイトex", "deck_name": "サーナイトex", "first": 0, "second": 3, "latest_date": "2026-08-09", "total": 3, "score": 3, "position": 8, "color": "#EF476F", "emoji": "💗"}]}, "30d": {"label": "さいきん 1かげつ", "items": [{"deck_key": "ミライドンex", "deck_name": "ミライドンex", "first": 8, "second": 1, "latest_date": "2026-08-09", "total": 9, "score": 17, "position": 1, "color": "#FCBF49", "emoji": "⚡"}, {"deck_key": "ロストバレット", "deck_name": "ロストバレット", "first": 6, "second": 2, "latest_date": "2026-08-09", "total": 8, "score": 14, "position": 2, "color": "#2A9D8F", "emoji": "🌀"}, {"deck_key": "ピジョットex", "deck_name": "ピジョットex", "first": 5, "second": 2, "latest_date": "2026-08-09", "total": 7, "score": 12, "position": 3, "color": "#F77F00", "emoji": "🕊️"}, {"deck_key": "タケルライコex", "deck_name": "タケルライコex", "first": 4, "second": 9, "latest_date": "2026-08-06", "total": 13, "score": 17, "position": 4, "color": "#FFD166", "emoji": "🌩️"}, {"deck_key": "リザードンex", "deck_name": "リザードンex", "first": 4, "second": 6, "latest_date": "2026-08-07", "total": 10, "score": 14, "position": 5, "color": "#E63946", "emoji": "🔥"}, {"deck_key": "サーナイトex", "deck_name": "サーナイトex", "first": 3, "second": 5, "latest_date": "2026-08-09", "total": 8, "score": 11, "position": 6, "color": "#EF476F", "emoji": "💗"}, {"deck_key": "パオジアンex", "deck_name": "パオジアンex", "first": 2, "second": 2, "latest_date": "2026-08-05", "total": 4, "score": 6, "position": 7, "color": "#118AB2", "emoji": "❄️"}, {"deck_key": "ドラパルトex", "deck_name": "ドラパルトex", "first": 1, "second": 6, "latest_date": "2026-08-09", "total": 7, "score": 8, "position": 8, "color": "#7209B7", "emoji": "👻"}]}, "all": {"label": "ぜんぶ", "items": [{"deck_key": "ミライドンex", "deck_name": "ミライドンex", "first": 8, "second": 1, "latest_date": "2026-08-09", "total": 9, "score": 17, "position": 1, "color": "#FCBF49", "emoji": "⚡"}, {"deck_key": "ロストバレット", "deck_name": "ロストバレット", "first": 6, "second": 2, "latest_date": "2026-08-09", "total": 8, "score": 14, "position": 2, "color": "#2A9D8F", "emoji": "🌀"}, {"deck_key": "ピジョットex", "deck_name": "ピジョットex", "first": 5, "second": 2, "latest_date": "2026-08-09", "total": 7, "score": 12, "position": 3, "color": "#F77F00", "emoji": "🕊️"}, {"deck_key": "タケルライコex", "deck_name": "タケルライコex", "first": 4, "second": 9, "latest_date": "2026-08-06", "total": 13, "score": 17, "position": 4, "color": "#FFD166", "emoji": "🌩️"}, {"deck_key": "リザードンex", "deck_name": "リザードンex", "first": 4, "second": 6, "latest_date": "2026-08-07", "total": 10, "score": 14, "position": 5, "color": "#E63946", "emoji": "🔥"}, {"deck_key": "サーナイトex", "deck_name": "サーナイトex", "first": 3, "second": 5, "latest_date": "2026-08-09", "total": 8, "score": 11, "position": 6, "color": "#EF476F", "emoji": "💗"}, {"deck_key": "パオジアンex", "deck_name": "パオジアンex", "first": 2, "second": 2, "latest_date": "2026-08-05", "total": 4, "score": 6, "position": 7, "color": "#118AB2", "emoji": "❄️"}, {"deck_key": "ドラパルトex", "deck_name": "ドラパルトex", "first": 1, "second": 6, "latest_date": "2026-08-09", "total": 7, "score": 8, "position": 8, "color": "#7209B7", "emoji": "👻"}]}}, "decks": [{"deck_key": "タケルライコex", "deck_name": "タケルライコex", "count": 13, "color": "#FFD166", "emoji": "🌩️"}, {"deck_key": "リザードンex", "deck_name": "リザードンex", "count": 10, "color": "#E63946", "emoji": "🔥"}, {"deck_key": "ミライドンex", "deck_name": "ミライドンex", "count": 9, "color": "#FCBF49", "emoji": "⚡"}, {"deck_key": "サーナイトex", "deck_name": "サーナイトex", "count": 8, "color": "#EF476F", "emoji": "💗"}, {"deck_key": "ロストバレット", "deck_name": "ロストバレット", "count": 8, "color": "#2A9D8F", "emoji": "🌀"}, {"deck_key": "ドラパルトex", "deck_name": "ドラパルトex", "count": 7, "color": "#7209B7", "emoji": "👻"}, {"deck_key": "ピジョットex", "deck_name": "ピジョットex", "count": 7, "color": "#F77F00", "emoji": "🕊️"}, {"deck_key": "パオジアンex", "deck_name": "パオジアンex", "count": 4, "color": "#118AB2", "emoji": "❄️"}]};
+var state = { rank: "all", view: "new", deck: "all", period: "7d" };
+
+function el(id){ return document.getElementById(id); }
+
+function setPressed(container, value){
+  var nodes = container.querySelectorAll("[data-value]");
+  for (var i=0;i<nodes.length;i++){
+    nodes[i].setAttribute("aria-pressed", nodes[i].dataset.value === value ? "true" : "false");
+  }
+}
+
+function filtered(){
+  return DATA.results.filter(function(r){
+    if (state.rank !== "all" && String(r.rank) !== state.rank) return false;
+    if (state.deck !== "all" && r.deckKey !== state.deck) return false;
+    return true;
+  });
+}
+
+function cardHtml(r){
+  var cls = r.rank === 1 ? "r1" : "r2";
+  var label = r.rank === 1 ? "ゆうしょう" : "じゅんゆうしょう";
+  var where = [r.prefecture, r.store].filter(Boolean).join(" ");
+  var league = r.league ? "・" + r.league : "";
+  var go = r.hasCode ? "レシピ（60まい）を みる →" : "この デッキを みる →";
+  return '<a class="card" href="' + r.recipeUrl + '" target="_blank" rel="noopener">' +
+    '<span class="badge ' + cls + '">' + label + '</span>' +
+    '<div class="deck">' + r.emoji + " " + esc(r.deck) + '</div>' +
+    '<div class="meta">' + esc(r.dateLabel) + "　" + esc(where) + esc(league) + '</div>' +
+    '<div class="go">' + go + '</div>' +
+    '</a>';
+}
+
+function rankHtml(item, index){
+  var n = index + 1;
+  var cls = n <= 3 ? "num n" + n : "num";
+  return '<div class="card"><div class="rankrow">' +
+    '<div class="' + cls + '">' + n + '</div>' +
+    '<div><div class="deck">' + item.emoji + " " + esc(item.deck_name) + '</div>' +
+    '<div class="count"><span>ゆうしょう ' + item.first + 'かい</span>' +
+    '<span>じゅんゆうしょう ' + item.second + 'かい</span></div>' +
+    '</div></div></div>';
+}
+
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function render(){
+  var listBox = el("list");
+  var periodBox = el("periodRow");
+  var rankRow = el("rankRow");
+  var deckBox = el("deckRow");
+
+  if (state.view === "rank"){
+    periodBox.style.display = "grid";
+    rankRow.style.display = "none";
+    deckBox.style.display = "none";
+    el("deckTitle").style.display = "none";
+    var items = (DATA.rankings[state.period] || {items:[]}).items;
+    listBox.innerHTML = items.length
+      ? items.map(rankHtml).join("")
+      : '<div class="empty">まだ データが ありません</div>';
+    return;
+  }
+
+  periodBox.style.display = "none";
+  rankRow.style.display = "grid";
+  deckBox.style.display = "flex";
+  el("deckTitle").style.display = "block";
+  var rows = filtered();
+  listBox.innerHTML = rows.length
+    ? rows.slice(0, 300).map(cardHtml).join("")
+    : '<div class="empty">その デッキは まだ ありません</div>';
+}
+
+function boot(){
+  var top = DATA.summary && DATA.summary.top_deck;
+  if (top){
+    el("heroName").textContent = top.deck_name;
+    el("heroNote").textContent = "さいきん 1しゅうかんで " + top.first + "かい ゆうしょう";
+  } else {
+    el("heroName").textContent = "まだ データが ないよ";
+    el("heroNote").textContent = "";
+  }
+  el("updated").textContent = "こうしん: " + DATA.updatedAt;
+  if (DATA.isSample) el("sample").style.display = "block";
+
+  var chips = ['<button class="chip" data-value="all" aria-pressed="true">ぜんぶ</button>'];
+  for (var i=0;i<DATA.decks.length;i++){
+    var d = DATA.decks[i];
+    chips.push('<button class="chip" data-value="' + esc(d.deckKey || d.deck_key) + '">' +
+      d.emoji + " " + esc(d.deck_name) + '</button>');
+  }
+  el("deckRow").innerHTML = chips.join("");
+
+  el("viewRow").addEventListener("click", function(e){
+    var b = e.target.closest("[data-value]"); if(!b) return;
+    state.view = b.dataset.value; setPressed(el("viewRow"), state.view); render();
+  });
+  el("rankRow").addEventListener("click", function(e){
+    var b = e.target.closest("[data-value]"); if(!b) return;
+    state.rank = b.dataset.value; setPressed(el("rankRow"), state.rank); render();
+  });
+  el("periodRow").addEventListener("click", function(e){
+    var b = e.target.closest("[data-value]"); if(!b) return;
+    state.period = b.dataset.value; setPressed(el("periodRow"), state.period); render();
+  });
+  el("deckRow").addEventListener("click", function(e){
+    var b = e.target.closest("[data-value]"); if(!b) return;
+    state.deck = b.dataset.value; setPressed(el("deckRow"), state.deck); render();
+  });
+
+  render();
+}
+document.addEventListener("DOMContentLoaded", boot);
+</script>
+</body>
+</html>
