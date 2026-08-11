@@ -209,6 +209,139 @@ def test_deck_page_reads_city_league_captions_too():
     assert records[0].rank == 2
 
 
+@pytest.mark.parametrize(
+    "name,ok",
+    [
+        ("ドラパルトex", True),
+        ("Nのゾロアークex", True),
+        ("ドラパルトex＋バシャーモex", True),
+        ("おまつりおんど", True),
+        # 実際の収集で紛れ込んだもの。日付ページのタイトルから拾ってしまった
+        ("8/10(月)", False),
+        ("8/9(日)", False),
+        ("12月14日", False),
+        # 弾や環境の名前であってデッキ名ではない
+        ("ストームエメラルダ環境", False),
+        ("ジムバトル優勝デッキまとめ", False),
+        ("環境デッキ一覧", False),
+        ("", False),
+    ],
+)
+def test_is_plausible_deck_name(name, ok):
+    assert deckindex.is_plausible_deck_name(name) is ok
+
+
+def test_extract_deck_name_skips_dates_and_takes_the_deck():
+    """【…】が複数あるタイトルから、デッキ名として妥当なものを選ぶ。"""
+    assert (
+        deckindex.extract_deck_name("ポケカ【ドラパルトex】優勝デッキレシピまとめ")
+        == "ドラパルトex"
+    )
+    # 日付ページ: どの【…】もデッキ名ではないので空を返す
+    assert (
+        deckindex.extract_deck_name("【8/10(月)】ジムバトル優勝デッキまとめ【ストームエメラルダ環境】")
+        == ""
+    )
+
+
+def test_catalog_name_wins_over_page_content():
+    """デッキ一覧ページの表記を正とする (一番確実な出どころ)。"""
+    html = """
+    <div class="entry-content"><figure class="wp-block-image">
+      <img alt="【まちがった名前】ジムバトル優勝デッキレシピ" src="x.png">
+      <figcaption><a href="https://www.pokemon-card.com/deck/result.html/deckID/aa-bb-cc/">
+        8/9【日】ジムバトル優勝</a></figcaption>
+    </figure></div>
+    """
+    records = deckindex.parse_deck_page(
+        html, "【8/10(月)】ジムバトル優勝デッキまとめ", DECK_URL,
+        date(2026, 8, 11), deck_name="メガレックウザex",
+    )
+    assert records[0].deck_name == "メガレックウザex"
+
+
+def test_sanitize_clears_implausible_names_already_saved():
+    """過去に保存された変なデッキ名は、実行のたびに直る。"""
+    from src.pokeca.store import sanitize_results
+
+    records = [
+        _record(deck_name="8/10(月)", deck_code="a-1"),
+        _record(deck_name="ストームエメラルダ環境", deck_code="a-2"),
+        _record(deck_name="ドラパルトex", deck_code="a-3"),
+    ]
+    cleaned, fixed = sanitize_results(records, known_decks=set())
+    assert fixed == 2
+    assert [r.deck_name for r in cleaned] == ["", "", "ドラパルトex"]
+    # レコード自体は消さない (日付とデッキコードは使える)
+    assert all(r.deck_code for r in cleaned)
+
+
+def test_sanitize_uses_the_catalog_to_reject_set_names():
+    """「アビスアイ」「ストームエメラルダ」は形だけでは弾けない。
+
+    デッキ名らしい見た目をしているが実際は弾の名前なので、
+    デッキ一覧に載っているかどうかで判定する。
+    """
+    from src.pokeca.store import sanitize_results
+
+    known = {normalize_deck_name("ドラパルトex"), normalize_deck_name("メガレックウザex")}
+    records = [
+        _record(deck_name="アビスアイ", deck_code="a-1"),
+        _record(deck_name="ストームエメラルダ", deck_code="a-2"),
+        _record(deck_name="ドラパルトex", deck_code="a-3"),
+        _record(deck_name="メガレックウザex", deck_code="a-4"),
+    ]
+    cleaned, fixed = sanitize_results(records, known_decks=known)
+    assert fixed == 2
+    assert [r.deck_name for r in cleaned] == ["", "", "ドラパルトex", "メガレックウザex"]
+
+
+def test_sanitize_keeps_everything_when_catalog_is_missing():
+    """正解リストがまだ無いときに、全部消してしまわないこと。"""
+    from src.pokeca.store import sanitize_results
+
+    records = [_record(deck_name="まだ知らないデッキex", deck_code="a-1")]
+    cleaned, fixed = sanitize_results(records, known_decks=set())
+    assert fixed == 0
+    assert cleaned[0].deck_name == "まだ知らないデッキex"
+
+
+def test_ranking_is_not_polluted_by_cleared_names():
+    records = [
+        _record(store="A", deck_name="8/10(月)", deck_code="a-1"),
+        _record(store="B", deck_name="8/10(月)", deck_code="a-2"),
+        _record(store="C", deck_name="ドラパルトex", deck_code="a-3"),
+    ]
+    from src.pokeca.store import sanitize_results
+
+    cleaned, _ = sanitize_results(records)
+    ranked = aggregate.deck_ranking(cleaned, days=0)
+    assert [e["deck_name"] for e in ranked] == ["ドラパルトex"]
+
+
+def test_daily_batch_covers_everything_over_time():
+    """毎日ちがう区間を見に行き、数日で一周する。"""
+    catalog = [(f"deck{i}", f"u{i}") for i in range(73)]
+    seen: set[str] = set()
+    for offset in range(3):
+        day = date(2026, 8, 11 + offset)
+        seen.update(name for name, _ in deckindex.daily_batch(catalog, 25, today=day))
+    assert len(seen) == 73  # 3日で全デッキを踏む
+
+
+def test_daily_batch_returns_a_fixed_size_slice():
+    catalog = [(f"deck{i}", f"u{i}") for i in range(73)]
+    todays = deckindex.daily_batch(catalog, 25, today=date(2026, 8, 11))
+    assert len(todays) == 25
+    assert len({n for n, _ in todays}) == 25  # 同じデッキを二度取らない
+
+
+def test_daily_batch_returns_all_when_batch_is_large_enough():
+    catalog = [(f"deck{i}", f"u{i}") for i in range(10)]
+    assert deckindex.daily_batch(catalog, 25) == catalog
+    assert deckindex.daily_batch(catalog, 0) == catalog
+
+
 def test_build_name_index(deck_records):
     index = deckindex.build_name_index(deck_records)
     assert index["cxxGxa-71MIig-J8cY8c"] == "ドラパルトex"

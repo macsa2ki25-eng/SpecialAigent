@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import random
 import sys
+from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -30,6 +31,7 @@ from src.pokeca.store import (
     merge_results,
     now_jst,
     prune_results,
+    sanitize_results,
     save_results,
 )
 
@@ -85,8 +87,18 @@ def main() -> None:
     help="公式イベントページを辿ってリーグ区分(オープン/シニア/ジュニア)を補う",
 )
 @click.option("--keep-days", default=180, help="何日ぶん残すか (0 で無制限)")
+@click.option(
+    "--deck-batch",
+    default=25,
+    help="1回に見に行くデッキ別ページの数 (0 で全部)。数日かけて一周する",
+)
 def cmd_collect(
-    source: str, limit: int, dry_run: bool, with_league: bool, keep_days: int
+    source: str,
+    limit: int,
+    dry_run: bool,
+    with_league: bool,
+    keep_days: int,
+    deck_batch: int,
 ) -> None:
     """新着の優勝・準優勝デッキを集めて results.json に追記する。"""
     targets = SOURCE_NAMES if source == "all" else (source,)
@@ -95,11 +107,16 @@ def cmd_collect(
 
     for name in targets:
         module = _load_source(name)
-        # デッキ別ページは1記事に数百件入っているので、記事数の目安が違う
-        source_limit = limit if name == "pokecabook" else max(limit, DECK_PAGE_LIMIT)
         console.print(f"[cyan]{name}[/cyan] から収集中...")
+        kwargs: dict = {"log": console.print}
+        if name == "deckindex":
+            # デッキ別ページは1枚が大きいので、日ごとに区切って巡回する
+            kwargs["limit"] = DECK_PAGE_LIMIT
+            kwargs["batch"] = deck_batch
+        else:
+            kwargs["limit"] = limit
         try:
-            found = module.collect(limit=source_limit, log=console.print)
+            found = module.collect(**kwargs)
         except Exception as exc:  # 片方が落ちても、もう片方は生かす
             failures.append(f"{name}: {exc}")
             console.print(f"  [red]失敗[/red]: {exc}")
@@ -146,8 +163,18 @@ def cmd_collect(
     console.print(
         f"[green]新規 {added} 件 / 補強 {updated} 件[/green] (合計 {len(merged)} 件)"
     )
+    merged, fixed = sanitize_results(merged)
+    if fixed:
+        console.print(f"[dim]おかしいデッキ名 {fixed} 件を空にしました。[/dim]")
+
     named = sum(1 for r in merged if r.deck_name)
     console.print(f"デッキ名あり: {named}/{len(merged)} 件")
+    events = Counter(r.event_type for r in merged)
+    console.print(
+        f"内訳: シティリーグ {events.get('city', 0)} 件 / "
+        f"ジムバトル {events.get('gym', 0)} 件 / "
+        f"デッキ {len({r.deck_key for r in merged if r.deck_name})} 種類"
+    )
 
     before = len(merged)
     merged = prune_results(merged, keep_days=keep_days)
