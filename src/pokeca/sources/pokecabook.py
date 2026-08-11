@@ -33,16 +33,19 @@
 from __future__ import annotations
 
 import re
-from datetime import date, datetime
+from datetime import date
 
 from bs4 import BeautifulSoup, Tag
 
-from src.pokeca import http
 from src.pokeca.models import EVENT_CITY, DeckResult
+from src.pokeca.sources import wp
 
 BASE = "https://pokecabook.com"
 API = f"{BASE}/wp-json/wp/v2"
 CATEGORY_SLUG = "city-league"
+CATEGORY_PATH = f"{BASE}/archives/category/tournament/city-league"
+FEED_URL = f"{CATEGORY_PATH}/feed/"
+INDEX_URL = CATEGORY_PATH
 
 SOURCE_NAME = "pokecabook"
 
@@ -183,46 +186,29 @@ def parse_post(
 # ------------------------------------------------------------------
 
 
-def _category_id() -> int | None:
-    data = http.get_json(f"{API}/categories", params={"slug": CATEGORY_SLUG})
-    if isinstance(data, list) and data:
-        return data[0].get("id")
-    return None
+def fetch_posts(limit: int = 20, log=None) -> list[wp.Post]:
+    """シティリーグカテゴリの新着記事を取得する。
+
+    REST API → RSS → 記事一覧HTML の順に試す (src/pokeca/sources/wp.py)。
+    """
+    return wp.fetch_posts(
+        api=API,
+        slug=CATEGORY_SLUG,
+        feed_url=FEED_URL,
+        index_url=INDEX_URL,
+        base=BASE,
+        limit=limit,
+        search="シティリーグ",
+        log=log,
+    )
 
 
-def fetch_posts(limit: int = 20, category_id: int | None = None) -> list[dict]:
-    """シティリーグカテゴリの新着記事を WP REST API で取得する。"""
-    params: dict = {"per_page": min(limit, 100), "orderby": "date", "order": "desc"}
-    resolved = category_id if category_id is not None else _category_id()
-    if resolved:
-        params["categories"] = resolved
-    else:
-        # カテゴリが引けなければ検索でしのぐ
-        params["search"] = "シティリーグ"
-    data = http.get_json(f"{API}/posts", params=params)
-    return data if isinstance(data, list) else []
-
-
-def _plain_title(post: dict) -> str:
-    raw = (post.get("title") or {}).get("rendered", "")
-    return BeautifulSoup(raw, "html.parser").get_text(" ", strip=True)
-
-
-def _published_date(post: dict) -> date:
-    try:
-        return datetime.fromisoformat((post.get("date") or "").replace("Z", "")).date()
-    except ValueError:
-        return date.today()
-
-
-def collect(limit: int = 20) -> list[DeckResult]:
+def collect(limit: int = 20, log=None) -> list[DeckResult]:
     """新着記事を巡回して優勝・準優勝レコードを返す。"""
     out: list[DeckResult] = []
-    for post in fetch_posts(limit=limit):
-        title = _plain_title(post)
-        # ベスト16まとめ以外 (ジムバトルなど) が混ざらないようにする
-        if "シティリーグ" not in title:
+    for post in fetch_posts(limit=limit, log=log):
+        # ジムバトルなど別の記事が混ざらないようにする
+        if "シティリーグ" not in post.title:
             continue
-        content = (post.get("content") or {}).get("rendered", "")
-        out.extend(parse_post(content, title, post.get("link") or "", _published_date(post)))
+        out.extend(parse_post(post.content_html, post.title, post.link, post.published))
     return out

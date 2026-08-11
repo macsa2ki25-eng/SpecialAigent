@@ -38,16 +38,19 @@
 from __future__ import annotations
 
 import re
-from datetime import date, datetime
+from datetime import date
 
 from bs4 import BeautifulSoup
 
-from src.pokeca import http
 from src.pokeca.models import EVENT_CITY, EVENT_GYM, DeckResult
+from src.pokeca.sources import wp
 
 BASE = "https://pokecabook.com"
 API = f"{BASE}/wp-json/wp/v2"
 CATEGORY_SLUG = "deck-recipe"
+CATEGORY_PATH = f"{BASE}/archives/category/deck-recipe"
+FEED_URL = f"{CATEGORY_PATH}/feed/"
+INDEX_URL = CATEGORY_PATH
 CATALOG_URL = f"{BASE}/archives/1417"
 
 SOURCE_NAME = "deckindex"
@@ -168,64 +171,30 @@ def parse_deck_page(
 # ------------------------------------------------------------------
 
 
-def _category_id() -> int | None:
-    data = http.get_json(f"{API}/categories", params={"slug": CATEGORY_SLUG})
-    if isinstance(data, list) and data:
-        return data[0].get("id")
-    return None
+def fetch_deck_posts(limit: int = 80, log=None) -> list[wp.Post]:
+    """デッキ別記事を取得する。
 
-
-def fetch_deck_posts(limit: int = 80) -> list[dict]:
-    """デッキ別記事を WP REST API でまとめて取得する。
-
-    1記事あたり数百件の結果が入っているので、ページを1枚ずつ開くより
-    REST API でまとめて取ったほうが相手のサーバーにも優しい。
+    REST API → RSS → 記事一覧HTML の順に試す (src/pokeca/sources/wp.py)。
+    1記事あたり数百件の結果が入っているので、記事数はさほど要らない。
     """
-    category = _category_id()
-    posts: list[dict] = []
-    page = 1
-    while len(posts) < limit:
-        params: dict = {
-            "per_page": min(limit - len(posts), 20),
-            "page": page,
-            "orderby": "modified",
-            "order": "desc",
-        }
-        if category:
-            params["categories"] = category
-        else:
-            params["search"] = "優勝デッキレシピ"
-        batch = http.get_json(f"{API}/posts", params=params)
-        if not isinstance(batch, list) or not batch:
-            break
-        posts.extend(batch)
-        if len(batch) < params["per_page"]:
-            break
-        page += 1
-    return posts[:limit]
+    return wp.fetch_posts(
+        api=API,
+        slug=CATEGORY_SLUG,
+        feed_url=FEED_URL,
+        index_url=INDEX_URL,
+        base=BASE,
+        limit=limit,
+        search="優勝デッキレシピ",
+        log=log,
+    )
 
 
-def _reference_date(post: dict) -> date:
-    """記事の最終更新日を、月日だけの表記を解決する基準にする。"""
-    for key in ("modified", "date"):
-        raw = post.get(key) or ""
-        try:
-            return datetime.fromisoformat(raw.replace("Z", "")).date()
-        except ValueError:
-            continue
-    return date.today()
-
-
-def collect(limit: int = 80) -> list[DeckResult]:
+def collect(limit: int = 80, log=None) -> list[DeckResult]:
     """デッキ別ページを巡回して、デッキ名付きの結果レコードを返す。"""
     out: list[DeckResult] = []
-    for post in fetch_deck_posts(limit=limit):
-        title = BeautifulSoup(
-            (post.get("title") or {}).get("rendered", ""), "html.parser"
-        ).get_text(" ", strip=True)
-        content = (post.get("content") or {}).get("rendered", "")
+    for post in fetch_deck_posts(limit=limit, log=log):
         out.extend(
-            parse_deck_page(content, title, post.get("link") or "", _reference_date(post))
+            parse_deck_page(post.content_html, post.title, post.link, post.published)
         )
     return out
 

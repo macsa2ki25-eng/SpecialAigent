@@ -24,7 +24,7 @@ from src.pokeca.models import (
     normalize_deck_name,
     normalize_store,
 )
-from src.pokeca.sources import deckindex, official, pokecabook
+from src.pokeca.sources import deckindex, official, pokecabook, wp
 from src.pokeca.store import merge_results
 
 FIXTURE = Path(__file__).parent / "fixtures" / "pokecabook_city_league.html"
@@ -222,6 +222,125 @@ def test_parse_catalog_returns_deck_names_and_urls():
     # 「まとめ」記事 (ジムバトル優勝デッキまとめ等) はデッキではないので除く
     assert not any(n.endswith("まとめ") for n in names)
     assert all(url.startswith("https://pokecabook.com/archives/") for _, url in pairs)
+
+
+# ------------------------------------------------------------------
+# 取得経路の切り替え (REST が 403 で閉じられている場合の回り込み)
+# ------------------------------------------------------------------
+
+FEED_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <item>
+      <title>シティリーグ5/6【水】ベスト16デッキまとめ</title>
+      <link>https://pokecabook.com/archives/320777</link>
+      <pubDate>Wed, 06 May 2026 17:01:30 +0900</pubDate>
+      <content:encoded><![CDATA[__CONTENT__]]></content:encoded>
+    </item>
+  </channel>
+</rss>
+"""
+
+
+def _feed_with(content: str) -> str:
+    return FEED_XML.replace("__CONTENT__", content)
+
+
+def test_feed_uses_embedded_content_when_full(monkeypatch):
+    """RSS に本文が丸ごと入っていれば、記事を個別に取りに行かない。"""
+    body = FIXTURE.read_text(encoding="utf-8")
+    monkeypatch.setattr(wp.http, "get_text", lambda url, **kw: _feed_with(body))
+    monkeypatch.setattr(
+        wp, "fetch_article_html", lambda url: pytest.fail("記事を取りに行くべきではない")
+    )
+    posts = wp.posts_from_feed("https://example.test/feed/", limit=5)
+    assert len(posts) == 1
+    assert posts[0].published == date(2026, 5, 6)
+    assert posts[0].link == "https://pokecabook.com/archives/320777"
+    assert "宝島" in posts[0].content_html
+
+
+def test_feed_falls_back_to_article_when_only_excerpt(monkeypatch):
+    """RSS が抜粋しか返さない設定なら、記事本文を取りに行く。"""
+    monkeypatch.setattr(wp.http, "get_text", lambda url, **kw: _feed_with("短い抜粋"))
+    monkeypatch.setattr(wp, "fetch_article_html", lambda url: "<div>本文</div>")
+    posts = wp.posts_from_feed("https://example.test/feed/", limit=5)
+    assert posts[0].content_html == "<div>本文</div>"
+
+
+def test_fetch_posts_falls_back_from_rest_to_feed(monkeypatch):
+    """REST が 403 でも RSS が生きていれば収集は続く。"""
+    calls: list[str] = []
+
+    def boom(*a, **kw):
+        calls.append("rest")
+        raise RuntimeError("403 Client Error: Forbidden")
+
+    monkeypatch.setattr(wp, "posts_from_rest", boom)
+    monkeypatch.setattr(
+        wp,
+        "posts_from_feed",
+        lambda url, limit: [
+            wp.Post(title="t", content_html="<p>x</p>", link="u", published=date(2026, 5, 6))
+        ],
+    )
+    posts = wp.fetch_posts(
+        api="a", slug="s", feed_url="f", index_url="i", base="b", limit=5
+    )
+    assert calls == ["rest"]
+    assert len(posts) == 1
+
+
+def test_fetch_posts_raises_when_every_route_fails(monkeypatch):
+    for name in ("posts_from_rest", "posts_from_feed", "posts_from_index"):
+        monkeypatch.setattr(
+            wp, name, lambda *a, **kw: (_ for _ in ()).throw(RuntimeError("403"))
+        )
+    with pytest.raises(wp.NoRouteAvailable) as excinfo:
+        wp.fetch_posts(api="a", slug="s", feed_url="f", index_url="i", base="b", limit=5)
+    # どの経路がなぜ駄目だったのかがメッセージに残る
+    assert "REST API" in str(excinfo.value)
+    assert "RSS" in str(excinfo.value)
+
+
+def test_article_links_are_absolutised():
+    html = '<a href="/archives/123">a</a><a href="https://pokecabook.com/archives/456">b</a>'
+    links = wp._article_links(html, "https://pokecabook.com")
+    assert links == [
+        "https://pokecabook.com/archives/123",
+        "https://pokecabook.com/archives/456",
+    ]
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("2026-05-06T17:01:30+09:00", date(2026, 5, 6)),
+        ("Wed, 06 May 2026 17:01:30 +0900", date(2026, 5, 6)),
+    ],
+)
+def test_parse_date_accepts_both_formats(raw, expected):
+    assert wp._parse_date(raw) == expected
+
+
+def test_collect_parses_posts_from_whichever_route_worked(monkeypatch):
+    """経路が変わっても、後段の解析は同じように動く。"""
+    body = FIXTURE.read_text(encoding="utf-8")
+    monkeypatch.setattr(
+        pokecabook.wp,
+        "fetch_posts",
+        lambda **kw: [
+            wp.Post(
+                title=POST_TITLE,
+                content_html=body,
+                link=POST_URL,
+                published=PUBLISHED,
+            )
+        ],
+    )
+    results = pokecabook.collect(limit=5)
+    assert len(results) == 4
+    assert all(r.deck_code for r in results)
 
 
 # ------------------------------------------------------------------
