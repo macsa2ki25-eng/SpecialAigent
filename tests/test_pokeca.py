@@ -11,7 +11,7 @@ fixture を差し替えてからコードを直すこと。
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
@@ -170,6 +170,24 @@ def test_deck_page_skips_non_result_figures(deck_records):
     assert "ccxGG8-z4bxe1-xD8G8K" not in codes
 
 
+def test_deck_page_never_produces_a_future_date():
+    """大会結果が未来の日付になることはない。
+
+    デッキ別ページには前年の結果も並ぶため、収集日より先の月日は前年とみなす。
+    本番でこれを誤り、43件が未来日付になってランキングの基準日が壊れた。
+    """
+    html = """
+    <div class="entry-content"><figure class="wp-block-image">
+      <img alt="【メガライボルトex】ジムバトル優勝デッキレシピ" src="x.png">
+      <figcaption><a href="https://www.pokemon-card.com/deck/result.html/deckID/aa-bb-cc/">
+        8/12【火】ジムバトル優勝</a></figcaption>
+    </figure></div>
+    """
+    # 収集日は 8/11。8/12 は明日なので、前年の 8/12 と解釈する
+    records = deckindex.parse_deck_page(html, DECK_TITLE, DECK_URL, date(2026, 8, 11))
+    assert records[0].date == "2025-08-12"
+
+
 def test_deck_page_resolves_year_boundary():
     """1月が基準日のとき、12月の結果には前年を付ける。"""
     html = """
@@ -294,6 +312,29 @@ def test_sanitize_uses_the_catalog_to_reject_set_names():
     cleaned, fixed = sanitize_results(records, known_decks=known)
     assert fixed == 2
     assert [r.deck_name for r in cleaned] == ["", "", "ドラパルトex", "メガレックウザex"]
+
+
+def test_sanitize_pulls_future_dates_back_a_year():
+    """保存済みの未来日付は1年戻して直す。
+
+    マージは空欄しか埋めないので、日付が間違ったレコードは
+    再収集しても直らない。掃除のときに直しておく必要がある。
+    """
+    from src.pokeca.store import now_jst, sanitize_results
+
+    tomorrow = (now_jst().date() + timedelta(days=1)).isoformat()
+    records = [_record(date=tomorrow, deck_name="ドラパルトex", deck_code="a-1")]
+    cleaned, fixed = sanitize_results(records, known_decks=set())
+    assert fixed == 1
+    assert cleaned[0].date == tomorrow.replace(tomorrow[:4], str(int(tomorrow[:4]) - 1), 1)
+
+
+def test_sanitize_leaves_past_dates_alone():
+    from src.pokeca.store import sanitize_results
+
+    records = [_record(date="2026-05-06", deck_name="ドラパルトex", deck_code="a-1")]
+    cleaned, fixed = sanitize_results(records, known_decks=set())
+    assert (fixed, cleaned[0].date) == (0, "2026-05-06")
 
 
 def test_sanitize_keeps_everything_when_catalog_is_missing():
