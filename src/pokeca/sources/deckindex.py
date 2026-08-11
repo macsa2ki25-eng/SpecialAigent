@@ -246,6 +246,13 @@ def collect(limit: int = 80, batch: int = 25, log=None) -> list[DeckResult]:
     こうすると全デッキを取りこぼさず、デッキ名も一覧の表記で確定できる。
     """
     catalog = fetch_catalog()[:limit]
+    if catalog:
+        # デッキ名の正解リストとして保存する。弾の名前などが紛れ込んだとき、
+        # ここに無い名前は sanitize_results が空に戻す
+        from src.pokeca.store import save_deck_catalog
+
+        save_deck_catalog([name for name, _ in catalog])
+
     todays = daily_batch(catalog, batch)
     if log:
         log(f"  デッキ一覧: {len(catalog)} デッキ → 今日は {len(todays)} デッキぶん")

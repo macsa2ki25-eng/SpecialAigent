@@ -269,11 +269,41 @@ def test_sanitize_clears_implausible_names_already_saved():
         _record(deck_name="ストームエメラルダ環境", deck_code="a-2"),
         _record(deck_name="ドラパルトex", deck_code="a-3"),
     ]
-    cleaned, fixed = sanitize_results(records)
+    cleaned, fixed = sanitize_results(records, known_decks=set())
     assert fixed == 2
     assert [r.deck_name for r in cleaned] == ["", "", "ドラパルトex"]
     # レコード自体は消さない (日付とデッキコードは使える)
     assert all(r.deck_code for r in cleaned)
+
+
+def test_sanitize_uses_the_catalog_to_reject_set_names():
+    """「アビスアイ」「ストームエメラルダ」は形だけでは弾けない。
+
+    デッキ名らしい見た目をしているが実際は弾の名前なので、
+    デッキ一覧に載っているかどうかで判定する。
+    """
+    from src.pokeca.store import sanitize_results
+
+    known = {normalize_deck_name("ドラパルトex"), normalize_deck_name("メガレックウザex")}
+    records = [
+        _record(deck_name="アビスアイ", deck_code="a-1"),
+        _record(deck_name="ストームエメラルダ", deck_code="a-2"),
+        _record(deck_name="ドラパルトex", deck_code="a-3"),
+        _record(deck_name="メガレックウザex", deck_code="a-4"),
+    ]
+    cleaned, fixed = sanitize_results(records, known_decks=known)
+    assert fixed == 2
+    assert [r.deck_name for r in cleaned] == ["", "", "ドラパルトex", "メガレックウザex"]
+
+
+def test_sanitize_keeps_everything_when_catalog_is_missing():
+    """正解リストがまだ無いときに、全部消してしまわないこと。"""
+    from src.pokeca.store import sanitize_results
+
+    records = [_record(deck_name="まだ知らないデッキex", deck_code="a-1")]
+    cleaned, fixed = sanitize_results(records, known_decks=set())
+    assert fixed == 0
+    assert cleaned[0].deck_name == "まだ知らないデッキex"
 
 
 def test_ranking_is_not_polluted_by_cleared_names():

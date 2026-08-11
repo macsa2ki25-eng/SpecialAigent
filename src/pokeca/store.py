@@ -19,6 +19,8 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 POKECA_DIR = ROOT / "data" / "pokeca"
 RESULTS_FILE = POKECA_DIR / "results.json"
 DECK_THEMES_FILE = POKECA_DIR / "deck_themes.yaml"
+# 収集時にデッキ一覧ページから取れたデッキ名。デッキ名の正解リストとして使う
+DECK_CATALOG_FILE = POKECA_DIR / "deck_catalog.json"
 SITE_DIR = ROOT / "site"
 
 JST = timezone(timedelta(hours=9))
@@ -101,21 +103,58 @@ def merge_results(
     return list(by_slot.values()), added, updated
 
 
-def sanitize_results(results: list[DeckResult]) -> tuple[list[DeckResult], int]:
-    """デッキ名として明らかにおかしいものを空にする。
+def save_deck_catalog(names: list[str]) -> None:
+    """デッキ一覧ページから取れたデッキ名を保存する。"""
+    DECK_CATALOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with DECK_CATALOG_FILE.open("w", encoding="utf-8") as f:
+        json.dump(
+            {"updated_at": now_jst().isoformat(timespec="seconds"), "decks": names},
+            f,
+            ensure_ascii=False,
+            indent=2,
+        )
+        f.write("\n")
 
-    「8/10(月)」のような日付や「ストームエメラルダ環境」といった弾の名前が
-    デッキ名として入ってしまった過去のデータを、実行のたびに直す。
+
+def load_deck_catalog() -> set[str]:
+    """デッキ名の正解リストを読む (正規化済み)。無ければ空集合。"""
+    if not DECK_CATALOG_FILE.exists():
+        return set()
+    with DECK_CATALOG_FILE.open(encoding="utf-8") as f:
+        data = json.load(f)
+    return {normalize_deck_name(n) for n in data.get("decks", []) if n}
+
+
+def sanitize_results(
+    results: list[DeckResult], known_decks: set[str] | None = None
+) -> tuple[list[DeckResult], int]:
+    """デッキ名として妥当でないものを空にする。
+
+    2段階で判定する。
+
+    1. 形からおかしいもの ―「8/10(月)」のような日付、「〜環境」「〜まとめ」
+    2. デッキ一覧ページに載っていない名前 ―「アビスアイ」「ストームエメラルダ」
+       のような弾の名前。形だけでは判別できないので一覧を正解として使う
+
     レコード自体は日付とデッキコードを持っていて使えるので消さない。
+    一覧がまだ保存されていないときは 1 だけで判定する
+    (正解リストが無い状態で全部消してしまわないようにするため)。
 
     Returns:
         (直したあとのリスト, 直した件数)
     """
     from src.pokeca.sources.deckindex import is_plausible_deck_name
 
+    known = known_decks if known_decks is not None else load_deck_catalog()
+
     fixed = 0
     for record in results:
-        if record.deck_name and not is_plausible_deck_name(record.deck_name):
+        if not record.deck_name:
+            continue
+        bad = not is_plausible_deck_name(record.deck_name)
+        if not bad and known:
+            bad = normalize_deck_name(record.deck_name) not in known
+        if bad:
             record.deck_name = ""
             record.deck_key = ""
             fixed += 1
