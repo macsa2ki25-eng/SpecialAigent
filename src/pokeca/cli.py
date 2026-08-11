@@ -30,6 +30,7 @@ from src.pokeca.store import (
     load_results,
     merge_results,
     now_jst,
+    prune_results,
     save_results,
 )
 
@@ -37,18 +38,27 @@ console = Console()
 
 INSPECT_DIR = POKECA_DIR / "_inspect"
 
+# デッキ別ページは1記事あたり数百件の結果を含むので、記事数はこれくらいでよい
+DECK_PAGE_LIMIT = 80
+
 
 def _load_source(name: str):
     if name == "pokecabook":
         from src.pokeca.sources import pokecabook
 
         return pokecabook
+    if name == "deckindex":
+        from src.pokeca.sources import deckindex
+
+        return deckindex
     raise click.BadParameter(f"不明な収集元: {name}")
 
 
 # 結果そのものを持ってくる収集元。
+#   pokecabook = シティリーグのまとめ記事 (順位・店舗・デッキコード)
+#   deckindex  = デッキ別ページ (デッキ名付きのジムバトル優勝 + 名前の索引)
 # 公式サイト (official) はリーグ区分を補うだけなのでここには含めない。
-SOURCE_NAMES = ("pokecabook",)
+SOURCE_NAMES = ("pokecabook", "deckindex")
 
 
 @click.group()
@@ -75,7 +85,10 @@ def main() -> None:
     is_flag=True,
     help="公式イベントページを辿ってリーグ区分(オープン/シニア/ジュニア)を補う",
 )
-def cmd_collect(source: str, limit: int, dry_run: bool, with_league: bool) -> None:
+@click.option("--keep-days", default=180, help="何日ぶん残すか (0 で無制限)")
+def cmd_collect(
+    source: str, limit: int, dry_run: bool, with_league: bool, keep_days: int
+) -> None:
     """新着の優勝・準優勝デッキを集めて results.json に追記する。"""
     targets = SOURCE_NAMES if source == "all" else (source,)
     collected: list[DeckResult] = []
@@ -83,9 +96,11 @@ def cmd_collect(source: str, limit: int, dry_run: bool, with_league: bool) -> No
 
     for name in targets:
         module = _load_source(name)
+        # デッキ別ページは1記事に数百件入っているので、記事数の目安が違う
+        source_limit = limit if name == "pokecabook" else max(limit, DECK_PAGE_LIMIT)
         console.print(f"[cyan]{name}[/cyan] から収集中...")
         try:
-            found = module.collect(limit=limit)
+            found = module.collect(limit=source_limit)
         except Exception as exc:  # 片方が落ちても、もう片方は生かす
             failures.append(f"{name}: {exc}")
             console.print(f"  [red]失敗[/red]: {exc}")
@@ -132,6 +147,14 @@ def cmd_collect(source: str, limit: int, dry_run: bool, with_league: bool) -> No
     console.print(
         f"[green]新規 {added} 件 / 補強 {updated} 件[/green] (合計 {len(merged)} 件)"
     )
+    named = sum(1 for r in merged if r.deck_name)
+    console.print(f"デッキ名あり: {named}/{len(merged)} 件")
+
+    before = len(merged)
+    merged = prune_results(merged, keep_days=keep_days)
+    if len(merged) < before:
+        console.print(f"[dim]{before - len(merged)} 件の古いデータを削除しました。[/dim]")
+
     if dry_run:
         console.print("[yellow]--dry-run のため保存しませんでした。[/yellow]")
         return
@@ -175,13 +198,16 @@ def cmd_build(out: Path | None, body_only: bool) -> None:
 
 @main.command("list")
 @click.option("--rank", type=click.Choice(["1", "2", "all"]), default="all")
+@click.option("--event", type=click.Choice(["city", "gym", "all"]), default="all")
 @click.option("--deck", default="", help="デッキ名で絞り込み (部分一致)")
 @click.option("--limit", default=30)
-def cmd_list(rank: str, deck: str, limit: int) -> None:
+def cmd_list(rank: str, event: str, deck: str, limit: int) -> None:
     """保存済みの結果を一覧表示する (親の確認用)。"""
     results = load_results()
     if rank != "all":
         results = [r for r in results if r.rank == int(rank)]
+    if event != "all":
+        results = [r for r in results if r.event_type == event]
     if deck:
         results = [r for r in results if deck.lower() in r.deck_name.lower()]
 
@@ -189,21 +215,22 @@ def cmd_list(rank: str, deck: str, limit: int) -> None:
         console.print("[yellow]該当するデータがありません。[/yellow]")
         return
 
-    table = Table(title=f"シティリーグ 結果 ({len(results)} 件)")
+    scope = {"city": "シティリーグ", "gym": "ジムバトル"}.get(event, "すべての大会")
+    table = Table(title=f"{scope} 結果 ({len(results)} 件)")
     table.add_column("開催日", style="cyan")
+    table.add_column("大会", style="dim")
     table.add_column("順位")
     table.add_column("デッキ", style="bold")
     table.add_column("店舗", style="dim")
-    table.add_column("リーグ", style="dim")
     table.add_column("コード", style="dim")
 
     for record in results[:limit]:
         table.add_row(
             record.date,
+            record.event_label,
             record.rank_label,
-            record.deck_name,
-            f"{record.prefecture} {record.store}".strip(),
-            record.league or "-",
+            record.deck_name or "[dim](名前なし)[/dim]",
+            f"{record.prefecture} {record.store}".strip() or "-",
             record.deck_code or "-",
         )
     console.print(table)
@@ -211,16 +238,20 @@ def cmd_list(rank: str, deck: str, limit: int) -> None:
 
 @main.command("rank")
 @click.option("--days", default=7, help="集計期間 (0 で全期間)")
-def cmd_rank(days: int) -> None:
+@click.option("--event", type=click.Choice(["city", "gym", "all"]), default="all")
+def cmd_rank(days: int, event: str) -> None:
     """デッキ別の優勝回数ランキングを表示する。"""
     results = load_results()
+    if event != "all":
+        results = [r for r in results if r.event_type == event]
     ranked = aggregate.deck_ranking(results, days=days)
     if not ranked:
         console.print("[yellow]集計できるデータがありません。[/yellow]")
         return
 
     label = "全期間" if days <= 0 else f"直近 {days} 日"
-    table = Table(title=f"デッキランキング ({label})")
+    scope = {"city": "シティリーグ", "gym": "ジムバトル"}.get(event, "すべての大会")
+    table = Table(title=f"デッキランキング ({scope} / {label})")
     table.add_column("#", justify="right")
     table.add_column("デッキ", style="bold")
     table.add_column("優勝", justify="right", style="yellow")

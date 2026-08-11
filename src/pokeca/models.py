@@ -20,6 +20,13 @@ RANK_LABELS = {1: "優勝", 2: "準優勝"}
 # ふりがな付きの子ども向けラベル
 RANK_LABELS_KIDS = {1: "ゆうしょう", 2: "じゅんゆうしょう"}
 
+# 大会の種類。
+# city = シティリーグ (店舗ごとの公式大会)、gym = ジムバトル (日常の小規模大会)
+EVENT_CITY = "city"
+EVENT_GYM = "gym"
+EVENT_LABELS = {EVENT_CITY: "シティリーグ", EVENT_GYM: "ジムバトル"}
+EVENT_LABELS_KIDS = {EVENT_CITY: "シティリーグ", EVENT_GYM: "ジムバトル"}
+
 
 def normalize_text(value: str) -> str:
     """全角/半角のゆらぎを吸収して比較しやすい形にする。"""
@@ -56,9 +63,10 @@ class DeckResult:
     """1店舗・1リーグ・1順位ぶんの結果。"""
 
     date: str  # 開催日 "2026-05-06"
-    store: str  # 店舗名 (表示用の原文)
+    store: str  # 店舗名 (表示用の原文)。ジムバトルでは取れないので空
     rank: int  # 1 = 優勝, 2 = 準優勝
     deck_name: str  # デッキ名 (表示用の原文)
+    event_type: str = EVENT_CITY  # city = シティリーグ / gym = ジムバトル
     prefecture: str = ""  # 都道府県 (取れれば)
     league: str = ""  # オープン / シニア / ジュニア
     deck_code: str = ""  # 公式デッキコード (取れれば)
@@ -79,17 +87,29 @@ class DeckResult:
 
     @property
     def slot_id(self) -> str:
-        """同じ「枠」を指す一意キー。
+        """同じ結果を指す一意キー。
 
-        日付・店舗・リーグ・順位が同じなら、収集元が違っても同じ試合結果。
-        ポケカブック由来のレコードに、公式由来のデッキコードを後から
-        マージするためにこのキーを使う。
+        デッキコードがあればそれ自体が識別子になる。公式が発行するコードは
+        提出されたデッキ1つにつき1つなので、収集元が違っても同じコードなら
+        同じ結果を指す。デッキ別ページで拾った「デッキ名」を、大会ページで
+        拾った「順位と日付」に後から結び付けるのもこのキーで行う。
+
+        コードが無い場合だけ、日付・店舗・リーグ・順位の組み合わせで代用する。
         """
-        return f"{self.date}|{self.store_key}|{self.league}|{self.rank}"
+        if self.deck_code:
+            return f"code:{self.deck_code}"
+        return (
+            f"slot:{self.event_type}|{self.date}|{self.store_key}"
+            f"|{self.league}|{self.rank}"
+        )
 
     @property
     def rank_label(self) -> str:
         return RANK_LABELS.get(self.rank, f"{self.rank}位")
+
+    @property
+    def event_label(self) -> str:
+        return EVENT_LABELS.get(self.event_type, self.event_type)
 
     @property
     def deck_code_url(self) -> str:

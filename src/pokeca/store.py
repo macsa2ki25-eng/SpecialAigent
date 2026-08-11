@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import yaml
@@ -99,6 +99,29 @@ def merge_results(
             updated += 1
 
     return list(by_slot.values()), added, updated
+
+
+def prune_results(results: list[DeckResult], keep_days: int = 180) -> list[DeckResult]:
+    """古いレコードを落とす。
+
+    ジムバトルは1日あたり数百件出るので、放っておくと results.json が
+    際限なく膨らむ。デッキ環境も数ヶ月で入れ替わり、古い結果は
+    デッキ作りの参考にならないので、既定で半年ぶんだけ残す。
+    keep_days=0 なら何も落とさない。
+    """
+    if keep_days <= 0 or not results:
+        return list(results)
+
+    dates = [r.date for r in results if r.date]
+    if not dates:
+        return list(results)
+    try:
+        newest = date.fromisoformat(max(dates))
+    except ValueError:
+        return list(results)
+
+    cutoff = (newest - timedelta(days=keep_days)).isoformat()
+    return [r for r in results if r.date >= cutoff]
 
 
 def load_deck_themes() -> dict:

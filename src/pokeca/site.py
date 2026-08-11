@@ -16,7 +16,7 @@ import json
 from datetime import date
 
 from src.pokeca import aggregate
-from src.pokeca.models import DeckResult
+from src.pokeca.models import EVENT_CITY, EVENT_GYM, DeckResult
 from src.pokeca.store import load_deck_themes, now_jst
 
 # デッキ名が deck_themes.yaml に無いときに使う色。
@@ -45,14 +45,35 @@ def _date_label(value: str) -> str:
     return f"{parsed.month}がつ{parsed.day}にち"
 
 
-def build_data(results: list[DeckResult], *, is_sample: bool = False) -> dict:
-    """ページに埋め込む JSON を組み立てる。"""
+def _recent_by_event(results: list[DeckResult], max_rows: int) -> list[DeckResult]:
+    """大会種別ごとに新しいものから max_rows 件ずつ選ぶ。
+
+    ジムバトルは1日に数百件出るので、単純に全体の新しい順で打ち切ると
+    ジムバトルだけで埋まり、シティリーグが一覧から消えてしまう。
+    """
+    ordered = sorted(results, key=lambda r: (r.date, r.rank, r.store_key), reverse=True)
+    buckets: dict[str, list[DeckResult]] = {}
+    for record in ordered:
+        bucket = buckets.setdefault(record.event_type, [])
+        if len(bucket) < max_rows:
+            bucket.append(record)
+    selected = [r for bucket in buckets.values() for r in bucket]
+    selected.sort(key=lambda r: (r.date, r.rank, r.store_key), reverse=True)
+    return selected
+
+
+def build_data(
+    results: list[DeckResult], *, is_sample: bool = False, max_rows: int = 300
+) -> dict:
+    """ページに埋め込む JSON を組み立てる。
+
+    一覧に載せる行は大会種別ごとに新しいほうから max_rows 件で打ち切る。
+    ランキングは打ち切る前の全件から計算するので、集計の正確さは保たれる。
+    """
     themes = load_deck_themes()
 
     rows = []
-    for record in sorted(
-        results, key=lambda r: (r.date, r.rank, r.store_key), reverse=True
-    ):
+    for record in _recent_by_event(results, max_rows):
         theme = _theme_for(record.deck_key, record.deck_name, themes)
         rows.append(
             {
@@ -62,6 +83,8 @@ def build_data(results: list[DeckResult], *, is_sample: bool = False) -> dict:
                 "prefecture": record.prefecture,
                 "league": record.league,
                 "rank": record.rank,
+                "event": record.event_type,
+                "eventLabel": record.event_label,
                 "deck": record.deck_name,
                 "deckKey": record.deck_key,
                 # レシピは公式デッキコードを最優先、無ければ元記事へ
@@ -72,14 +95,19 @@ def build_data(results: list[DeckResult], *, is_sample: bool = False) -> dict:
             }
         )
 
-    rankings = {}
-    for key, (label, days) in aggregate.PERIODS.items():
-        ranked = aggregate.deck_ranking(results, days=days)
-        for entry in ranked:
-            theme = _theme_for(entry["deck_key"], entry["deck_name"], themes)
-            entry["color"] = theme["color"]
-            entry["emoji"] = theme["emoji"]
-        rankings[key] = {"label": label, "items": ranked[:20]}
+    # 大会種別ごとにランキングを持つ。ジムバトルは件数が桁違いに多いので、
+    # 一緒くたにするとシティリーグの結果が埋もれてしまう。
+    rankings: dict[str, dict] = {}
+    for event in ("all", EVENT_CITY, EVENT_GYM):
+        scope = results if event == "all" else [r for r in results if r.event_type == event]
+        rankings[event] = {}
+        for key, (label, days) in aggregate.PERIODS.items():
+            ranked = aggregate.deck_ranking(scope, days=days)
+            for entry in ranked:
+                theme = _theme_for(entry["deck_key"], entry["deck_name"], themes)
+                entry["color"] = theme["color"]
+                entry["emoji"] = theme["emoji"]
+            rankings[event][key] = {"label": label, "items": ranked[:20]}
 
     decks = aggregate.deck_choices(results)
     for entry in decks:
@@ -100,6 +128,8 @@ def build_data(results: list[DeckResult], *, is_sample: bool = False) -> dict:
         # デッキ名がまだ1件も取れていないときは、ランキングと絞り込みを隠す。
         # 名前が無い状態でそれらを出しても空欄が並ぶだけで混乱させる。
         "hasNames": any(r.deck_name for r in results),
+        # 実際に存在する大会種別だけをボタンに出す
+        "events": [e for e in (EVENT_CITY, EVENT_GYM) if any(r.event_type == e for r in results)],
         "summary": summary,
         "results": rows,
         "rankings": rankings,
@@ -191,7 +221,7 @@ footer a{color:var(--muted)}
 
 SCRIPT = """
 var DATA = __DATA__;
-var state = { rank: "all", view: "new", deck: "all", period: "7d" };
+var state = { rank: "all", view: "new", deck: "all", period: "7d", event: "all" };
 
 function el(id){ return document.getElementById(id); }
 
@@ -206,6 +236,7 @@ function filtered(){
   return DATA.results.filter(function(r){
     if (state.rank !== "all" && String(r.rank) !== state.rank) return false;
     if (state.deck !== "all" && r.deckKey !== state.deck) return false;
+    if (state.event !== "all" && r.event !== state.event) return false;
     return true;
   });
 }
@@ -213,7 +244,7 @@ function filtered(){
 function cardHtml(r){
   var cls = r.rank === 1 ? "r1" : "r2";
   var label = r.rank === 1 ? "ゆうしょう" : "じゅんゆうしょう";
-  var where = [r.prefecture, r.store].filter(Boolean).join(" ");
+  var where = [r.eventLabel, r.prefecture, r.store].filter(Boolean).join(" ");
   var league = r.league ? "・" + r.league : "";
   var go = r.hasCode ? "レシピ（60まい）を みる →" : "この デッキを みる →";
   // デッキ名がまだ取れていないときは、順位そのものを見出しにする
@@ -255,7 +286,8 @@ function render(){
     rankRow.style.display = "none";
     deckBox.style.display = "none";
     el("deckTitle").style.display = "none";
-    var items = (DATA.rankings[state.period] || {items:[]}).items;
+    var byEvent = DATA.rankings[state.event] || DATA.rankings["all"] || {};
+    var items = (byEvent[state.period] || {items:[]}).items;
     listBox.innerHTML = items.length
       ? items.map(rankHtml).join("")
       : '<div class="empty">まだ データが ありません</div>';
@@ -311,6 +343,16 @@ function boot(){
   }
   el("deckRow").innerHTML = chips.join("");
 
+  // 大会が2種類そろっているときだけ切り替えボタンを出す
+  if ((DATA.events || []).length > 1){
+    el("eventRow").style.display = "grid";
+    el("eventTitle").style.display = "block";
+  }
+
+  el("eventRow").addEventListener("click", function(e){
+    var b = e.target.closest("[data-value]"); if(!b) return;
+    state.event = b.dataset.value; setPressed(el("eventRow"), state.event); render();
+  });
   el("viewRow").addEventListener("click", function(e){
     var b = e.target.closest("[data-value]"); if(!b) return;
     state.view = b.dataset.value; setPressed(el("viewRow"), state.view); render();
@@ -352,6 +394,13 @@ BODY = """
   <div class="note-box" id="noNames" style="display:none">
     デッキの なまえは まだ よみこめて いません。
     カードを タップすると、ほんものの レシピ（60まい）が みられます。
+  </div>
+
+  <div class="section-title" id="eventTitle" style="display:none">どの たいかい？</div>
+  <div class="grid3" id="eventRow" style="display:none">
+    <button class="seg" data-value="all" aria-pressed="true">ぜんぶ</button>
+    <button class="seg" data-value="city" aria-pressed="false">シティリーグ</button>
+    <button class="seg" data-value="gym" aria-pressed="false">ジムバトル</button>
   </div>
 
   <div class="section-title" id="viewTitle">なにを みる？</div>

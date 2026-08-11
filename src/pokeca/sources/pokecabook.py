@@ -38,7 +38,7 @@ from datetime import date, datetime
 from bs4 import BeautifulSoup, Tag
 
 from src.pokeca import http
-from src.pokeca.models import DeckResult
+from src.pokeca.models import EVENT_CITY, DeckResult
 
 BASE = "https://pokecabook.com"
 API = f"{BASE}/wp-json/wp/v2"
@@ -163,8 +163,9 @@ def parse_post(
                     store=store,
                     rank=rank,
                     # この記事にデッキ名は書かれていない。
-                    # 名前は別の情報源から後で埋める (docs/POKECA_GUIDE.md 参照)
+                    # 名前は deckindex がデッキコード経由で後から埋める
                     deck_name="",
+                    event_type=EVENT_CITY,
                     prefecture=prefecture,
                     league=league_from_title,
                     deck_code=deck_code,

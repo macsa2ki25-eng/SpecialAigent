@@ -1,6 +1,6 @@
-name: Collect Pokeca city league decks
+name: Collect Pokeca winning decks
 
-# シティリーグの優勝・準優勝デッキを毎日集めて、
+# シティリーグとジムバトルの優勝・準優勝デッキを毎日集めて、
 # 子ども向けページ (site/index.html) を GitHub Pages に公開する。
 #
 # 事前準備 (1回だけ):
