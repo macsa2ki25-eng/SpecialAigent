@@ -10,7 +10,6 @@
 
 from __future__ import annotations
 
-import json
 import random
 import sys
 from datetime import date, timedelta
@@ -100,7 +99,7 @@ def cmd_collect(
         source_limit = limit if name == "pokecabook" else max(limit, DECK_PAGE_LIMIT)
         console.print(f"[cyan]{name}[/cyan] から収集中...")
         try:
-            found = module.collect(limit=source_limit)
+            found = module.collect(limit=source_limit, log=console.print)
         except Exception as exc:  # 片方が落ちても、もう片方は生かす
             failures.append(f"{name}: {exc}")
             console.print(f"  [red]失敗[/red]: {exc}")
@@ -268,6 +267,60 @@ def cmd_rank(days: int, event: str) -> None:
 
 
 # ------------------------------------------------------------------
+# probe
+# ------------------------------------------------------------------
+
+PROBE_TARGETS = [
+    ("robots.txt", "https://pokecabook.com/robots.txt"),
+    ("REST: カテゴリ", "https://pokecabook.com/wp-json/wp/v2/categories?slug=city-league"),
+    ("REST: 記事", "https://pokecabook.com/wp-json/wp/v2/posts?per_page=1"),
+    ("RSS: サイト全体", "https://pokecabook.com/feed/"),
+    ("RSS: シティリーグ", "https://pokecabook.com/archives/category/tournament/city-league/feed/"),
+    ("RSS: デッキ別", "https://pokecabook.com/archives/category/deck-recipe/feed/"),
+    ("HTML: 一覧", "https://pokecabook.com/archives/category/tournament/city-league"),
+    ("HTML: 記事", "https://pokecabook.com/archives/320777"),
+    ("HTML: デッキ一覧", "https://pokecabook.com/archives/1417"),
+]
+
+
+@main.command("probe")
+def cmd_probe() -> None:
+    """どの取得経路が使えるかを調べる。
+
+    REST API が閉じられている等で収集できないとき、これを実行すると
+    どこまで届いているのかが1回で分かる。
+    """
+    import requests
+
+    from src.pokeca import http
+
+    table = Table(title="取得経路の疎通確認")
+    table.add_column("経路")
+    table.add_column("状態", justify="right")
+    table.add_column("種類", style="dim")
+    table.add_column("サイズ", justify="right", style="dim")
+
+    for label, url in PROBE_TARGETS:
+        try:
+            response = http.get(url, respect_robots=False)
+            status = f"[green]{response.status_code}[/green]"
+            kind = (response.headers.get("Content-Type") or "").split(";")[0]
+            size = f"{len(response.content):,}"
+        except requests.HTTPError as exc:
+            code = exc.response.status_code if exc.response is not None else "?"
+            status, kind, size = f"[red]{code}[/red]", "-", "-"
+        except Exception as exc:
+            status, kind, size = "[red]失敗[/red]", type(exc).__name__, "-"
+        table.add_row(label, status, kind, size)
+
+    console.print(table)
+    console.print(
+        "\n[dim]200 が並んでいる経路が使えます。"
+        "collect は REST → RSS → HTML の順に自動で切り替えます。[/dim]"
+    )
+
+
+# ------------------------------------------------------------------
 # healthcheck
 # ------------------------------------------------------------------
 
@@ -328,17 +381,19 @@ def cmd_inspect(source: str, url: str) -> None:
         console.print(f"保存: {path} ({len(text):,} 文字)")
         return
 
-    if source == "pokecabook":
-        module = _load_source("pokecabook")
-        posts = module.fetch_posts(limit=3)
-        path = INSPECT_DIR / f"pokecabook-posts-{stamp}.json"
-        path.write_text(
-            json.dumps(posts, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-        console.print(f"保存: {path} ({len(posts)} 記事)")
-        for post in posts:
-            content = (post.get("content") or {}).get("rendered", "")
-            console.print(f"  - {post.get('link')} 本文 {len(content):,} 文字")
+    if source in SOURCE_NAMES:
+        module = _load_source(source)
+        fetch = getattr(module, "fetch_posts", None) or module.fetch_deck_posts
+        posts = fetch(limit=3, log=console.print)
+        for index, post in enumerate(posts, start=1):
+            path = INSPECT_DIR / f"{source}-{stamp}-{index}.html"
+            path.write_text(post.content_html, encoding="utf-8")
+            console.print(
+                f"保存: {path.name} ({len(post.content_html):,} 文字) "
+                f"[dim]{post.published} {post.title[:40]}[/dim]"
+            )
+        if not posts:
+            console.print("[yellow]記事を取得できませんでした。probe を試してください。[/yellow]")
         return
 
     # 公式サイトは収集済みレコードが持つイベントURLを1件だけ見に行く

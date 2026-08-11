@@ -63,6 +63,12 @@ jobs:
             python -m src.pokeca.cli collect
           fi
 
+      # 収集に失敗したときだけ、どの取得経路が生きているかを調べて出す。
+      # ログを見ればサイト側で何が閉じられているのか一目で分かる。
+      - name: Probe routes on failure
+        if: failure()
+        run: python -m src.pokeca.cli probe
+
       - name: Build kids page
         if: ${{ inputs.dry_run != true }}
         run: python -m src.pokeca.cli build
