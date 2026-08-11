@@ -143,6 +143,8 @@ STYLE = """
   --gold:#FFB703; --blue:#3A86FF; --line:#EFE1CE; --shadow:0 3px 0 #E8D6BE;
 }
 *{box-sizing:border-box}
+/* 埋め込み表示のときに下の地色が透けないよう html にも背景を敷く */
+html{background:var(--bg)}
 body{
   margin:0; background:var(--bg); color:var(--ink);
   font-family:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN","Yu Gothic",
