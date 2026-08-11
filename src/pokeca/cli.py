@@ -43,14 +43,12 @@ def _load_source(name: str):
         from src.pokeca.sources import pokecabook
 
         return pokecabook
-    if name == "official":
-        from src.pokeca.sources import official
-
-        return official
     raise click.BadParameter(f"不明な収集元: {name}")
 
 
-SOURCE_NAMES = ("pokecabook", "official")
+# 結果そのものを持ってくる収集元。
+# 公式サイト (official) はリーグ区分を補うだけなのでここには含めない。
+SOURCE_NAMES = ("pokecabook",)
 
 
 @click.group()
@@ -68,11 +66,16 @@ def main() -> None:
     "--source",
     type=click.Choice([*SOURCE_NAMES, "all"]),
     default="all",
-    help="収集元。既定は両方。",
+    help="収集元。既定はすべて。",
 )
 @click.option("--limit", default=20, help="1回に見に行く記事・イベント数")
 @click.option("--dry-run", is_flag=True, help="保存せず結果だけ表示")
-def cmd_collect(source: str, limit: int, dry_run: bool) -> None:
+@click.option(
+    "--with-league",
+    is_flag=True,
+    help="公式イベントページを辿ってリーグ区分(オープン/シニア/ジュニア)を補う",
+)
+def cmd_collect(source: str, limit: int, dry_run: bool, with_league: bool) -> None:
     """新着の優勝・準優勝デッキを集めて results.json に追記する。"""
     targets = SOURCE_NAMES if source == "all" else (source,)
     collected: list[DeckResult] = []
@@ -99,6 +102,20 @@ def cmd_collect(source: str, limit: int, dry_run: bool) -> None:
             console.print("[red]エラー:[/red] " + " / ".join(failures))
             sys.exit(1)
         return
+
+    if with_league:
+        from src.pokeca.sources import official
+
+        # 同じイベントURLを何度も叩かないようキャッシュする
+        cache: dict[str, str] = {}
+        for record in collected:
+            if record.league or not record.event_url:
+                continue
+            if record.event_url not in cache:
+                cache[record.event_url] = official.fetch_league(record.event_url)
+            record.league = cache[record.event_url]
+        found = sum(1 for r in collected if r.league)
+        console.print(f"リーグ区分を補完: {found}/{len(collected)} 件")
 
     collected = apply_aliases(collected)
     existing = load_results()
@@ -260,7 +277,7 @@ def cmd_healthcheck(max_age_days: int) -> None:
 
 
 @main.command("inspect")
-@click.option("--source", type=click.Choice(SOURCE_NAMES), required=True)
+@click.option("--source", type=click.Choice([*SOURCE_NAMES, "official"]), default="pokecabook")
 @click.option("--url", default="", help="個別ページを直接指定したいとき")
 def cmd_inspect(source: str, url: str) -> None:
     """収集元の生データを保存して構造を確認する。
@@ -291,16 +308,21 @@ def cmd_inspect(source: str, url: str) -> None:
         for post in posts:
             content = (post.get("content") or {}).get("rendered", "")
             console.print(f"  - {post.get('link')} 本文 {len(content):,} 文字")
-    else:
-        module = _load_source("official")
-        ids = module.fetch_event_ids(limit=5)
-        console.print(f"イベントID: {ids}")
-        if ids:
-            target = module.event_url(ids[0])
-            text = http.get_text(target)
-            path = INSPECT_DIR / f"official-event-{stamp}.html"
-            path.write_text(text, encoding="utf-8")
-            console.print(f"保存: {path} ({len(text):,} 文字) <- {target}")
+        return
+
+    # 公式サイトは収集済みレコードが持つイベントURLを1件だけ見に行く
+    events = [r.event_url for r in load_results() if r.event_url]
+    if not events:
+        console.print(
+            "[yellow]イベントURLを持つレコードがありません。"
+            "先に collect を実行してください。[/yellow]"
+        )
+        return
+    target = events[0]
+    text = http.get_text(target)
+    path = INSPECT_DIR / f"official-event-{stamp}.html"
+    path.write_text(text, encoding="utf-8")
+    console.print(f"保存: {path} ({len(text):,} 文字) <- {target}")
 
 
 # ------------------------------------------------------------------

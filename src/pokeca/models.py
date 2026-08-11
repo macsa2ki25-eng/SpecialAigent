@@ -64,6 +64,7 @@ class DeckResult:
     deck_code: str = ""  # 公式デッキコード (取れれば)
     source: str = ""  # pokecabook / official
     source_url: str = ""  # 元記事・元ページURL
+    event_url: str = ""  # 公式イベント結果ページ (リーグ区分の補完に使う)
     collected_at: str = ""  # 収集時刻 (JST ISO8601)
 
     # 集計用の正規化キー (保存はするが表示には使わない)

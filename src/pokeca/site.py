@@ -87,10 +87,20 @@ def build_data(results: list[DeckResult], *, is_sample: bool = False) -> dict:
         entry["color"] = theme["color"]
         entry["emoji"] = theme["emoji"]
 
+    summary = aggregate.summary(results)
+    latest = summary.get("latest_date") or ""
+    summary["latest_date_label"] = _date_label(latest)
+    summary["latest_first_count"] = sum(
+        1 for r in results if r.rank == 1 and r.date == latest
+    )
+
     return {
         "updatedAt": now_jst().strftime("%Y/%m/%d %H:%M"),
         "isSample": is_sample,
-        "summary": aggregate.summary(results),
+        # デッキ名がまだ1件も取れていないときは、ランキングと絞り込みを隠す。
+        # 名前が無い状態でそれらを出しても空欄が並ぶだけで混乱させる。
+        "hasNames": any(r.deck_name for r in results),
+        "summary": summary,
         "results": rows,
         "rankings": rankings,
         "decks": decks[:24],
@@ -115,6 +125,10 @@ h1{font-size:28px;margin:8px 0 2px;letter-spacing:.02em}
 .sample{
   background:#FFE8E8;border:3px dashed #E63946;border-radius:14px;
   padding:12px 14px;margin:0 0 16px;font-size:16px;color:#B3242F;font-weight:700;
+}
+.note-box{
+  background:#EAF2FF;border:3px solid #BBD4FF;border-radius:14px;
+  padding:12px 14px;margin:0 0 16px;font-size:16px;color:#1F4E9C;
 }
 .hero{
   background:linear-gradient(135deg,#FFD166,#FFB703);
@@ -202,9 +216,13 @@ function cardHtml(r){
   var where = [r.prefecture, r.store].filter(Boolean).join(" ");
   var league = r.league ? "・" + r.league : "";
   var go = r.hasCode ? "レシピ（60まい）を みる →" : "この デッキを みる →";
+  // デッキ名がまだ取れていないときは、順位そのものを見出しにする
+  var title = r.deck
+    ? r.emoji + " " + esc(r.deck)
+    : (r.rank === 1 ? "🏆 ゆうしょうデッキ" : "🥈 じゅんゆうしょうデッキ");
   return '<a class="card" href="' + r.recipeUrl + '" target="_blank" rel="noopener">' +
     '<span class="badge ' + cls + '">' + label + '</span>' +
-    '<div class="deck">' + r.emoji + " " + esc(r.deck) + '</div>' +
+    '<div class="deck">' + title + '</div>' +
     '<div class="meta">' + esc(r.dateLabel) + "　" + esc(where) + esc(league) + '</div>' +
     '<div class="go">' + go + '</div>' +
     '</a>';
@@ -246,8 +264,10 @@ function render(){
 
   periodBox.style.display = "none";
   rankRow.style.display = "grid";
-  deckBox.style.display = "flex";
-  el("deckTitle").style.display = "block";
+  if (DATA.hasNames){
+    deckBox.style.display = "flex";
+    el("deckTitle").style.display = "block";
+  }
   var rows = filtered();
   listBox.innerHTML = rows.length
     ? rows.slice(0, 300).map(cardHtml).join("")
@@ -255,16 +275,33 @@ function render(){
 }
 
 function boot(){
-  var top = DATA.summary && DATA.summary.top_deck;
+  var s = DATA.summary || {};
+  var top = s.top_deck;
   if (top){
+    el("heroCap").textContent = "いま いちばん つよい デッキ";
     el("heroName").textContent = top.deck_name;
     el("heroNote").textContent = "さいきん 1しゅうかんで " + top.first + "かい ゆうしょう";
+  } else if (s.latest_first_count){
+    // デッキ名がまだ無いとき。日付と件数だけでも「新しい結果が来た」ことは伝わる
+    el("heroCap").textContent = "いちばん あたらしい けっか";
+    el("heroName").textContent = s.latest_date_label;
+    el("heroNote").textContent = "ゆうしょうデッキが " + s.latest_first_count + "こ あるよ";
   } else {
+    el("heroCap").textContent = "";
     el("heroName").textContent = "まだ データが ないよ";
     el("heroNote").textContent = "";
   }
   el("updated").textContent = "こうしん: " + DATA.updatedAt;
   if (DATA.isSample) el("sample").style.display = "block";
+
+  if (!DATA.hasNames){
+    // デッキ名が無いあいだは、ランキングと絞り込みを出さない
+    el("viewRow").style.display = "none";
+    el("viewTitle").style.display = "none";
+    el("deckRow").style.display = "none";
+    el("deckTitle").style.display = "none";
+    el("noNames").style.display = "block";
+  }
 
   var chips = ['<button class="chip" data-value="all" aria-pressed="true">ぜんぶ</button>'];
   for (var i=0;i<DATA.decks.length;i++){
@@ -307,12 +344,17 @@ BODY = """
   </div>
 
   <div class="hero">
-    <p class="cap">いま いちばん つよい デッキ</p>
+    <p class="cap" id="heroCap"></p>
     <p class="name" id="heroName"></p>
     <p class="note" id="heroNote"></p>
   </div>
 
-  <div class="section-title">なにを みる？</div>
+  <div class="note-box" id="noNames" style="display:none">
+    デッキの なまえは まだ よみこめて いません。
+    カードを タップすると、ほんものの レシピ（60まい）が みられます。
+  </div>
+
+  <div class="section-title" id="viewTitle">なにを みる？</div>
   <div class="grid2" id="viewRow">
     <button class="seg" data-value="new" aria-pressed="true">あたらしい じゅん</button>
     <button class="seg blue" data-value="rank" aria-pressed="false">つよい じゅん</button>

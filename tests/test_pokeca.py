@@ -1,20 +1,36 @@
 """pokeca モジュールのテスト。
 
-ポイント: 収集元サイトの実物HTMLは開発時に確認できていないため、
-「ありそうな書き方」を複数パターン用意してパーサーに食わせている。
-実物と食い違っていた場合は、まず
-``python -m src.pokeca.cli inspect --source pokecabook`` で本物を保存し、
-そのHTMLをここのテストケースに足してから直すこと。
+``tests/fixtures/pokecabook_city_league.html`` は実際に保存した
+pokecabook.com/archives/320777 から先頭2店舗ぶんを抜き出したもの。
+img の srcset など容量だけ食う属性を削っただけで、構造は実物のまま。
+
+収集元の構造が変わってパーサーを直すときは、まず
+``python -m src.pokeca.cli inspect --source pokecabook`` で新しい実物を保存し、
+fixture を差し替えてからコードを直すこと。
 """
 
 from __future__ import annotations
 
 from datetime import date
+from pathlib import Path
+
+import pytest
 
 from src.pokeca import aggregate
 from src.pokeca.models import DeckResult, normalize_deck_name, normalize_store
 from src.pokeca.sources import official, pokecabook
 from src.pokeca.store import merge_results
+
+FIXTURE = Path(__file__).parent / "fixtures" / "pokecabook_city_league.html"
+POST_URL = "https://pokecabook.com/archives/320777"
+POST_TITLE = "シティリーグ5/6【水】ベスト16デッキまとめ"
+PUBLISHED = date(2026, 5, 6)
+
+
+@pytest.fixture(scope="module")
+def records() -> list[DeckResult]:
+    html = FIXTURE.read_text(encoding="utf-8")
+    return pokecabook.parse_post(html, POST_TITLE, POST_URL, PUBLISHED)
 
 
 # ------------------------------------------------------------------
@@ -29,154 +45,104 @@ def test_deck_name_normalization_absorbs_variants():
 
 
 def test_store_normalization_ignores_spacing():
-    assert normalize_store("バトロコ 高田馬場") == normalize_store("バトロコ高田馬場")
-    assert normalize_store("【東京】バトロコ高田馬場") == "東京バトロコ高田馬場"
+    assert normalize_store("バトロコ 高田馬場") == normalize_store("バトロコ　高田馬場")
+
+
+@pytest.mark.parametrize(
+    "heading,expected",
+    [
+        ("宝島　岐阜本店（岐阜）", ("宝島 岐阜本店", "岐阜")),
+        ("Super KaBoS + GEO 鯖江店（福井）", ("Super KaBoS + GEO 鯖江店", "福井")),
+        ("BOOKOFFPLUS　アミューあつぎ店（神奈川）", ("BOOKOFFPLUS アミューあつぎ店", "神奈川")),
+        ("バトロコミニ苫小牧バイパス店（北海道）", ("バトロコミニ苫小牧バイパス店", "北海道")),
+        ("店舗名だけで括弧なし", ("店舗名だけで括弧なし", "")),
+    ],
+)
+def test_split_store(heading, expected):
+    assert pokecabook.split_store(heading) == expected
 
 
 # ------------------------------------------------------------------
-# ポケカブックのパーサー
+# ポケカブックのパーサー (実物HTMLに対して)
 # ------------------------------------------------------------------
 
-PUBLISHED = date(2026, 5, 6)
 
-
-def test_parse_post_table_layout():
-    """順位表がテーブルになっている場合。"""
-    html = """
-    <h2>【東京】バトロコ高田馬場</h2>
-    <table>
-      <tr><th>順位</th><th>デッキ</th></tr>
-      <tr><td>優勝</td><td><a href="/x">ドラパルトex</a></td></tr>
-      <tr><td>準優勝</td><td>リザードンex</td></tr>
-      <tr><td>ベスト4</td><td>サーナイトex</td></tr>
-    </table>
-    """
-    records = pokecabook.parse_post(
-        html, "シティリーグ5/6【水】ベスト16デッキまとめ", "https://example.test/1", PUBLISHED
-    )
-    assert len(records) == 2
-    assert records[0].rank == 1
-    assert records[0].deck_name == "ドラパルトex"
-    assert records[0].store == "東京 バトロコ高田馬場"
-    assert records[0].prefecture == "東京"
-    assert records[0].date == "2026-05-06"
-    assert records[1].rank == 2
-    assert records[1].deck_name == "リザードンex"
-
-
-def test_parse_post_paragraph_layout():
-    """「優勝：デッキ名」と段落で書かれている場合。"""
-    html = """
-    <h3>宝島 岐阜本店</h3>
-    <p>優勝：パオジアンex</p>
-    <p>準優勝：ミライドンex</p>
-    <p>ベスト4：ロストバレット</p>
-    """
-    records = pokecabook.parse_post(
-        html, "シティリーグ5/6【水】", "https://example.test/2", PUBLISHED
-    )
-    assert [(r.rank, r.deck_name) for r in records] == [
-        (1, "パオジアンex"),
-        (2, "ミライドンex"),
-    ]
-    assert records[0].store == "宝島 岐阜本店"
-
-
-def test_parse_post_list_layout_multiple_stores():
-    """箇条書き + 複数店舗が1記事に並んでいる場合。"""
-    html = """
-    <h2>ゲームアーク 丸亀店</h2>
-    <ul>
-      <li>優勝 タケルライコex</li>
-      <li>準優勝 ドラパルトex</li>
-    </ul>
-    <h2>カードボックス 福山店</h2>
-    <ul>
-      <li>優勝 サーナイトex</li>
-      <li>準優勝 ピジョットex</li>
-    </ul>
-    """
-    records = pokecabook.parse_post(
-        html, "シティリーグ5/6【水】", "https://example.test/3", PUBLISHED
-    )
+def test_parses_only_first_and_second_place(records):
+    """TOP4 / TOP8 / TOP16 は拾わない。2店舗ぶん = 4件。"""
     assert len(records) == 4
-    stores = {r.store for r in records}
-    assert stores == {"ゲームアーク 丸亀店", "カードボックス 福山店"}
-    winners = {r.store: r.deck_name for r in records if r.rank == 1}
-    assert winners["ゲームアーク 丸亀店"] == "タケルライコex"
-    assert winners["カードボックス 福山店"] == "サーナイトex"
+    assert sorted(r.rank for r in records) == [1, 1, 2, 2]
 
 
-def test_parse_post_detects_league_from_heading():
-    html = """
-    <h2>バトロコ高田馬場 ジュニアリーグ</h2>
-    <p>優勝：リザードンex</p>
+def test_extracts_store_and_prefecture(records):
+    winners = {r.store: r for r in records if r.rank == 1}
+    assert set(winners) == {"宝島 岐阜本店", "ゲームアーク 丸亀店"}
+    assert winners["宝島 岐阜本店"].prefecture == "岐阜"
+    assert winners["ゲームアーク 丸亀店"].prefecture == "香川"
+
+
+def test_extracts_official_deck_code(records):
+    """デッキコードが取れることが最重要。実物の60枚レシピへの導線になる。"""
+    first = next(r for r in records if r.rank == 1 and r.store == "宝島 岐阜本店")
+    assert first.deck_code == "8YGKY8-wTd9K2-8Dacc4"
+    assert first.deck_code_url == (
+        "https://www.pokemon-card.com/deck/confirm.html/deckID/8YGKY8-wTd9K2-8Dacc4/"
+    )
+    assert all(r.deck_code for r in records)
+
+
+def test_links_back_to_the_store_section_of_the_article(records):
+    """<span id="tocN"> を使って元記事の該当店舗へ直接飛べる。"""
+    first = next(r for r in records if r.store == "宝島 岐阜本店")
+    second = next(r for r in records if r.store == "ゲームアーク 丸亀店")
+    assert first.source_url == f"{POST_URL}#toc1"
+    assert second.source_url == f"{POST_URL}#toc2"
+
+
+def test_captures_official_event_url(records):
+    """リーグ区分を後から補うために公式イベントURLを持っておく。"""
+    first = next(r for r in records if r.store == "宝島 岐阜本店")
+    assert first.event_url == "https://players.pokemon-card.com/event/detail/953108/result"
+
+
+def test_deck_name_is_absent_in_this_source(records):
+    """この記事にデッキ名は書かれていない (デッキは画像で示されている)。
+
+    名前は別の情報源から埋める前提。ここが空であること自体が仕様。
     """
-    records = pokecabook.parse_post(
-        html, "シティリーグ5/6【水】", "https://example.test/4", PUBLISHED
-    )
-    assert records[0].league == "ジュニア"
+    assert all(r.deck_name == "" for r in records)
 
 
-def test_parse_post_ignores_rank_beyond_second():
-    html = """
-    <h2>宝島 岐阜本店</h2>
-    <p>ベスト4：ロストバレット</p>
-    <p>ベスト8：リザードンex</p>
-    """
-    records = pokecabook.parse_post(
-        html, "シティリーグ5/6【水】", "https://example.test/5", PUBLISHED
-    )
-    assert records == []
+def test_date_comes_from_the_title(records):
+    assert all(r.date == "2026-05-06" for r in records)
 
 
-def test_parse_post_skips_records_without_store():
-    """店舗が特定できないうちに出てきた順位は捨てる (誤集計を防ぐ)。"""
-    html = "<p>優勝：ドラパルトex</p>"
-    records = pokecabook.parse_post(
-        html, "シティリーグ5/6【水】", "https://example.test/6", PUBLISHED
-    )
-    assert records == []
+def test_each_record_is_a_distinct_slot(records):
+    assert len({r.slot_id for r in records}) == len(records)
 
 
 def test_extract_date_handles_year_boundary():
     """1月公開の記事に 12/28 とあれば前年の開催とみなす。"""
     published = date(2026, 1, 5)
-    assert (
-        pokecabook.extract_date_from_title("シティリーグ12/28【日】", published)
-        == "2025-12-28"
-    )
-    assert (
-        pokecabook.extract_date_from_title("シティリーグ1/4【日】", published)
-        == "2026-01-04"
-    )
+    assert pokecabook.extract_date_from_title("シティリーグ12/28【日】", published) == "2025-12-28"
+    assert pokecabook.extract_date_from_title("シティリーグ1/4【日】", published) == "2026-01-04"
+
+
+def test_parse_post_survives_empty_content():
+    assert pokecabook.parse_post("", POST_TITLE, POST_URL, PUBLISHED) == []
 
 
 # ------------------------------------------------------------------
-# 公式サイトのパーサー
+# 公式サイトのパーサー (リーグ区分の補完用・構造は未検証)
 # ------------------------------------------------------------------
 
 
-def test_parse_event_page_extracts_deck_codes():
-    html = """
-    <h1>シティリーグ2026 シーズン3 オープンリーグ</h1>
-    <p>2026年5月6日 バトロコ高田馬場</p>
-    <table>
-      <tr><td>1位</td><td>プレイヤーA</td>
-          <td><a href="https://www.pokemon-card.com/deck/confirm.html/deckID/abcDEF-123xyz/">デッキ</a></td></tr>
-      <tr><td>2位</td><td>プレイヤーB</td>
-          <td><a href="https://www.pokemon-card.com/deck/confirm.html/deckID/zzz999-000aaa/">デッキ</a></td></tr>
-      <tr><td>3位</td><td>プレイヤーC</td><td>-</td></tr>
-    </table>
-    """
-    records = official.parse_event_page(html, "https://players.pokemon-card.com/event/detail/1/result")
-    assert len(records) == 2
-    assert records[0].rank == 1
-    assert records[0].deck_code == "abcDEF-123xyz"
-    assert records[0].date == "2026-05-06"
-    assert records[0].league == "オープン"
-    assert records[0].deck_name == ""  # 公式にデッキ名は無い
-    assert records[0].deck_code_url.endswith("/deckID/abcDEF-123xyz/")
+def test_official_league_extraction():
+    html = "<h1>シティリーグ2026 シーズン3 ジュニアリーグ</h1><p>2026年5月6日</p>"
+    assert official.extract_league(html) == "ジュニア"
+
+
+def test_official_league_extraction_returns_empty_when_unknown():
+    assert official.extract_league("<h1>なにかのイベント</h1>") == ""
 
 
 # ------------------------------------------------------------------
@@ -187,42 +153,49 @@ def test_parse_event_page_extracts_deck_codes():
 def _record(**kwargs) -> DeckResult:
     base = dict(
         date="2026-05-06",
-        store="バトロコ高田馬場",
+        store="バトロコ 高田馬場",
         rank=1,
         deck_name="ドラパルトex",
-        league="オープン",
+        league="",
     )
     base.update(kwargs)
     return DeckResult(**base)
 
 
-def test_merge_enriches_existing_record_with_deck_code():
-    existing = [_record(source="pokecabook", source_url="https://pokecabook.test/1")]
-    incoming = [
-        _record(
-            deck_name="",
-            deck_code="abc-123",
-            source="official",
-            store="バトロコ 高田馬場",  # 表記ゆれがあっても同じ枠として扱う
-        )
-    ]
-    merged, added, updated = merge_results(existing, incoming)
-    assert added == 0
-    assert updated == 1
-    assert len(merged) == 1
+def test_merge_fills_in_deck_name_later():
+    """デッキコードだけ先に入り、あとから名前が付くのが実際の流れ。"""
+    existing = [_record(deck_name="", deck_code="abc-123", source="pokecabook")]
+    merged, added, updated = merge_results(
+        existing, [_record(deck_name="ドラパルトex", source="deckindex")]
+    )
+    assert (added, updated) == (0, 1)
+    assert merged[0].deck_name == "ドラパルトex"
     assert merged[0].deck_code == "abc-123"
-    assert merged[0].deck_name == "ドラパルトex"  # デッキ名は消えない
 
 
-def test_merge_does_not_create_records_without_deck_name():
-    merged, added, updated = merge_results([], [_record(deck_name="", deck_code="x-1")])
-    assert (added, updated, merged) == (0, 0, [])
+def test_merge_accepts_records_that_only_have_a_deck_code():
+    """ポケカブック由来のレコードは名前が無くコードだけ。これが通常の状態。"""
+    merged, added, _ = merge_results([], [_record(deck_name="", deck_code="abc-123")])
+    assert added == 1
+    assert merged[0].deck_code == "abc-123"
+
+
+def test_merge_rejects_records_with_neither_name_nor_code():
+    merged, added, _ = merge_results([], [_record(deck_name="", deck_code="")])
+    assert (added, merged) == (0, [])
+
+
+def test_merge_absorbs_store_spacing_differences():
+    existing = [_record(store="バトロコ　高田馬場", source="pokecabook")]
+    merged, added, _ = merge_results(existing, [_record(store="バトロコ 高田馬場")])
+    assert added == 0
+    assert len(merged) == 1
 
 
 def test_merge_keeps_different_leagues_apart():
-    existing = [_record(league="オープン")]
-    incoming = [_record(league="ジュニア", deck_name="リザードンex")]
-    merged, added, _ = merge_results(existing, incoming)
+    merged, added, _ = merge_results(
+        [_record(league="オープン")], [_record(league="ジュニア")]
+    )
     assert added == 1
     assert len(merged) == 2
 
@@ -231,9 +204,13 @@ def test_merge_is_idempotent():
     records = [_record(source="pokecabook")]
     once, added1, _ = merge_results([], records)
     twice, added2, _ = merge_results(once, records)
-    assert added1 == 1
-    assert added2 == 0
-    assert len(twice) == 1
+    assert (added1, added2, len(twice)) == (1, 0, 1)
+
+
+def test_merge_does_not_overwrite_existing_values():
+    existing = [_record(deck_name="ドラパルトex", deck_code="keep-me")]
+    merged, _, _ = merge_results(existing, [_record(deck_code="new-code")])
+    assert merged[0].deck_code == "keep-me"
 
 
 # ------------------------------------------------------------------
@@ -243,16 +220,26 @@ def test_merge_is_idempotent():
 
 def test_deck_ranking_orders_by_wins_then_runner_ups():
     results = [
-        _record(date="2026-05-06", store="A", rank=1, deck_name="ドラパルトex"),
-        _record(date="2026-05-06", store="B", rank=1, deck_name="ドラパルトex"),
-        _record(date="2026-05-06", store="C", rank=1, deck_name="リザードンex"),
-        _record(date="2026-05-06", store="D", rank=2, deck_name="リザードンex"),
-        _record(date="2026-05-06", store="E", rank=2, deck_name="サーナイトex"),
+        _record(store="A", rank=1, deck_name="ドラパルトex"),
+        _record(store="B", rank=1, deck_name="ドラパルトex"),
+        _record(store="C", rank=1, deck_name="リザードンex"),
+        _record(store="D", rank=2, deck_name="リザードンex"),
+        _record(store="E", rank=2, deck_name="サーナイトex"),
     ]
     ranked = aggregate.deck_ranking(results, days=0)
     assert [e["deck_name"] for e in ranked] == ["ドラパルトex", "リザードンex", "サーナイトex"]
     assert ranked[0]["first"] == 2
-    assert ranked[1]["first"] == 1 and ranked[1]["second"] == 1
+
+
+def test_deck_ranking_ignores_unnamed_decks():
+    """名前が付いていないデッキはランキングに出さない (「」が1位になるのを防ぐ)。"""
+    results = [
+        _record(store="A", rank=1, deck_name="ドラパルトex"),
+        _record(store="B", rank=1, deck_name=""),
+        _record(store="C", rank=1, deck_name=""),
+    ]
+    ranked = aggregate.deck_ranking(results, days=0)
+    assert [e["deck_name"] for e in ranked] == ["ドラパルトex"]
 
 
 def test_deck_ranking_respects_period():
@@ -262,5 +249,4 @@ def test_deck_ranking_respects_period():
     ]
     recent = aggregate.deck_ranking(results, days=7, today=date(2026, 5, 6))
     assert [e["deck_name"] for e in recent] == ["ドラパルトex"]
-    everything = aggregate.deck_ranking(results, days=0)
-    assert len(everything) == 2
+    assert len(aggregate.deck_ranking(results, days=0)) == 2

@@ -10,45 +10,84 @@
 
 ## 1. できること
 
-| | 中身 |
-|---|---|
-| あたらしい じゅん | 優勝・準優勝デッキを日付の新しい順に一覧 |
-| つよい じゅん | 直近1週間 / 1ヶ月 / 全期間の優勝回数ランキング |
-| デッキで さがす | デッキ名のボタンで絞り込み (文字入力なし) |
-| タップ | 公式デッキコードのレシピページ、または元記事へ移動 |
+| | 中身 | 状態 |
+|---|---|---|
+| あたらしい じゅん | 優勝・準優勝デッキを日付の新しい順に一覧 | ✅ 動く |
+| タップ | 公式デッキコードのレシピページ (実物の60枚) へ移動 | ✅ 動く |
+| つよい じゅん | 直近1週間 / 1ヶ月 / 全期間の優勝回数ランキング | ⏸ デッキ名待ち |
+| デッキで さがす | デッキ名のボタンで絞り込み (文字入力なし) | ⏸ デッキ名待ち |
 
-トップには常に「いま いちばん つよい デッキ」(直近1週間で最も優勝している
-デッキ) が出る。日々のデッキ作りの参考にはこれが一番効く。
+トップには「いま いちばん つよい デッキ」(直近1週間で最も優勝しているデッキ) が出る。
+日々のデッキ作りの参考にはこれが一番効く。
+
+⏸ の2つは **デッキ名** が要る。収集元にデッキ名が書かれていないため現在は保留中
+(詳細は 2 の「デッキ名について」)。デッキ名が1件も無いあいだ、ページは
+これらを自動で隠して新着一覧だけを表示する。
 
 ## 2. 全体の流れ
 
 ```
 毎日 08:00 JST  GitHub Actions が起動
         ↓
-   ┌────────────────┴────────────────┐
-   ↓                                  ↓
-ポケカブック                    公式プレイヤーズクラブ
-(WP REST API で記事取得)        (イベント結果ページ)
-デッキ名・店舗・日付・順位        デッキコード・店舗・日付
-   └────────────────┬────────────────┘
-                     ↓
-        日付・店舗・リーグ・順位 で突き合わせて統合
-        (デッキ名はポケカブック、レシピは公式から)
-                     ↓
-        data/pokeca/results.json に追記 (重複排除)
-                     ↓
-        site/index.html を生成 → GitHub Pages に公開
-                     ↓
-        子どもはホーム画面のアイコンをタップするだけ
+ポケカブック (WP REST API で記事本文を取得)
+  → 開催日・店舗・都道府県・順位・デッキコード・公式イベントURL
+        ↓
+   (任意) 公式イベントページを辿ってリーグ区分を補う
+        ↓
+data/pokeca/results.json に追記 (日付・店舗・リーグ・順位 で重複排除)
+        ↓
+site/index.html を生成 → GitHub Pages に公開
+        ↓
+子どもはホーム画面のアイコンをタップするだけ
 ```
 
-2つの情報源を使い分けているのは、それぞれ持っている情報が違うため。
+### 実際の記事構造 (archives/320777 で確認済み)
 
-- **ポケカブック**: 「ドラパルトex」のような **デッキ名** が付いている
-- **公式サイト**: **デッキコード** があり、実物の60枚レシピを開ける
+```html
+<div class="entry-content">
+  <h2><span id="toc1">宝島　岐阜本店（岐阜）</span></h2>
+  <p><a href="https://players.pokemon-card.com/event/detail/953108/result">大会結果</a></p>
+  <figure class="wp-block-gallery">
+    <figure class="wp-block-image">
+      <a href="...jpg"><img src="...1_1_8YGKY8-wTd9K2-8Dacc4.jpg"></a>
+      <figcaption>
+        <a href="https://www.pokemon-card.com/deck/confirm.html/deckID/8YGKY8-wTd9K2-8Dacc4">優勝</a>
+      </figcaption>
+    </figure>
+    ... 準優勝 / TOP4 / TOP8 / TOP16 が続く
+  </figure>
+  <h2>... 次の店舗 ...</h2>
+</div>
+```
 
-`slot_id` (日付・店舗・リーグ・順位) をキーに突き合わせて、
-片方にしかない情報を補い合う。
+1記事に21店舗ぶんが並び、各店舗に 優勝1・準優勝1・TOP4×2・TOP8×4・TOP16×8。
+このうち 優勝と準優勝だけを取る。
+
+ここから分かった重要な性質:
+
+- ✅ **公式デッキコードが全エントリーに付いている**。
+  そのまま実物の60枚レシピを開けるので、レシピへの導線はこれで完結する。
+  当初は公式サイトから取るつもりだったが、その必要が無くなった
+- ✅ **公式イベントページのURL**も店舗ごとに付いている（リーグ区分の補完に使える）
+- ✅ `<h2>` 内の `<span id="tocN">` で、元記事の該当店舗へ直接ジャンプできる
+- ❌ **デッキ名がどこにも書かれていない**。デッキの中身は画像で示されており、
+  文字情報は順位ラベルとデッキコードだけ
+
+### デッキ名について (未解決)
+
+ランキングと絞り込みにはデッキ名が要るが、上記のとおりこの記事からは取れない。
+`DeckResult.deck_name` は空のまま保存され、あとから別の情報源で埋める設計にしてある
+(`merge_results` が空欄だけを埋める)。
+
+デッキ名が1件も無いあいだ、子ども向けページは自動的に
+**ランキングとデッキ絞り込みを隠し、新着一覧だけを表示する**。
+「優勝・準優勝だけを一覧にする」という本来の目的はこの状態でも果たせる。
+
+名前を埋める候補:
+
+1. ポケカブックのデッキ別ページ (例: 「ポケカ【ドラパルトex】優勝デッキレシピまとめ」)
+   を巡回し、**デッキコード → デッキ名** の対応表を作る ← 本命。要検証
+2. デッキコードから公式のレシピページを開き、採用カードからデッキ名を推定する
 
 ## 3. 最初のセットアップ (親が1回だけ)
 
@@ -78,8 +117,9 @@ Source を **GitHub Actions** に変更する。
 ### 4-1. ふだん使うもの
 
 ```bash
-python -m src.pokeca.cli collect          # 収集して results.json を更新
-python -m src.pokeca.cli collect --dry-run # 保存せず結果だけ見る
+python -m src.pokeca.cli collect            # 収集して results.json を更新
+python -m src.pokeca.cli collect --dry-run  # 保存せず結果だけ見る
+python -m src.pokeca.cli collect --with-league  # リーグ区分も補う(未検証)
 python -m src.pokeca.cli build            # site/index.html を生成
 python -m src.pokeca.cli list --rank 1    # 優勝デッキだけ一覧 (親の確認用)
 python -m src.pokeca.cli rank --days 7    # 直近1週間のランキング
@@ -106,34 +146,35 @@ python -m pytest tests/test_pokeca.py -q
 
 サンプルデータで生成したページには「これは練習用です」の警告が出る。
 
-## 5. ⚠️ 本物のデータが取れるようになるまで
+## 5. 検証の状況
 
-**開発時、収集元サイトのHTMLを実際に確認できていない** (開発環境から
-外部サイトへ接続できなかったため)。そのため
-`src/pokeca/sources/` のパーサーは「ありそうな構造」に対する推定で書いてある。
+| 部分 | 状態 |
+|---|---|
+| ポケカブックの本文パーサー | ✅ **実物のHTMLで検証済み**。archives/320777 から21店舗×2=42件を全件抽出、デッキコード欠落0 |
+| WP REST API での記事取得 | ⚠️ 未検証。`/wp-json/wp/v2/` が有効かどうかは実際に叩くまで不明 |
+| 公式サイトのリーグ補完 | ⚠️ 未検証。既定で無効 (`--with-league` を付けたときだけ動く) |
 
-初回の `collect` で0件だったり、変なデータが混じった場合は次の手順で直す。
+`tests/fixtures/pokecabook_city_league.html` は実際に保存したページから
+先頭2店舗ぶんを抜き出したもの。構造は実物のまま。
+
+### 構造が変わってパーサーが空振りしたら
 
 ```bash
-# 1. 実物の構造を保存する
-python -m src.pokeca.cli inspect --source pokecabook
-python -m src.pokeca.cli inspect --source official
+python -m src.pokeca.cli inspect --source pokecabook   # 実物を保存
 ```
 
-`data/pokeca/_inspect/` に生のHTML・JSONが落ちるので、それを見て
-`src/pokeca/sources/pokecabook.py` の正規表現や
-`src/pokeca/sources/official.py` のセレクタを直す。
-
-直したら **実物の構造をテストケースとして `tests/test_pokeca.py` に追加する**。
-次にサイト構造が変わったときに気づけるようになる。
+`data/pokeca/_inspect/` に生のJSON・HTMLが落ちる。それを見て
+`src/pokeca/sources/pokecabook.py` を直し、
+**新しい実物で fixture を差し替えてから** テストを通すこと。
 
 ### 想定される詰まりどころ
 
 | 症状 | 原因の見当 |
 |---|---|
-| ポケカブックで0件 | WP REST API が無効。カテゴリRSS (`/archives/category/tournament/city-league/feed/`) に切り替える |
-| 店舗名が空で捨てられる | 見出しの書き方が想定と違う。`STORE_HINT` を調整 |
-| 公式で0件 | ページがJavaScript描画。裏で叩いているAPIを探すか、公式はいったん諦めてポケカブックだけにする |
+| REST API が 404 | REST API が無効。カテゴリRSS (`/archives/category/tournament/city-league/feed/`) に切り替える |
+| 記事は取れるが0件 | `content.rendered` に `.entry-content` ラッパーが無い場合がある。パーサーは両対応済みだが、ギャラリー構造が変わっていないか確認 |
+| 店舗名に都道府県が付く | `split_store()` の括弧パターンを確認 |
+| リーグ補完が全部空 | 公式ページがJavaScript描画。`--with-league` を外して運用する (無くても困らない) |
 | ランキングが同じデッキで割れる | 表記ゆれ。`data/pokeca/deck_themes.yaml` の `aliases` に追記 |
 
 ## 6. 収集が止まったときの通知
@@ -186,8 +227,8 @@ src/pokeca/
 ├── http.py             # robots.txt 遵守・アクセス間隔制御
 ├── cli.py              # コマンド
 └── sources/
-    ├── pokecabook.py   # ポケカブック (デッキ名の担当)
-    └── official.py     # 公式プレイヤーズクラブ (デッキコードの担当)
+    ├── pokecabook.py   # ポケカブック (結果とデッキコードの担当)
+    └── official.py     # 公式プレイヤーズクラブ (リーグ区分の補完のみ)
 
 data/pokeca/
 ├── results.json        # 収集結果 (これが資産)
@@ -195,7 +236,9 @@ data/pokeca/
 └── _inspect/           # inspect コマンドの出力 (gitignore)
 
 site/index.html         # 生成物。GitHub Pages で公開される
-tests/test_pokeca.py    # パーサー・マージ・集計のテスト
+tests/
+├── test_pokeca.py                          # パーサー・マージ・集計のテスト
+└── fixtures/pokecabook_city_league.html    # 実物HTMLの抜粋 (テスト用)
 ```
 
 情報源を足したいときは `sources/` にファイルを1つ追加して

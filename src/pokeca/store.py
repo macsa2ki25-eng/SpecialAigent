@@ -72,26 +72,29 @@ def merge_results(
     for record in incoming:
         current = by_slot.get(record.slot_id)
         if current is None:
-            # デッキ名の無いレコード (公式サイト由来) は単独では意味を持たない。
-            # 既存レコードを補強する目的でのみ使うので、新規追加はしない。
-            if not record.deck_name:
+            # デッキ名かデッキコードのどちらも無いレコードは、どのデッキが
+            # 勝ったのか分からず使いようがないので捨てる。
+            # (ポケカブック由来のレコードは名前が無くコードだけ、が正常な状態)
+            if not record.deck_name and not record.deck_code:
                 continue
             by_slot[record.slot_id] = record
             added += 1
             continue
 
-        # 既存レコードの空欄だけを埋める (上書きはしない)
+        # 既存レコードの空欄だけを埋める (すでに入っている値は上書きしない)
         changed = False
-        for fieldname in ("prefecture", "league", "deck_code", "source_url"):
+        for fieldname in ("prefecture", "league", "deck_code", "source_url", "event_url"):
             if not getattr(current, fieldname) and getattr(record, fieldname):
                 setattr(current, fieldname, getattr(record, fieldname))
                 changed = True
-        # デッキ名は公式 (一次情報) を優先する
-        if record.source == "official" and current.source != "official":
-            if record.deck_name and record.deck_name != current.deck_name:
-                current.deck_name = record.deck_name
-                current.deck_key = record.deck_key
-                changed = True
+
+        # ポケカブックの記事にデッキ名は無いので、まずコードだけのレコードが入り、
+        # あとからデッキ名が付く。名前は集計キーと連動するので一緒に更新する。
+        if not current.deck_name and record.deck_name:
+            current.deck_name = record.deck_name
+            current.deck_key = record.deck_key
+            changed = True
+
         if changed:
             updated += 1
 

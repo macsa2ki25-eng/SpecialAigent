@@ -52,7 +52,9 @@ def deck_ranking(
     並び順は「優勝回数が多い順 → 準優勝回数が多い順 → デッキ名」。
     優勝を2点、準優勝を1点として score も付ける。
     """
-    scoped = filter_by_period(results, days, today)
+    # デッキ名が未取得のレコードは集計しない。
+    # 名無しをひとまとめにすると、それが常に1位になってランキングが嘘になる。
+    scoped = [r for r in filter_by_period(results, days, today) if r.deck_name]
 
     buckets: dict[str, dict] = {}
     for record in scoped:
@@ -91,6 +93,8 @@ def deck_choices(results: list[DeckResult]) -> list[dict]:
     """絞り込みチップ用のデッキ一覧 (登場回数の多い順)。"""
     counts: dict[str, dict] = defaultdict(lambda: {"count": 0, "deck_name": ""})
     for record in results:
+        if not record.deck_name:
+            continue
         entry = counts[record.deck_key]
         entry["count"] += 1
         if not entry["deck_name"]:
