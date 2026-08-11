@@ -1,11 +1,20 @@
 name: Collect Pokeca winning decks
 
 # シティリーグとジムバトルの優勝・準優勝デッキを毎日集めて、
-# 子ども向けページ (site/index.html) を GitHub Pages に公開する。
+# 子ども向けページ (site/index.html) をリポジトリ内に生成する。
 #
-# 事前準備 (1回だけ):
-#   リポジトリの Settings > Pages > Build and deployment の Source を
-#   "GitHub Actions" にしておく。
+# ⚠️ このワークフローは GitHub Pages に一切さわらない。
+#
+# このリポジトリの Pages は、生徒が使っている英単語学習サイト
+# 「東高３年 英単語やったんぞ サイト」を配信している。
+# 実体は claude/fsrs-vocabulary-app-7Bb8G ブランチのルートで、
+# Settings > Pages の Source は "Deploy from a branch" にしておくこと。
+#
+# 以前このワークフローに Pages デプロイを入れていたため、
+# https://macsa2ki25-eng.github.io/SpecialAigent/ が
+# ポケカのページに置き換わってしまった。二度と起こさないよう、
+# ここでは site/index.html をリポジトリにコミットするだけにする。
+# ポケカのページを配信したい場合は、別リポジトリの Pages を使う。
 
 on:
   schedule:
@@ -21,9 +30,8 @@ on:
 
 permissions:
   contents: write   # results.json と site/ を更新してpushするため
-  pages: write      # GitHub Pages へのデプロイ
-  id-token: write   # deploy-pages が要求する
   issues: write     # 収集が止まったときの通知
+  # pages / id-token は付けない。このワークフローは Pages にデプロイしない
 
 # 同時実行するとpushがぶつかるので直列化する
 concurrency:
@@ -111,21 +119,4 @@ jobs:
             echo "Alert issue already open. Skipping."
           fi
 
-      - name: Upload Pages artifact
-        if: ${{ inputs.dry_run != true }}
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # site/ 配下だけを公開する (リポジトリの他のファイルは含めない)
-          path: site
 
-  deploy:
-    needs: collect
-    if: ${{ inputs.dry_run != true }}
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
