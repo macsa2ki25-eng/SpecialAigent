@@ -24,6 +24,15 @@ from src.pokeca import http
 
 ARTICLE_LINK_RE = re.compile(r"/archives/(\d+)")
 
+
+def get_text(url: str) -> str:
+    """呼び出し側が http モジュールを直接触らずに済むようにする薄い包み。
+
+    代入ではなく関数にしてあるのは、テストで http.get_text を
+    差し替えたときにこちら経由の呼び出しにも効くようにするため。
+    """
+    return http.get_text(url)
+
 # RSS の名前空間
 NS = {
     "content": "http://purl.org/rss/1.0/modules/content/",
@@ -135,9 +144,24 @@ def posts_from_feed(feed_url: str, limit: int) -> list[Post]:
 
 def fetch_article_html(url: str) -> str:
     """記事ページを取得して本文部分だけ返す。"""
+    post = fetch_article(url)
+    return post.content_html if post else ""
+
+
+def fetch_article(url: str) -> Post | None:
+    """記事ページを取得して本文・タイトル・公開日を返す。"""
     soup = BeautifulSoup(http.get_text(url), "html.parser")
     content = soup.select_one(".entry-content")
-    return str(content) if content else ""
+    if not content:
+        return None
+    title_node = soup.find("h1") or soup.find("title")
+    time_node = soup.find("time")
+    return Post(
+        title=title_node.get_text(" ", strip=True) if title_node else "",
+        content_html=str(content),
+        link=url,
+        published=_parse_date((time_node.get("datetime") if time_node else "") or ""),
+    )
 
 
 def _article_links(html: str, base: str) -> list[str]:

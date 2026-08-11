@@ -101,6 +101,27 @@ def merge_results(
     return list(by_slot.values()), added, updated
 
 
+def sanitize_results(results: list[DeckResult]) -> tuple[list[DeckResult], int]:
+    """デッキ名として明らかにおかしいものを空にする。
+
+    「8/10(月)」のような日付や「ストームエメラルダ環境」といった弾の名前が
+    デッキ名として入ってしまった過去のデータを、実行のたびに直す。
+    レコード自体は日付とデッキコードを持っていて使えるので消さない。
+
+    Returns:
+        (直したあとのリスト, 直した件数)
+    """
+    from src.pokeca.sources.deckindex import is_plausible_deck_name
+
+    fixed = 0
+    for record in results:
+        if record.deck_name and not is_plausible_deck_name(record.deck_name):
+            record.deck_name = ""
+            record.deck_key = ""
+            fixed += 1
+    return results, fixed
+
+
 def prune_results(results: list[DeckResult], keep_days: int = 180) -> list[DeckResult]:
     """古いレコードを落とす。
 

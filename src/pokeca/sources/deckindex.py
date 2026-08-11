@@ -71,6 +71,24 @@ EVENT_BY_LABEL = {"ジムバトル": EVENT_GYM, "シティリーグ": EVENT_CITY
 # カタログに混ざっている、デッキ別ページではない記事
 CATALOG_SKIP = re.compile(r"(まとめ|一覧|ランキング|環境|結果)$")
 
+# デッキ名として明らかにおかしいもの。
+# 「【8/10(月)】ジムバトル優勝デッキまとめ」のような日付ページを取り込むと
+# 日付がデッキ名になってしまうため、名前を付けずに捨てる。
+# 名前が空でも日付とデッキコードは使えるので、誤った名前を付けるより良い。
+IMPLAUSIBLE_NAME = re.compile(
+    r"^\s*\d{1,2}\s*[/月]"          # 8/10(月) などの日付
+    r"|環境\s*$"                     # ストームエメラルダ環境
+    r"|(まとめ|一覧|リスト|ランキング|結果)\s*$"
+)
+
+
+def is_plausible_deck_name(name: str) -> bool:
+    """デッキ名として使ってよさそうかどうか。"""
+    name = (name or "").strip()
+    if not name or len(name) > 30:
+        return False
+    return not IMPLAUSIBLE_NAME.search(name)
+
 
 def _resolve_date(month: int, day: int, reference: date) -> str:
     """月日 + 基準日から実際の開催日を決める。
@@ -95,9 +113,15 @@ def extract_deck_name(title: str) -> str:
     """記事タイトルからデッキ名を取り出す。
 
     「ポケカ【ドラパルトex】優勝デッキレシピまとめ」→「ドラパルトex」
+
+    【…】が複数ある記事もあるので、デッキ名として妥当なものを順に探す。
+    「【8/10(月)】ジムバトル優勝デッキまとめ【ストームエメラルダ環境】」のように
+    どれも妥当でなければ空文字を返す。
     """
-    match = BRACKET_NAME_RE.search(title or "")
-    return match.group(1).strip() if match else ""
+    for candidate in BRACKET_NAME_RE.findall(title or ""):
+        if is_plausible_deck_name(candidate):
+            return candidate.strip()
+    return ""
 
 
 def parse_catalog(html: str) -> list[tuple[str, str]]:
@@ -119,13 +143,22 @@ def parse_catalog(html: str) -> list[tuple[str, str]]:
 
 
 def parse_deck_page(
-    content_html: str, title: str, source_url: str, reference: date
+    content_html: str,
+    title: str,
+    source_url: str,
+    reference: date,
+    deck_name: str = "",
 ) -> list[DeckResult]:
-    """デッキ別ページ1枚から結果レコードを取り出す。"""
+    """デッキ別ページ1枚から結果レコードを取り出す。
+
+    Args:
+        deck_name: デッキ一覧ページから取れた正式なデッキ名。
+            指定されていればこれを最優先で使う (一番確実な出どころ)。
+    """
     soup = BeautifulSoup(content_html, "html.parser")
     content = soup.select_one(".entry-content") or soup
 
-    fallback_name = extract_deck_name(title)
+    fallback_name = deck_name.strip() or extract_deck_name(title)
     records: list[DeckResult] = []
 
     for figure in content.find_all("figure", class_="wp-block-image"):
@@ -148,14 +181,14 @@ def parse_deck_page(
             continue
 
         image = figure.find("img")
-        deck_name = extract_deck_name(image.get("alt", "")) if image else ""
+        from_alt = extract_deck_name(image.get("alt", "")) if image else ""
 
         records.append(
             DeckResult(
                 date=held,
                 store="",  # デッキ別ページに店舗名は載っていない
                 rank=RANK_BY_LABEL[match.group("rank")],
-                deck_name=deck_name or fallback_name,
+                deck_name=fallback_name or from_alt,
                 event_type=EVENT_BY_LABEL.get(match.group("event") or "", EVENT_GYM),
                 deck_code=code_match.group(1),
                 source=SOURCE_NAME,
@@ -171,31 +204,66 @@ def parse_deck_page(
 # ------------------------------------------------------------------
 
 
+def fetch_catalog() -> list[tuple[str, str]]:
+    """デッキ一覧ページから (デッキ名, 記事URL) を取る。"""
+    return parse_catalog(wp.get_text(CATALOG_URL))
+
+
 def fetch_deck_posts(limit: int = 80, log=None) -> list[wp.Post]:
-    """デッキ別記事を取得する。
+    """デッキ別記事を取得する (inspect 用)。"""
+    posts: list[wp.Post] = []
+    for _, url in fetch_catalog()[:limit]:
+        post = wp.fetch_article(url)
+        if post:
+            posts.append(post)
+    return posts
 
-    REST API → RSS → 記事一覧HTML の順に試す (src/pokeca/sources/wp.py)。
-    1記事あたり数百件の結果が入っているので、記事数はさほど要らない。
+
+def daily_batch(catalog: list, batch: int, today: date | None = None) -> list:
+    """その日に見に行くぶんだけカタログから切り出す。
+
+    デッキ別ページは1枚あたり 500KB 前後あり、73デッキを毎日まとめて取ると
+    40MB を超える。個人ブログに対してそれを毎日続けるのは行儀が悪いので、
+    日ごとに区切って巡回し、数日かけて一周する。
+
+    データはマージして貯めていくので、一周ぶん遅れても内容は揃う。
+    通し番号は日付から決めるため、状態を持たなくても順に進む。
     """
-    return wp.fetch_posts(
-        api=API,
-        slug=CATEGORY_SLUG,
-        feed_url=FEED_URL,
-        index_url=INDEX_URL,
-        base=BASE,
-        limit=limit,
-        search="優勝デッキレシピ",
-        log=log,
-    )
+    if batch <= 0 or batch >= len(catalog):
+        return catalog
+    day = (today or date.today()).toordinal()
+    start = (day * batch) % len(catalog)
+    doubled = catalog + catalog
+    return doubled[start : start + batch]
 
 
-def collect(limit: int = 80, log=None) -> list[DeckResult]:
-    """デッキ別ページを巡回して、デッキ名付きの結果レコードを返す。"""
+def collect(limit: int = 80, batch: int = 25, log=None) -> list[DeckResult]:
+    """デッキ別ページを巡回して、デッキ名付きの結果レコードを返す。
+
+    RSS のカテゴリフィードは1回に10件しか返さず、しかも
+    「【8/10(月)】ジムバトル優勝デッキまとめ」のような日付ページが混ざるため、
+    **デッキ一覧ページ (archives/1417) を正**として使う。
+    こうすると全デッキを取りこぼさず、デッキ名も一覧の表記で確定できる。
+    """
+    catalog = fetch_catalog()[:limit]
+    todays = daily_batch(catalog, batch)
+    if log:
+        log(f"  デッキ一覧: {len(catalog)} デッキ → 今日は {len(todays)} デッキぶん")
+
     out: list[DeckResult] = []
-    for post in fetch_deck_posts(limit=limit, log=log):
+    fetched = 0
+    for deck_name, url in todays:
+        post = wp.fetch_article(url)
+        if not post:
+            continue
+        fetched += 1
         out.extend(
-            parse_deck_page(post.content_html, post.title, post.link, post.published)
+            parse_deck_page(
+                post.content_html, post.title, url, post.published, deck_name=deck_name
+            )
         )
+    if log:
+        log(f"  取得: {fetched} デッキページ → {len(out)} 件")
     return out
 
 
