@@ -90,23 +90,26 @@ def is_plausible_deck_name(name: str) -> bool:
     return not IMPLAUSIBLE_NAME.search(name)
 
 
-def _resolve_date(month: int, day: int, reference: date) -> str:
-    """月日 + 基準日から実際の開催日を決める。
+def _resolve_date(month: int, day: int, today: date) -> str:
+    """月日から実際の開催日を決める。
 
-    デッキ別ページは数ヶ月ぶんの結果が1ページに並ぶため、
-    年をまたぐと 12月の結果に翌年を付けてしまう。基準日より
-    30日以上先になる場合は前年とみなす。
+    キャプションは「8/9【日】」のように年が書かれていない。
+    **大会結果が未来の日付になることはない**ので、今日を超えない範囲で
+    一番新しい年を選ぶ。
+
+    以前は記事の公開日を基準に「30日以上先なら前年」としていたが、
+    デッキ別ページには前年の結果も並ぶため、8月に公開されたページの
+    「8/12」を当年と判定して未来の日付を作ってしまっていた
+    (実際に本番データへ43件混入し、ランキングの基準日を壊した)。
     """
-    try:
-        candidate = date(reference.year, month, day)
-    except ValueError:
-        return ""
-    if (candidate - reference).days > 30:
+    for year in (today.year, today.year - 1):
         try:
-            candidate = date(reference.year - 1, month, day)
+            candidate = date(year, month, day)
         except ValueError:
-            return ""
-    return candidate.isoformat()
+            continue  # 閏日など
+        if candidate <= today:
+            return candidate.isoformat()
+    return ""
 
 
 def extract_deck_name(title: str) -> str:
@@ -146,12 +149,14 @@ def parse_deck_page(
     content_html: str,
     title: str,
     source_url: str,
-    reference: date,
+    today: date,
     deck_name: str = "",
 ) -> list[DeckResult]:
     """デッキ別ページ1枚から結果レコードを取り出す。
 
     Args:
+        today: 収集日。キャプションには年が無いので、これを超えない範囲で
+            一番新しい年を割り当てる。
         deck_name: デッキ一覧ページから取れた正式なデッキ名。
             指定されていればこれを最優先で使う (一番確実な出どころ)。
     """
@@ -176,7 +181,7 @@ def parse_deck_page(
         if not code_match:
             continue
 
-        held = _resolve_date(int(match.group("month")), int(match.group("day")), reference)
+        held = _resolve_date(int(match.group("month")), int(match.group("day")), today)
         if not held:
             continue
 
@@ -266,7 +271,7 @@ def collect(limit: int = 80, batch: int = 25, log=None) -> list[DeckResult]:
         fetched += 1
         out.extend(
             parse_deck_page(
-                post.content_html, post.title, url, post.published, deck_name=deck_name
+                post.content_html, post.title, url, date.today(), deck_name=deck_name
             )
         )
     if log:

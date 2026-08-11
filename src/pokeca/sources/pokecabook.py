@@ -66,30 +66,28 @@ TITLE_DATE = re.compile(r"(?<!\d)(\d{1,2})\s*[/／月]\s*(\d{1,2})")
 LEAGUE_KEYWORDS = ("オープン", "マスター", "シニア", "ジュニア")
 
 
-def _resolve_date(month: int, day: int, published: date) -> str:
-    """月日 + 記事公開日から実際の開催日を決める。
+def _resolve_date(month: int, day: int, today: date) -> str:
+    """月日から実際の開催日を決める。
 
-    年末年始をまたぐ記事 (1月に公開された12月開催の記事など) を考慮する。
+    タイトルには「シティリーグ5/6【水】」のように年が書かれていない。
+    大会結果が未来の日付になることはないので、今日を超えない範囲で
+    一番新しい年を選ぶ。これで年末年始をまたぐ記事も正しく扱える。
     """
-    try:
-        candidate = date(published.year, month, day)
-    except ValueError:
-        return ""
-    # 開催日が公開日より30日以上先なら前年の出来事とみなす
-    if (candidate - published).days > 30:
+    for year in (today.year, today.year - 1):
         try:
-            candidate = date(published.year - 1, month, day)
+            candidate = date(year, month, day)
         except ValueError:
-            return ""
-    return candidate.isoformat()
+            continue
+        if candidate <= today:
+            return candidate.isoformat()
+    return ""
 
 
-def extract_date_from_title(title: str, published: date) -> str:
+def extract_date_from_title(title: str, today: date) -> str:
     match = TITLE_DATE.search(title)
     if not match:
-        return published.isoformat()
-    resolved = _resolve_date(int(match.group(1)), int(match.group(2)), published)
-    return resolved or published.isoformat()
+        return today.isoformat()
+    return _resolve_date(int(match.group(1)), int(match.group(2)), today) or today.isoformat()
 
 
 def _detect_league(text: str) -> str:
@@ -122,13 +120,18 @@ def _anchor_id(heading: Tag) -> str:
 
 
 def parse_post(
-    content_html: str, title: str, source_url: str, published: date
+    content_html: str, title: str, source_url: str, today: date
 ) -> list[DeckResult]:
-    """1記事ぶんの本文HTMLから優勝・準優勝を抜き出す。"""
+    """1記事ぶんの本文HTMLから優勝・準優勝を抜き出す。
+
+    Args:
+        today: 収集日。タイトルに年が無いので、これを超えない範囲で
+            一番新しい年を割り当てる。
+    """
     soup = BeautifulSoup(content_html, "html.parser")
     content = soup.select_one(CONTENT_SELECTOR) or soup
 
-    held = extract_date_from_title(title, published)
+    held = extract_date_from_title(title, today)
     league_from_title = _detect_league(title)
 
     records: list[DeckResult] = []
@@ -210,5 +213,5 @@ def collect(limit: int = 20, log=None) -> list[DeckResult]:
         # ジムバトルなど別の記事が混ざらないようにする
         if "シティリーグ" not in post.title:
             continue
-        out.extend(parse_post(post.content_html, post.title, post.link, post.published))
+        out.extend(parse_post(post.content_html, post.title, post.link, date.today()))
     return out

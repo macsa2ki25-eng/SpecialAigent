@@ -146,9 +146,21 @@ def sanitize_results(
     from src.pokeca.sources.deckindex import is_plausible_deck_name
 
     known = known_decks if known_decks is not None else load_deck_catalog()
+    today = now_jst().date().isoformat()
 
     fixed = 0
     for record in results:
+        # 未来の開催日は、年の判定を誤ったもの。1年戻せば正しい日付になる。
+        # マージは空欄しか埋めないので、放置すると永久に直らない。
+        # 「直近1週間」の基準日がここになり、ランキングごと壊れる。
+        if record.date > today:
+            try:
+                parsed = date.fromisoformat(record.date)
+                record.date = parsed.replace(year=parsed.year - 1).isoformat()
+                fixed += 1
+            except ValueError:
+                pass
+
         if not record.deck_name:
             continue
         bad = not is_plausible_deck_name(record.deck_name)
